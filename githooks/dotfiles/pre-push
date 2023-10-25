@@ -1,3 +1,6 @@
 #!/usr/bin/env bash
 
-gitleaks detect --log-opts="origin/$(main-branch)..." --verbose &> /dev/null
+if ! gitleaks detect --log-opts="origin/$(main-branch)...HEAD" &> /dev/null ; then
+  gitleaks detect --log-opts="origin/$(main-branch)...HEAD" --verbose
+  exit 1
+fi

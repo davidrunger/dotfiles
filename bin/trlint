@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+
+# [tr]anslations [lint]ing
+
+set -euo pipefail # exit on any error, don't allow undefined variables, pipes don't swallow errors
+set -x # print executed commands
+
+if changed-not-deleted-files | rg -q "^config/locales/.*\.json$"; then
+  # There is other linting that we could do (`missing` and `unused`), but those are too slow.
+  bin/i18n-tasks check-consistent-interpolations
+  bin/i18n-tasks check-normalized
+fi

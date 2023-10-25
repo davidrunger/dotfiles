@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+
+# Run JavaScript linter(s).
+
+set -euo pipefail # exit on any error, don't allow undefined variables, pipes don't swallow errors
+set -x # print executed commands
+
+plint
+tlint
+elint

@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+# [s]earch over [g]it [f]iles changed from the main branch (excluding spec files)
+
+set -euo pipefail # exit on any error, don't allow undefined variables, pipes don't swallow errors
+
+rg "$@" $(gf | rg -v '^spec/')

@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+
+# Print text, colored blue.
+#
+# Example:
+#   blue 'hi there'
+#   => Prints 'hi there', colored blue.
+
+set -euo pipefail # exit on any error, don't allow undefined variables, pipes don't swallow errors
+
+input=""
+
+if [[ -p /dev/stdin ]]; then
+  input="$(cat -)"
+else
+  input="${@}"
+fi
+
+echo "[1;34m$input[0m"

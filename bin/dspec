@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+
+# Run RSpec.
+# [d]isabling spring, run r[spec].
+# Example:
+#   dspec spec/models/unit_spec.rb
+
+set -euo pipefail # exit on any error, don't allow undefined variables, pipes don't swallow errors
+
+DISABLE_SPRING=1 bin/rspec "$@"

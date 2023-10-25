@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+
+# [g]it [s]et [up]stream
+
+set -euo pipefail # exit on any error, don't allow undefined variables, pipes don't swallow errors
+
+git branch --set-upstream-to=origin/$(main-branch)
+git status -sb

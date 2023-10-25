@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+
+# "git push force"
+
+check-git-push-safety && push-dangerously

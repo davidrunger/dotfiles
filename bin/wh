@@ -1,0 +1,28 @@
+#!/usr/bin/env zsh
+
+# [add some documentation]
+
+set -uo pipefail # don't allow undefined variables, pipes don't swallow errors
+
+source $HOME/code/dotfiles/shell/aliases.sh
+source $HOME/code/dotfiles/shell/functions.sh
+
+which_output=$(which "$@")
+
+if [ -f $which_output ] ; then
+  echo "Executable $which_output :"
+  hr
+  bat $which_output --style=plain
+elif [[ $which_output =~ 'aliased to (.*)' ]] ; then
+  alias_content="$match[1]"
+  echo "Alias $@ :"
+  hr
+  echo $alias_content | bat --language=zsh --file-name="Alias: $@" --style=plain
+elif [[ $which_output == *'('* ]] ; then
+  echo "Function $@ :"
+  hr
+  echo $which_output | bat --language=zsh --file-name="Function: $@" --style=plain
+else
+  red "Could not find executable '$@'."
+  exit 1
+fi

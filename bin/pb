@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+
+# Cherry-[p]ick a whole [b]ranch.
+
+set -euo pipefail # exit on any error, don't allow undefined variables, pipes don't swallow errors
+
+branch="$1"
+
+for commit in $(non-merge-commit-shas $branch) ; do
+  git cherry-pick $commit
+done

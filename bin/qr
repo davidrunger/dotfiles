@@ -1,0 +1,24 @@
+#!/usr/bin/env bash
+
+# [q]uick [r]estore ... the name is a long story.
+# This resets the local database with seed data (and does a few other things).
+
+set -euo pipefail # exit on any error, don't allow undefined variables, pipes don't swallow errors
+set -x # print executed commands
+
+echo "Resetting database..."
+bin/rails db:reset
+
+echo "Syncing tables from seeds database"
+bin/pgsync_local_seeds
+
+echo "Tweaking database..."
+bin/rails runner ./personal/qr.rb
+
+echo "Creating database backups..."
+save-db-backups
+
+echo "Reindexing..."
+bin/rails searchkick:reindex:all
+
+echo "Done."

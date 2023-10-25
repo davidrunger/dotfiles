@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+
+# Run Prettier.
+
+set -euo pipefail # exit on any error, don't allow undefined variables, pipes don't swallow errors
+set -x # print executed commands
+
+files_for_prettier=$(changed-not-deleted-files | rg "\.(j|t)sx?$" || true)
+
+if [[ $files_for_prettier != "" ]]; then
+  prettier --check $files_for_prettier
+fi

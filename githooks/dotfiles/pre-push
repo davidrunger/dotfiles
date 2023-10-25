@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+
+gitleaks detect --log-opts="origin/$(main-branch)..." --verbose &> /dev/null

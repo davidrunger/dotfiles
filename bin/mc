@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+
+# Find [m]atching [c]ommit.
+#
+# Finds commit matching a given (part of) the commit message and copies the SHA to the clipboard.
+
+set -euo pipefail # exit on any error, don't allow undefined variables, pipes don't swallow errors
+
+gol | rgs "$1" | head -1 | awk '{ print $1 }' | cpy

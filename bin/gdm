@@ -1,0 +1,32 @@
+#!/usr/bin/env zsh
+
+# '[g]it [d]elete [m]erged branches'
+
+set -euo pipefail # exit on any error, don't allow undefined variables, pipes don't swallow errors
+
+# check out main branch
+git checkout --quiet $(main-branch)
+
+# delete merged branches
+git branch --merged | rg -v "(\*|$(main-branch)|safe)" | xargs -n 1 git branch -d || true
+# delete branches where there is no
+git for-each-ref --format='%(refname:short)' refs/heads |
+    while read -r branch; do
+      # Don't delete `safe` branch or the main branch. For performance, don't check branches that
+      # start with `z-` (a special prefix I use for branches that I want to keep but "in the
+      # background").
+      if [[ ! $branch =~ ^(safe|$(main-branch))$ && ! $branch =~ ^z- ]]
+      then
+        if check-no-diff "$branch"
+        then
+          git branch -D "$branch" --quiet
+          echo "Deleted $branch"
+        fi
+      fi
+    done
+
+
+# check back out the branch that we were originally on
+git checkout --quiet -
+# delete remote branches that we don't need anymore
+{ ( git remote prune origin && osascript -e 'display notification "Prune remote branches" with title "Job completed"' ) & disown } > /dev/null 2>&1

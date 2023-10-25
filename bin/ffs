@@ -1,0 +1,34 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+# [f]ocus [f]ailing [s]pecs
+#
+# Change failing test examples (from buildkite output) to `fit`/`fscenario`.
+
+require_relative "#{Dir.home}/code/dotfiles/utils/ruby/copy_utils.rb"
+
+javascript = <<~JS.rstrip
+  document.querySelectorAll('summary').forEach(el => { el.click(); });
+  errorDetailElements = [...document.querySelectorAll('details pre.term:nth-of-type(2)')];
+  copy(errorDetailElements.map(el => el.innerText).join('\\n'));
+JS
+
+javascript.cpp
+
+puts("Hit 'Enter' once the failures are in your clipboard")
+gets
+
+failures = `pbpaste`.rstrip.split("\n")
+
+failures.each do |failure|
+  split_regex = %r{rspec \./| # }
+  if !failure.match?(split_regex)
+    next
+  end
+
+  file, line = failure.split(split_regex)[1].split(':')
+  line = Integer(line)
+  lines = File.readlines(file)
+  lines[line - 1].sub!(/(\A +)(scenario|it)( ['"])/, '\1f\2\3')
+  File.write(file, lines.join(''))
+end

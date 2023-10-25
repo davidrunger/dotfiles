@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+
+# Run Ruby linter(s).
+
+set -euo pipefail # exit on any error, don't allow undefined variables, pipes don't swallow errors
+set -x # print executed commands
+
+files_for_rubocop=$(
+  changed-not-deleted-files | \
+    rg -v "\.(tsx?|json)$" | \
+    rg -v "^db/schema.rb$" || \
+    true
+)
+
+if [[ $files_for_rubocop != "" ]]; then
+  # Redirect STDERR to /dev/null to suppress warnings about invalid config.
+  bin/rubocop --color --only-recognized-file-types \
+    $files_for_rubocop 2> /dev/null | \
+    sed '/The following RuboCop extension libraries/,$d'
+fi

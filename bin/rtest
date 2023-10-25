@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+
+# Run changed RSpec tests.
+
+set -euo pipefail # exit on any error, don't allow undefined variables, pipes don't swallow errors
+set -x # print executed commands
+
+changed_ruby_tests=$(changed-not-deleted-files | rg "spec/.*_spec\.rb$" || true)
+
+if [[ $changed_ruby_tests != "" ]]; then
+  bin/rspec $changed_ruby_tests
+fi

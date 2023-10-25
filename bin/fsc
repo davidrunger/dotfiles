@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+
+# [f]ormat [s]ql pasting from [c]lipboard and copying back into the clipboard
+
+set -euo pipefail # exit on any error, don't allow undefined variables, pipes don't swallow errors
+
+pbpaste > personal/sql.sql
+format-sql
+cat personal/sql.sql | pbcopy
+echo "Copied to clipboard:"
+BAT_PAGER=cat bat personal/sql.sql --language=sql

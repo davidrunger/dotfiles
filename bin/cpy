@@ -1,0 +1,12 @@
+#!/usr/bin/env zsh
+
+# [c]o[py] text to clipboard
+#
+# Copies text from stdin to clipboard (and prints the copied text).
+
+set -euo pipefail # exit on any error, don't allow undefined variables, pipes don't swallow errors
+
+# copy text to clipboard
+TEXT=$(</dev/stdin)
+echo -n $TEXT | pbcopy
+echo "Text copied to clipboard:\n$TEXT"

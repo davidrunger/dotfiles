@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+# print a [h]orizontal [r]ule (dashes across the width of the terminal)
+
+set -euo pipefail # exit on any error, don't allow undefined variables, pipes don't swallow errors
+
+printf '%*s\n' "$(tput cols)" '' | tr ' ' '─'

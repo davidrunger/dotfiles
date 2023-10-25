@@ -1,0 +1,22 @@
+#!/usr/bin/env bash
+
+# print [g]it [hist]ory of a file
+#
+# Examples:
+#   [print most recent 3 commits (default)]
+#   ghist app/controllers/application_controller.rb
+#
+#   [print most recent 10 commits]
+#   ghist app/controllers/application_controller.rb 10
+
+set -euo pipefail # exit on any error, don't allow undefined variables, pipes don't swallow errors
+
+file=$1
+max_number_of_commits=${2:-3}
+
+for commit in $(git log --format=%H $file | head -n $max_number_of_commits); do
+  echo
+  hr
+  DELTA_PAGER=cat git show $commit -- $file
+  hr
+done

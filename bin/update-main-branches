@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+
+# Update main branches.
+
+set -euo pipefail # exit on any error, don't allow undefined variables, pipes don't swallow errors
+
+# https://superuser.com/a/627529/515015
+git checkout --quiet --detach HEAD && \
+  git fetch --no-tags --quiet origin $(main-branch):$(main-branch) $(main-branch):safe
+
+git checkout --quiet -

@@ -1,0 +1,28 @@
+# OS generated files #
+######################
+.DS_Store
+.Trashes
+
+# General stuff to ignore in repos
+.env
+.env.development.local
+/node_modules/
+
+# fcom
+.fcom.yml
+
+# Personal stuff and customization
+personal/
+config/initializers/z.rb
+spec/.rubocop.yml
+app/workers/load_runner.rb
+
+# binstubs missing from commonlit repo
+bin/i18n-tasks
+bin/rubocop
+
+# Execting TypeScript in node
+# we need this to be in `app/javascript/` (not `personal/`) to use the project TypeScript config
+app/javascript/typescript.ts
+# we need this config for `ts-node` to work correctly (https://stackoverflow.com/a/72507086/4009384)
+node.tsconfig.json

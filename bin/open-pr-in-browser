@@ -1,0 +1,30 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+# Opens a GitHub PR in the browser (based on input piped from stdout).
+# (Used in `hpr`, not standalone.)
+
+require 'memery'
+
+class OpenPrInBrowser
+  include Memery
+
+  def initialize(create_pr_command_output)
+    @create_pr_command_output = create_pr_command_output
+  end
+
+  def open_pr
+    system("open #{pr_link}") if pr_link
+  end
+
+  memoize \
+  def pr_link
+    @create_pr_command_output[%r{https://github.com/commonlit/.+/pull/\d+}]
+  end
+end
+
+# only execute automatically when receiving piped input; otherwise (e.g. in tests) don't
+receiving_piped_input = !STDIN.tty?
+if receiving_piped_input
+  OpenPrInBrowser.new(ARGF.read).open_pr
+end

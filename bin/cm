@@ -1,0 +1,44 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+# Creates a document for meeting notes.
+#
+# Example usage:
+#     cm "Geoff re: pulling database to local"
+#     #=> Creates a file ~/notes/meetings/2023-02-17-geoff-re:-pulling-database-to-local.md
+
+require 'fileutils'
+require 'memery'
+
+class MeetingNotesCreator
+  include Memery
+
+  def call
+    FileUtils.touch(file_path)
+    system("$EDITOR #{file_path}")
+  end
+
+  private
+
+  memoize \
+  def file_path
+    "#{Dir.home}/notes/meetings/#{filename}"
+  end
+
+  memoize \
+  def filename
+    "#{iso_date}-#{title_from_cli.downcase.gsub(/\s|\//, '-')}.md"
+  end
+
+  memoize \
+  def iso_date
+    Time.now.strftime('%Y-%m-%d')
+  end
+
+  memoize \
+  def title_from_cli
+    ARGV.first
+  end
+end
+
+MeetingNotesCreator.new.call

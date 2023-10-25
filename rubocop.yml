@@ -1,0 +1,9 @@
+inherit_gem:
+  runger_style:
+    - rulesets/default.yml
+    - rulesets/performance.yml
+    - rulesets/rspec.yml
+
+Naming/FileName:
+  Exclude:
+    - spec/bin/open-pr-in-browser_spec.rb

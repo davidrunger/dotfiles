@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+
+# List the SHAs of non-merge commits on a branch (since diverging from the main branch).
+#
+# [NOTE] These are ordered from oldest commit (printed first) to newest commit (printed last).
+
+set -euo pipefail # exit on any error, don't allow undefined variables, pipes don't swallow errors
+
+branch="$1"
+
+git log $(main-branch)..$branch --format="%H|%s" | tac | \
+  while read line ; do
+    if ! [[ "$line" =~ 'Merge remote-tracking branch' ]] ; then
+      sha="$(echo $line | cut -d "|" -f 1)"
+      echo "$sha"
+    fi
+  done

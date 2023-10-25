@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+
+# [g]it [com]mit [a]mend
+# Amend a commit message.
+
+set -eo pipefail # exit on any error, pipes don't swallow errors
+
+if use-strict-git-rules && ! ahead-of-remote-branch ; then
+  echo "Refusing to amend commit because you are not ahead of origin/$(branch)!"
+elif ahead-of-main ; then
+  if [ -z "$1" ] ; then
+    git commit --amend -v --allow-empty
+  else
+    git commit --amend -v --allow-empty --message "$1"
+  fi
+else
+  echo "Refusing to amend commit because you are not ahead of $(main-branch)!"
+fi

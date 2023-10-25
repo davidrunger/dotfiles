@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+
+# Exits with 0 (true) if the current branch is ahead of its corresponding remote branch.
+
+set -euo pipefail # exit on any error, don't allow undefined variables, pipes don't swallow errors
+
+# If the branch doesn't even exist on the remote, then we are essentially "ahead" of it.
+if ! branch-exists-on-remote ; then
+  exit 0
+fi
+
+[[ $(git rev-list --right-only --count origin/$(branch)...HEAD) -gt 0 ]]

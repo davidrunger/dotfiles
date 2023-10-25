@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+
+# [d]ata[b]ase [rest]ore
+#
+# Copy `commonlit_development_bak` backup database (created via `qr`) to `commonlit_development`.
+
+set -euo pipefail # exit on any error, don't allow undefined variables, pipes don't swallow errors
+set -x # print executed commands
+
+dropdb --if-exists commonlit_development && \
+  createdb -T commonlit_development_bak commonlit_development --no-password

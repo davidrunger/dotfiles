@@ -1,0 +1,70 @@
+#!/usr/bin/env bash
+
+# make sure that we're on a branch that's okay to push and that there isn't any debugging code etc
+
+verify-on-ok-branch
+if [ $? -ne 0 ]
+then
+  exit 1
+fi
+
+# don't push if there's still debugging code
+rg -g '!public/' -g '*.rake' -g '*.rb' -g '*.js' -g '*.coffee' -g '*.haml' -g '*.html' -g '*.erb' \
+  '^((\s*|RSpec\.)(fit|fdescribe|fcontext|fspecify|open_page))|(^| )(binding\.pry|byebug)'
+if [ $? -eq 0 ]
+then
+  echo
+  echo "Easy there, cowboy! Cleanup yo code, first."
+  exit 1
+fi
+
+# don't push if there are still `!!!` markers in the code
+git diff --diff-filter=dr origin/$(main-branch)..HEAD  | grep '^\+' | rg --quiet --fixed-strings '!!!'
+if [ $? -eq 0 ]
+then
+  echo "Easy there, cowboy! You still have some markers in your code."
+  git diff --diff-filter=dr --name-status $(main-branch) | cut -f2 | xargs rg --with-filename --fixed-strings ' !!!'
+  exit 1
+fi
+
+# don't push if there are still `!!!` markers in the code (renamed files)
+git diff --diff-filter=R origin/$(main-branch)..HEAD  | grep '^\+' | rg --quiet --fixed-strings '!!!'
+if [ $? -eq 0 ]
+then
+  echo "Easy there, cowboy! You still have some markers in your code in renamed files."
+  git diff --diff-filter=R --name-status $(main-branch) | cut -f3 | xargs rg --with-filename --fixed-strings ' !!!'
+  exit 1
+fi
+
+# don't push if there are still `!!!` markers in .env
+if [ -f .env ]
+then
+  rg --quiet --fixed-strings '!!!' .env
+  if [ $? -eq 0 ]
+  then
+    rg --with-filename --fixed-strings '!!!' .env
+    echo "Easy there, cowboy! You still have some markers in your .env file."
+    exit 1
+  fi
+fi
+
+# don't push if there are still `!!!` markers in .env.development.local
+if [ -f .env.development.local ]
+then
+  rg --quiet --fixed-strings '!!!' .env.development.local
+  if [ $? -eq 0 ]
+  then
+    rg --with-filename --fixed-strings '!!!' .env.development.local
+    echo "Easy there, cowboy! You still have some markers in your .env.development.local file."
+    exit 1
+  fi
+fi
+
+# Don't push if there are any TEMP or Z commits.
+if git log --oneline $(main-branch).. | rg --quiet 'TEMP|Z' ; then
+  echo "Woah! You still have a temp commit."
+  exit 1
+fi
+
+# if all of the above checks passed, we're good to push! :)
+exit 0

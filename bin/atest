@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+
+# Run all changed tests.
+
+set -euo pipefail # exit on any error, don't allow undefined variables, pipes don't swallow errors
+set -x # print executed commands
+
+jtest
+rtest

@@ -1,0 +1,23 @@
+#!/usr/bin/env bash
+
+# Run all linters.
+
+set -euo pipefail # exit on any error, don't allow undefined variables, pipes don't swallow errors
+set -x # print executed commands
+
+# Run Prettier.
+plint
+
+# Check TypeScript types.
+tlint
+
+# Check translations.
+trlint
+
+# Run ESLint.
+# Don't fail the push if there are errors/warnings fails; print for informational purposes only.
+elint || true
+
+# Run Ruby linter(s).
+# Don't fail the push if there are errors/warnings fails; print for informational purposes only.
+rlint || true

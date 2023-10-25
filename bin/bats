@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+
+# [bat] [s]imple
+#
+# `bat` a file, but without line numbers (for easier copying to elsewhere)
+
+set -euo pipefail # exit on any error, don't allow undefined variables, pipes don't swallow errors
+
+bat --style=grid,header "$@"

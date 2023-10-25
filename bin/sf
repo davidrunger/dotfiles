@@ -1,0 +1,118 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+# Finds test/[s]pec [f]iles often changed in the same commit as an input file.
+#
+# Prints the total number of lines changed in each file that was
+# changed in any of the same commits as the input file.
+#
+# Example:
+#   $ sf app/javascript/apps/ActivityBuilder/ActivityBuilder.tsx
+#
+# Written laregly by ChatGPT.
+
+require 'active_support/all'
+require 'amazing_print'
+require 'slop'
+
+class SpecFileFinder
+  def initialize(file_paths, options)
+    @file_paths = file_paths
+    @options = options
+  end
+
+  def print_spec_files
+    frequently_changed_spec_files.first(@options[:top]).each do |file_changed, lines_changed|
+      if File.exist?(file_changed)
+        puts("#{lines_changed} #{file_changed}")
+      else
+        puts("#{lines_changed} #{AmazingPrint::Colors.red(file_changed)}")
+      end
+    end
+  end
+
+  private
+
+  # rubocop:disable Metrics/CyclomaticComplexity
+  def frequently_changed_spec_files
+    ignore_revs = ignore_revs_from_file('.git-blame-ignore-revs')
+
+    line_changes = Hash.new(0)
+
+    commits = []
+    @file_paths.each do |file_path|
+      commits.concat(`git log --follow --format=%H -- #{file_path}`.strip.split("\n"))
+    end
+    commits.uniq!
+
+    commits.each do |commit|
+      next if ignore_revs.include?(commit)
+
+      files_changed = `git diff-tree --no-commit-id --name-only -r #{commit}`.strip.split("\n")
+
+      files_changed.each do |file_changed|
+        next if @file_paths.include?(file_changed)
+        next if @options.exclude_deleted? && !File.exist?(file_changed)
+
+        if matching_test_file?(file_changed)
+          line_changes[file_changed] += line_change_count(commit, file_changed)
+        end
+      end
+    end
+
+    line_changes.sort_by { |_file, lines_changed| -lines_changed }
+  end
+  # rubocop:enable Metrics/CyclomaticComplexity
+
+  def matching_test_file?(file)
+    (
+      file.match?(%r{\.test\.tsx?\z}) ||
+        file.match?(%r{\Aspec/(?!factories/)})
+    ) && (
+      (filter = @options[:filter]).blank? ||
+        file.include?(filter)
+    )
+  end
+
+  def ignore_revs_from_file(ignore_revs_file)
+    ignore_revs = []
+
+    File.open(ignore_revs_file, 'r') do |file|
+      file.each_line do |line|
+        line.strip!
+        ignore_revs << line unless line.empty? || line.start_with?('#')
+      end
+    end
+
+    ignore_revs
+  end
+
+  def line_change_count(commit, file_path)
+    output = `git show --shortstat #{commit} -- #{file_path}`.strip
+    line_changes = output.scan(/(\d+) (?:insertions?|deletions?)/).flatten.map { Integer(_1) }
+    line_changes.sum
+  end
+end
+
+module Sf
+  def self.print_options(options)
+    puts(options.to_s.dup.sub(%r{#{Dir.home}/code/dotfiles/bin/}, ''))
+  end
+end
+
+opts =
+  Slop.parse do |o|
+    o.bool('-D', '--exclude-deleted', 'exclude deleted files', default: false)
+    o.integer('-t', '--top', 'number of files to show', default: 40)
+    o.string('-f', '--filter', 'a string that spec paths must include')
+    o.on('-h', '--help', 'view this help info') do
+      Sf.print_options(o)
+      exit
+    end
+  end
+
+if opts.arguments.empty?
+  Sf.print_options(opts.options)
+else
+  SpecFileFinder.new(opts.arguments, opts).print_spec_files
+end

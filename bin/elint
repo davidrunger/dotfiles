@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+
+# Run ESLint.
+
+set -euo pipefail # exit on any error, don't allow undefined variables, pipes don't swallow errors
+set -x # print executed commands
+
+files_for_eslint=$(changed-not-deleted-files | rg "app/javascript/.*\.tsx?$" || true)
+
+if [[ $files_for_eslint != "" ]]; then
+  eslint $files_for_eslint
+fi

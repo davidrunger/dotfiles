@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+
+# Push to git without running any checks.
+
+if use-strict-git-rules ; then
+  git push
+else
+  git push --force-with-lease
+fi

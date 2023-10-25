@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+
+# Consolidate all commits on a branch into a [sing]le commit.
+
+set -euo pipefail # exit on any error, don't allow undefined variables, pipes don't swallow errors
+
+git reset "origin/$(main-branch)"
+commit_message=${1:-"Single commit for $(branch)"}
+gacm "$commit_message"

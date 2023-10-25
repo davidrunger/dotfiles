@@ -1,0 +1,138 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+# Install Ruby and JavaScript packages in the background, and run other commands, as needed.
+
+load("#{Dir.home}/code/dotfiles/utils/ruby/tapp.rb")
+
+require 'active_support/all'
+require 'amazing_print'
+require 'memo_wise'
+# require 'pry-byebug'
+require 'redis'
+
+class InstallPackagesInBackground
+  prepend MemoWise
+
+  REDIS_HASH_KEY = 'runger_dependencies'
+
+  def initialize
+    @hashes_to_register = []
+  end
+
+  def run
+    update_ruby_dependencies_in_background
+    update_javascript_dependencies_in_background
+    register_hashes
+  end
+
+  private
+
+  def update_ruby_dependencies_in_background
+    execute_command_in_background(ruby_dependencies_update_command, 'Ruby')
+  end
+
+  def update_javascript_dependencies_in_background
+    execute_command_in_background(javascript_dependencies_update_command, 'JavaScript')
+  end
+
+  def register_hashes
+    @hashes_to_register.each do |hash_to_register|
+      register_hash(hash_to_register)
+    end
+  end
+
+  memo_wise \
+  def ruby_dependencies_update_command
+    ruby_command_parts = []
+
+    if !seen_hash?('Gemfile.lock')
+      ruby_command_parts << 'bundle install'
+    end
+
+    if !seen_hash?('db/schema.rb')
+      ruby_command_parts << 'dbm'
+    end
+
+    ruby_command_parts.join(' && ')
+  end
+
+  memo_wise \
+  def javascript_dependencies_update_command
+    javascript_command_parts = []
+
+    if !seen_hash?('yarn.lock')
+      javascript_command_parts << 'yarn install --check-files'
+    end
+
+    if !seen_hash?('packages/component-library/')
+      javascript_command_parts << 'cd ./packages/component-library && yarn build'
+    end
+
+    javascript_command_parts.join(' && ')
+  end
+
+  memo_wise \
+  def seen_hash?(file_or_directory)
+    hash_string = hash_string(file_or_directory)
+    is_seen = redis.hget(REDIS_HASH_KEY, hash_string).present?
+
+    if !is_seen
+      @hashes_to_register << hash_string
+    end
+
+    is_seen
+  end
+
+  def register_hash(hash_string)
+    redis.hset(REDIS_HASH_KEY, hash_string, '1')
+  end
+
+  def hash_string(file_or_directory)
+    file_paths = `git ls-files #{file_or_directory}`.split("\n")
+
+    Digest::SHA256.hexdigest(file_paths.sort.map { Digest::SHA256.file(_1).to_s }.join(''))
+  end
+
+  memo_wise \
+  def redis
+    Redis.new(db: 2)
+  end
+
+  def execute_command_in_background(command, command_name)
+    if command.present?
+      executable_path = executable_path_for_command(command, command_name.downcase)
+      Process.detach(spawn(executable_path))
+      puts(AmazingPrint::Colors.yellow("Running `#{command}` in background."))
+    else
+      puts(AmazingPrint::Colors.green("No #{command_name} updates required."))
+    end
+  end
+
+  def executable_path_for_command(command, filename)
+    directory = './personal/installer_executables/'
+    FileUtils.mkdir_p(directory)
+    executable_path = File.join(directory, "#{filename}.sh")
+
+    zsh_command = <<~ZSH.squish
+      {
+        (
+          #{command} &&
+            osascript -e 'display notification "#{command}" with title "Job completed"'
+        ) & disown
+      } > /dev/null 2>&1
+    ZSH
+
+    File.write(executable_path, <<~SCRIPT)
+      #!/usr/bin/env zsh
+
+      #{zsh_command}
+    SCRIPT
+
+    FileUtils.chmod('+x', executable_path)
+
+    executable_path
+  end
+end
+
+InstallPackagesInBackground.new.run

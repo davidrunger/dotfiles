@@ -1,0 +1,62 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+# This program is used to remove extra spacing from a list of git branches from which z- prefixed
+# branches have been removed.
+
+# load("#{Dir.home}/code/dotfiles/utils/ruby/debug.rb")
+load("#{Dir.home}/code/dotfiles/utils/ruby/cli_program.rb")
+
+sloptions =
+  Slop.parse do |o|
+    o.integer('-s', '--desired-num-spaces', 'number of spaces to squish down to', default: 3)
+    o.on('-h', '--help', 'view this help info') do
+      puts(o.to_s.dup.sub(%r{#{Dir.home}/code/dotfiles/bin/}, ''))
+      exit
+    end
+  end
+
+class GitBranchListWhitespaceReducer < CliProgram
+  def call
+    puts(squished_content)
+  end
+
+  private
+
+  memo_wise \
+  def squished_content
+    if shortest_space_string <= desired_num_spaces
+      @stdin_content
+    else
+      @stdin_content.
+        split("\n").
+        map do |line|
+          spaces_to_remove = shortest_space_string - desired_num_spaces
+          line.sub(/ {#{spaces_to_remove}}/, "")
+        end.
+        join("\n")
+    end
+  end
+
+  memo_wise \
+  def shortest_space_string
+    lengths_of_spaces.min
+  end
+
+  memo_wise \
+  def longest_space_string
+    lengths_of_spaces.max
+  end
+
+  def num_spaces_in_line(line)
+    line.match(/[ *]{2,}\S+(?<spaces> +)\S+/)[:spaces].size
+  end
+
+  def lengths_of_spaces
+    @stdin_content.
+      split("\n").
+      map { num_spaces_in_line(_1) }
+  end
+end
+
+GitBranchListWhitespaceReducer.new(sloptions:).call

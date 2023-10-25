@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+
+# Prints the current git SHA (all 40 characters).
+
+set -euo pipefail # exit on any error, don't allow undefined variables, pipes don't swallow errors
+
+# https://stackoverflow.com/a/949391
+git rev-parse --verify HEAD

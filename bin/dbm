@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+
+# run Rails database migrations
+
+bin/rails db:migrate db:test:prepare

@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+
+# [n]o debugging code of [a]ll varieties
+#
+# Delete all debugging code.
+
+set -euo pipefail # exit on any error, don't allow undefined variables, pipes don't swallow errors
+
+# remove `binding.pry`s
+np
+
+# remove `tapp`s
+nt
+
+# remove spec focuses
+ns

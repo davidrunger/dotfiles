@@ -1,0 +1,246 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+# `gal` originally mean "guard all", but now it's just what I use to run guard.
+#
+# By default, we use the `spec` (RSpec) runner, but several other runners are available via the
+# `-g`/`--guardfile` option.
+
+# Examples:
+#   gal spec/helpers/announcements_helper_spec.rb
+#   gal -g rails
+#   gal -g ruby --debug-guard --debug-listen
+#   gal spec/models/user_spec.rb --backtrace --force-coverage-detail
+
+require 'active_support/core_ext/object/blank'
+require 'amazing_print'
+require 'fileutils'
+require 'memery'
+require 'slop'
+
+module Gal
+  GUARDFILE_TYPES = %i[
+    bash
+    jest
+    node
+    rails
+    ruby
+    sidekiq
+    spec
+    sql
+  ].freeze
+
+  def self.print_options(options)
+    puts(
+      options.to_s.dup.
+        sub(%r{#{Dir.home}/code/dotfiles/bin/}, '').
+        sub(%r{gal \[options\]}, 'gal [spec file(s) to run] [options]'),
+    )
+  end
+end
+
+opts =
+  Slop.parse do |o|
+    o.symbol(
+      '-g',
+      '--guardfile',
+      "guardfile flag [#{Gal::GUARDFILE_TYPES.sort.join('|')}]".sub(/\bspec\b/, 'spec(default)'),
+    )
+    o.string('-t', '--target', 'jest target pattern')
+    o.string('--coverage-target', 'specify SIMPLECOV_TARGET_FILE')
+    o.bool('-b', '--backtrace', 'print backtrace when errors occur or tests fail')
+    o.bool('-s', '--skip-spring', 'do not use spring')
+    o.bool('-c', '--force-coverage-detail', 'print code coverage info even if 100% covered')
+    o.bool('-f', '--force-guardfile-template-copy', 'force copying guardfile to personal directory')
+    o.bool('-d', '--debug-guard', 'enable guard debug logging')
+    o.bool('-l', '--debug-listen', 'enable listen debug logging')
+    o.bool('-v', '--headful-chrome', 'run tests with headful chrome browser')
+    o.on('-h', '--help', 'view this help info') do
+      Gal.print_options(o)
+      exit
+    end
+  end
+
+class Runner
+  include Memery
+
+  PROJECT_LOCAL_SCRIPT_INFOS = {
+    bash: {
+      path: 'personal/bash.sh',
+      content: <<~RUBY,
+        #!/usr/bin/env bash
+      RUBY
+    },
+    node: {
+      path: 'app/javascript/typescript.ts',
+    },
+    rails: {
+      path: 'personal/runner.rb',
+      content: <<~RUBY,
+        # frozen_string_literal: true
+      RUBY
+    },
+    ruby: {
+      path: 'personal/ruby.rb',
+      content: <<~RUBY,
+        # frozen_string_literal: true
+      RUBY
+    },
+    sidekiq: {
+      path: 'personal/runner.rb',
+      content: <<~RUBY,
+        # frozen_string_literal: true
+      RUBY
+    },
+    sql: {
+      path: 'personal/sql.sql',
+    },
+  }.freeze
+
+  def initialize(opts)
+    @opts = opts
+  end
+
+  def run
+    ensure_local_script
+    open_local_script
+    colored_command = AmazingPrint::Colors.blue(
+      "#{env_vars.map { |k, v| %(#{k}="#{v}") }.join(' ')} #{command}",
+    )
+    puts("Running #{colored_command}")
+    system(env_vars, command)
+  end
+
+  private
+
+  def ensure_local_script
+    return if absolute_project_local_script_info.nil?
+
+    path, content = absolute_project_local_script_info.values_at(:path, :content)
+    if !File.exist?(path)
+      FileUtils.mkdir_p(working_directory_personal_directory)
+      File.write(path, content || '')
+    end
+  end
+
+  def open_local_script
+    system("$EDITOR #{personal_executable_path}") if personal_executable_path
+  end
+
+  memoize \
+  def command
+    command = +"guard -G #{guardfile_path} --no-bundler-warning"
+
+    if @opts.debug_guard?
+      command << ' --debug'
+    end
+
+    command
+  end
+
+  memoize \
+  def env_vars
+    {
+      'RUBYGEMS_GEMDEPS' => '', # this suppresses a warning from guard
+      'RSPEC_BACKTRACE' => @opts.backtrace? ? '1' : nil,
+      'HEADFUL_CHROME' => @opts.headful_chrome? ? '1' : nil,
+      'LISTEN_GEM_DEBUGGING' => @opts.debug_listen? ? 'debug' : nil,
+      'TARGET_SPEC_FILES' => @opts.arguments.empty? ? nil : @opts.arguments.join(' '),
+      'DISABLE_SPRING' => ENV.fetch('DISABLE_SPRING', @opts.skip_spring? ? '1' : nil),
+      'SIMPLECOV_FORCE_DETAILS' => @opts.force_coverage_detail? ? '1' : nil,
+      'GUARDFILE_TYPE' => guardfile_type.to_s,
+      'SIMPLECOV_TARGET_FILE' => @opts[:coverage_target].presence,
+      'JEST_TARGET_PATTERN' => @opts[:target].presence,
+    }.compact
+  end
+
+  memoize \
+  def guardfile_path
+    if !File.exist?(working_directory_guardfile_path) || @opts.force_guardfile_template_copy?
+      copy_dotfile_to_working_directory
+    end
+    working_directory_guardfile_path
+  end
+
+  memoize \
+  def dotfiles_absolute_guardfile_path
+    "#{Dir.home}/code/dotfiles/guardfiles/#{guardfile_filename}.rb"
+  end
+
+  memoize \
+  def guardfile_filename
+    if Gal::GUARDFILE_TYPES.include?(guardfile_type)
+      "run_#{guardfile_type}"
+    else
+      raise("Unexpected guardfile flag '#{guardfile_type}'.")
+    end
+  end
+
+  memoize \
+  def guardfile_type
+    guardfile_option = @opts[:guardfile]
+    if guardfile_option.present?
+      guardfile_option
+    elsif (args = @opts.args).present?
+      if args.all? { _1.include?('spec/') && _1.end_with?('.rb') }
+        :spec
+      elsif args.all? { _1.match?(/\.test\.tsx?\z/) }
+        :jest
+      else
+        raise('Could not determine guardfile type from argument(s)!')
+      end
+    else
+      raise('Neither `--guardfile` flag nor argument(s) were given!')
+    end
+  end
+
+  def copy_dotfile_to_working_directory
+    FileUtils.mkdir_p(working_directory_guardfile_directory)
+    FileUtils.cp(dotfiles_absolute_guardfile_path, working_directory_guardfile_directory)
+  end
+
+  def working_directory_guardfile_path
+    "#{working_directory_guardfile_directory}/#{guardfile_filename}.rb"
+  end
+
+  def working_directory_guardfile_directory
+    "#{working_directory_personal_directory}/guardfiles"
+  end
+
+  def working_directory_personal_directory
+    "#{working_directory}/personal"
+  end
+
+  memoize \
+  def absolute_project_local_script_info
+    return nil if project_local_script_info.nil?
+
+    {
+      path: personal_executable_path,
+      content: project_local_script_info[:content],
+    }
+  end
+
+  memoize \
+  def personal_executable_path
+    return nil if project_local_script_info.nil?
+
+    "#{working_directory}/#{project_local_script_info[:path]}"
+  end
+
+  memoize \
+  def project_local_script_info
+    PROJECT_LOCAL_SCRIPT_INFOS[guardfile_type]
+  end
+
+  memoize \
+  def working_directory
+    ENV.fetch('PWD')
+  end
+end
+
+if opts.arguments.empty? && opts.used_options.empty?
+  Gal.print_options(opts.options)
+else
+  Runner.new(opts).run
+end

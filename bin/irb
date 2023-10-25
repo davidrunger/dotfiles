@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+# Run IRB with desired configuration options.
+
+set -euo pipefail # exit on any error, don't allow undefined variables, pipes don't swallow errors
+
+$HOME/.rbenv/shims/irb -r /Users/david/.irbrc.rb

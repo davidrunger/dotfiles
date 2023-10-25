@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+
+# [g]it [o]ne [l]ine commit summaries
+#
+# Prints git commits, one line per commit.
+
+set -euo pipefail # exit on any error, don't allow undefined variables, pipes don't swallow errors
+
+git log --oneline "$@"

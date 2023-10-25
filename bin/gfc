@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+# [g]it [f]iles changed in a [c]ommit
+
+set -euo pipefail # exit on any error, don't allow undefined variables, pipes don't swallow errors
+
+git diff --name-only --diff-filter=d HEAD^..HEAD

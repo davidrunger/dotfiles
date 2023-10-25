@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+
+# git fetch and checkout specified branch
+
+set -euo pipefail # exit on any error, don't allow undefined variables, pipes don't swallow errors
+
+git fetch
+original_commit="$(current-sha)"
+git checkout $@
+install-packages-in-background
+gsup

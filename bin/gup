@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+
+# git update current commit with all uncommitted changes (if ahead of origin/$(main-branch))
+
+set -euo pipefail # exit on any error, don't allow undefined variables, pipes don't swallow errors
+
+if [[ $(git rev-list --right-only --count origin/$(main-branch)...HEAD) -eq 0 ]] ; then
+  echo "Not updating, because you are not ahead of origin/$(main-branch)."
+  exit 1
+fi
+
+if use-strict-git-rules && ! ahead-of-remote-branch ; then
+  echo "Not updating, because use-strict-git-rules is true" \
+    "and you are not ahead of origin/$(branch)."
+  exit 1
+fi
+
+git add -A . && git commit --amend --no-edit

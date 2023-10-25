@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+# Returns 0 (true) if we should follow stricter git policies/practices.
+
+set -euo pipefail # exit on any error, don't allow undefined variables, pipes don't swallow errors
+
+[[ $PWD == "$HOME/code/commonlit" ]] && branch-exists-on-remote

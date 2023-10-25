@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+# Exits with 0 (true) if the current branch exists on the git remote.
+
+set -euo pipefail # exit on any error, don't allow undefined variables, pipes don't swallow errors
+
+git show origin/$(branch) >/dev/null 2>&1

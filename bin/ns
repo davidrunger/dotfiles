@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+
+# [n]o [s]pec file focuses
+#
+# Delete fit, fdescribe, etc from spec files.
+
+set -euo pipefail # exit on any error, don't allow undefined variables, pipes don't swallow errors
+
+system_spec_focus_files=$(rg --files-with-matches '^ +(fit|fscenario) ' spec/system/ || true)
+if [[ $system_spec_focus_files != "" ]]; then
+  sed -E -i '' -e 's/ (fit|fscenario) / scenario /g' $system_spec_focus_files
+fi
+
+spec_focus_files=$(rg --files-with-matches '^( +|RSpec\.)(fit|fdescribe|fcontext) ' spec/ || true)
+if [[ $spec_focus_files != "" ]]; then
+  sed -i '' -e 's/ fit / it /g' $spec_focus_files
+  sed -i '' -e 's/ fdescribe / describe /g' $spec_focus_files
+  sed -i '' -e 's/ fcontext / context /g' $spec_focus_files
+  sed -i '' -e 's/RSpec.fdescribe/RSpec.describe/g' $spec_focus_files
+fi

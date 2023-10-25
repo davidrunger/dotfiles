@@ -1,0 +1,124 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+# [document this command]
+
+require 'active_support/all'
+# require 'pry-byebug'
+# $debug = true
+require 'memo_wise'
+require 'slop'
+
+sloptions =
+  Slop.parse do |o|
+    o.string('-t', '--time-zone', '[utc|et|ct|pt]', default: 'utc')
+    o.integer('-b', '--back', '[integer number of hours to offset back for start]')
+    o.integer('-f', '--forward', '[integer number of times to go forward]')
+    o.on('--help') do
+      puts(o)
+      exit
+    end
+  end
+
+# rubocop:disable Naming/AccessorMethodName
+class InHours
+  prepend MemoWise
+
+  def initialize(sloptions)
+    @sloptions = sloptions
+    @original_system_time_zone = system_time_zone
+  end
+
+  def run
+    set_execution_time_zone
+    set_using_network_time(false)
+    run_command_at_each_time
+  ensure
+    set_using_network_time(true)
+    restore_time_zone
+  end
+
+  private
+
+  def set_execution_time_zone
+    quiet_system("sudo systemsetup -settimezone #{execution_time_zone}")
+  end
+
+  def run_command_at_each_time
+    times.each do |time|
+      set_system_time(time)
+      system('date')
+      system(command)
+    end
+  end
+
+  memo_wise \
+  def command
+    @sloptions.arguments.join(' ')
+  end
+
+  def execution_time_zone
+    case @sloptions[:time_zone].downcase
+    in 'utc' then 'GMT'
+    in 'et' then 'America/New_York'
+    in 'ct' then 'America/Chicago'
+    in 'pt' then 'America/Los_Angeles'
+    end
+  end
+
+  def times
+    if (forward_count = @sloptions[:forward])
+      forward_n_times(forward_count)
+    else
+      times_of_day
+    end
+  end
+
+  def forward_n_times(forward_count)
+    time = Time.iso8601(`date +"%Y-%m-%dT%H:%M:%S%z"`.rstrip).change(min: 30)
+    time -= 1.hour if time.future?
+
+    if (back_iterations = @sloptions[:back])
+      back_iterations.times do
+        time -= 1.hour
+      end
+    end
+
+    Array.new(forward_count) do
+      time += 1.hour
+    end
+  end
+
+  def times_of_day
+    (0..23).map do |hour|
+      Time.new.change(hour:, min: 30)
+    end
+  end
+
+  def set_system_time(time)
+    quiet_system("sudo date #{time.strftime('%m%d%H%M%y')}")
+  end
+
+  def system_time_zone
+    `sudo systemsetup -gettimezone | cut -d " " -f 3`.rstrip
+  rescue
+    'America/Chicago'
+  end
+
+  def set_using_network_time(using_network_time)
+    argument = using_network_time ? 'on' : 'off'
+    quiet_system("sudo systemsetup -setusingnetworktime #{argument}")
+  end
+
+  def restore_time_zone
+    quiet_system("sudo systemsetup -settimezone #{@original_system_time_zone}")
+  end
+
+  def quiet_system(command)
+    options = $debug ? {} : { out: File::NULL, err: File::NULL }
+    system(command, options)
+  end
+end
+# rubocop:enable Naming/AccessorMethodName
+
+InHours.new(sloptions).run

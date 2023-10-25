@@ -1,0 +1,11 @@
+#!/usr/bin/env ruby
+
+# Format SQL.
+
+require_relative "#{Dir.home}/code/dotfiles/utils/ruby/sql_utils.rb"
+
+class Runner
+  include SqlUtils
+end
+
+Runner.new.format_sql_if_necessary

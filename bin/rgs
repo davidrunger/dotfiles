@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+
+# [r]ip[g]rep [s]imple search
+#
+# Search for a string using ripgrep.
+
+set -euo pipefail # exit on any error, don't allow undefined variables, pipes don't swallow errors
+
+rg -i -F --max-columns 1000 "$1"

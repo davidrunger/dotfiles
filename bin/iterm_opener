@@ -1,0 +1,56 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+# When cmd-clicking something in iTerm, this opens the file/link/etc with an appropriate program
+# (because I have told iTerm to do that within the iTerm settings/preferences).
+
+# Printed output gets suppressed, but we can write debugging messages to a file.
+# rubocop:disable Style/TopLevelMethodDefinition
+def debug(message)
+  File.write(
+    "#{Dir.home}/Downloads/" \
+      "iterm_opener-debug-#{Time.now.strftime('%Y-%m-%dT%H:%M:%S.%L%z')}.txt",
+    message,
+  )
+end
+# rubocop:enable Style/TopLevelMethodDefinition
+
+# Uncomment this to inspect the arguments that were passed by iTerm
+# debug(<<~LOG)
+#   #{ARGV[0].inspect}
+#   #{ARGV[1].inspect}
+# LOG
+
+dir = ARGV[0] # Example: "/Users/david/Downloads"
+file_and_line = ARGV[1] # Example: "file.txt:2"
+
+GIT_SHA_REGEX = %r{\A([a-f0-9]{7,40})\z}
+cleaned = file_and_line.dup
+cleaned.sub!(/\)$/, '')
+cleaned.sub!(%r{\A(a/|b/)}, '')
+file = cleaned.split(':').first
+absolute_path = file.start_with?("#{dir}/") ? file : "#{dir}/#{file}"
+
+if (
+  file_and_line.match?(/\A:::\d{1,4}\z/) &&
+    File.exist?((file_location = "#{dir}/tmp/simple_cov/formatter/terminal/target.txt"))
+)
+  target = File.read(file_location).rstrip
+  # debug('open with VSCode')
+  system("/usr/local/bin/code -g #{dir}/#{target}:#{file_and_line.sub(':::', '')}")
+elsif file_and_line.match?(GIT_SHA_REGEX)
+  # debug('open git sha with default browser')
+  system(%(open "https://github.com/commonlit/commonlit/commit/#{file_and_line}"))
+elsif file_and_line.start_with?('http')
+  # debug('open HTTP url with default browser')
+  system("/usr/bin/open #{file_and_line}")
+elsif system(%(file #{absolute_path} | egrep -q "json|text"))
+  # debug('open file with VSCode')
+  system("/usr/local/bin/code -g #{dir}/#{cleaned.delete_prefix(dir)}")
+elsif system(%(file #{file} | egrep -q "json|text"))
+  # debug('open file with VSCode')
+  system("/usr/local/bin/code -g #{cleaned}")
+else
+  # debug('open with default application chosen by MacOS')
+  system("/usr/bin/open #{absolute_path}")
+end

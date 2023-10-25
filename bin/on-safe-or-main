@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+
+# Exits with 0 if on `safe` or primary branch.
+# Exits with 1 otherwise.
+
+set -euo pipefail # exit on any error, don't allow undefined variables, pipes don't swallow errors
+
+[[ $(branch) =~ ^(safe|$(main-branch))$ ]]

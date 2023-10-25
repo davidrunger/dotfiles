@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+
+# [t]ouch a file and open it in editor (which used to be [s]ublime)
+
+set -euo pipefail # exit on any error, don't allow undefined variables, pipes don't swallow errors
+
+file="$1"
+directory="$(dirname "$file")"
+
+mkdir -p "$directory"
+touch "$file"
+$EDITOR "$file"

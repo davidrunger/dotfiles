@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+
+# Returns the name of the primary branch in a repo.
+
+set -euo pipefail # exit on any error, don't allow undefined variables, pipes don't swallow errors
+
+# trim whitespace with `xargs` https://stackoverflow.com/a/12973694/4009384
+git branch | rg ' (main|master|trunk)$' --only-matching | xargs || echo 'no-main-branch-found'

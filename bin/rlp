@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+
+# for [r]uby and other processes, [l]ist the [p]rocesses
+
+set -euo pipefail # exit on any error, don't allow undefined variables, pipes don't swallow errors
+
+source $HOME/code/dotfiles/bin/rp
+
+processes_of_interest="$processes_to_term|$processes_to_quit|$processes_to_int"
+
+# print the processes of interest
+ps -e | egrep $processes_of_interest | egrep -v $processes_to_ignore

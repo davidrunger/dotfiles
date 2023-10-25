@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+
+# Make sure that we are on a branch that it's okay to commit to directly.
+
+# Commits directly to main branch are allowed for some projects.
+if [[
+  $PWD == "$HOME/code/dotfiles" ||
+  $PWD == "$HOME/code/playground"
+]]
+then
+  exit 0
+fi
+
+if on-safe-or-main ; then
+  echo "Change your branch name, silly!"
+  exit 1 # failure code
+fi

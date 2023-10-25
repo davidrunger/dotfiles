@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+# [g]it [a]dd and [c]ommit with a [m]essage
+
+set -euo pipefail # exit on any error, don't allow undefined variables, pipes don't swallow errors
+
+git add . && git commit --message "$@"

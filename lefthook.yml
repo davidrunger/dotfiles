@@ -1,0 +1,10 @@
+pre-push:
+  commands:
+    gitleaks:
+      run: gitleaks detect --log-opts="origin/master...HEAD" --verbose &> /dev/null
+
+skip_output:
+  - meta
+  - success
+  - summary
+  - execution

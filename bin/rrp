@@ -1,0 +1,47 @@
+#!/usr/bin/env bash
+
+# Stop/kill [rr]uby [p]rocesses.
+
+processes_to_ignore="e?grep|Slack|Postman|GitHub|rubocop|open-pr-in-browser|Helper|brew\
+|solargraph|ionodecache|ruby-lsp"
+processes_to_quit='ruby'
+processes_to_term='spring'
+processes_to_int='puma|sidekiq'
+
+stop_processes() {
+  # only try to stop spring with `spring stop` if in a directory with a Gemfile that contains
+  # "spring"
+  if [ -f Gemfile ] && rg --quiet "spring" Gemfile
+  then
+    echo 'Stopping spring'
+    spring_stop_output=$(spring stop)
+    if [[ $spring_stop_output = 'Spring is not running' ]]
+    then
+      echo 'Spring was not running'
+    else
+      sleep 0.5 # wait a moment for spring to shut down
+    fi
+  fi
+
+  processes_to_kill="$processes_to_term|$processes_to_quit|$processes_to_int"
+
+  # print the processes to end
+  echo 'Trying to kill ...'
+  ps -e | egrep $processes_to_kill | egrep -v $processes_to_ignore
+
+  # end the processes
+  ps -e | egrep $processes_to_quit | egrep -v $processes_to_ignore | awk '{print $1}' | xargs kill -QUIT
+  ps -e | egrep $processes_to_int | egrep -v $processes_to_ignore | awk '{print $1}' | xargs kill -INT
+  ps -e | egrep $processes_to_term | egrep -v $processes_to_ignore | awk '{print $1}' | xargs kill -TERM
+  sleep 0.5 # wait a moment for processes to exit
+
+  # print processes that are still running (though there might be none)
+  printf "\nRemaining processes:\n"
+  ps -e | egrep $processes_to_kill | egrep -v $processes_to_ignore
+}
+
+# stop processes iff invoked directly (but not if sourced into another script)
+if [ "${BASH_SOURCE[0]}" -ef "$0" ]
+then
+  stop_processes
+fi

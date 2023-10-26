@@ -1,5 +1,0 @@
-inherit_from: "~/code/commonlit/.rubocop.yml"
-
-Metrics/BlockLength:
-  Enabled:
-    false

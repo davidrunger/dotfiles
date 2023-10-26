@@ -8,5 +8,6 @@ set -x # print executed commands
 files_for_prettier=$(changed-not-deleted-files | rg "\.(j|t)sx?$" || true)
 
 if [[ $files_for_prettier != "" ]]; then
+  # shellcheck disable=SC2086
   prettier --check $files_for_prettier
 fi

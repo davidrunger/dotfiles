@@ -661,7 +661,7 @@ end
 
 # Print Sentry messages to the terminal
 module RungerSentryPatches
-  def capture_exception(exception, **_options)
+  def capture_exception(exception, **options)
     puts(AmazingPrint::Colors.yellowish("[Sentry captured exception]"))
     puts(AmazingPrint::Colors.red("#{exception.class}: #{exception.message}"))
     puts(
@@ -669,6 +669,11 @@ module RungerSentryPatches
         commonlit_stack_trace_lines_until_logging(exception.backtrace).
         map { AmazingPrint::Colors.yellow(_1) },
     )
+
+    if (extra = options[:extra])
+      Runger.log_puts_yellowish("[extra Sentry captured data]")
+      Runger.log_ap(extra)
+    end
 
     super
   end

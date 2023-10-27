@@ -710,10 +710,14 @@ class Runger::LogFormatter < Lograge::Formatters::KeyValue
     log_message = super(@data)
 
     if Rails.env.in?(%w[development test])
-      "#{AmazingPrint::Colors.red(log_message)}\n\n"
-    else
-      log_message
+      log_message = AmazingPrint::Colors.red(log_message)
+
+      if !File.exist?(Rails.root.join("lib/rack/response_end_logger.rb"))
+        log_message << "\n\n"
+      end
     end
+
+    log_message
   end
 end
 

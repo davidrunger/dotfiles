@@ -662,16 +662,18 @@ end
 # Print Sentry messages to the terminal
 module RungerSentryPatches
   def capture_exception(exception, **options)
-    handled_info =
+    handled_display =
       if caller.any? { _1.match?(/\bswitch_locale\b/) }
+        handled_from = caller(1..1).first
         AmazingPrint::Colors.greenish("handled")
       else
         AmazingPrint::Colors.redish("unhandled")
       end
     puts(<<~LOG.squish)
       #{AmazingPrint::Colors.yellowish('[Sentry captured')}
-      #{handled_info}
+      #{handled_display}
       #{AmazingPrint::Colors.yellowish('exception]')}
+      #{handled_from && AmazingPrint::Colors.cyanish("(handled from #{handled_from})")}
     LOG
     puts(AmazingPrint::Colors.red("#{exception.class}: #{exception.message}"))
     puts(

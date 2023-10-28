@@ -583,7 +583,7 @@ def fu(recent_login_only: true)
   user_relation = User.select("COALESCE(email, user_name) AS login").reorder("login")
 
   if recent_login_only
-    user_relation = user_relation.where(current_sign_in_at: 2.weeks.ago..)
+    user_relation = user_relation.where(current_sign_in_at: 1.year.ago..)
   end
 
   user_logins = quiet_ar { user_relation.map { _1["login"] } }
@@ -607,7 +607,7 @@ def sau
   admin_emails =
     quiet_ar do
       AdminUser.
-        where(current_sign_in_at: 1.month.ago..).
+        where(current_sign_in_at: 1.year.ago..).
         reorder(:email).
         pluck(:email)
     end

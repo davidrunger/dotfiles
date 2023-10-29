@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+
+# Hard-clear the terminal screen (i.e. don't just make it so that the current line goes to the top
+# of the screen -- also actually make it impossible to scroll back to earlier output).
+
+set -euo pipefail # exit on any error, don't allow undefined variables, pipes don't swallow errors
+
+# https://askubuntu.com/a/473770/1640056
+clear && printf '\e[3J'

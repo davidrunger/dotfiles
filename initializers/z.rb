@@ -32,8 +32,9 @@ class Runger::RungerConfig
     current_user
     headful_browser
     log_ar_trace
-    log_verbose_ar_trace
     log_expensive_queries
+    log_verbose_ar_trace
+    scratch
   ].freeze
 
   CONFIG_KEYS.each do |config_key|

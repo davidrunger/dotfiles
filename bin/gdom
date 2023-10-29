@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+# [g]it [d]iff with respect to [o]rigin/[m]ain branch
+
+set -euo pipefail # exit on any error, don't allow undefined variables, pipes don't swallow errors
+
+git diff --no-prefix origin/$(main-branch)..HEAD "$@"

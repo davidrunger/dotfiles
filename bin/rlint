@@ -14,7 +14,7 @@ files_for_rubocop=$(
 
 if [[ $files_for_rubocop != "" ]]; then
   # Redirect STDERR to /dev/null to suppress warnings about invalid config.
-  bin/rubocop --color --only-recognized-file-types \
+  bin/rubocop --color --only-recognized-file-types --force-exclusion \
     $files_for_rubocop 2> /dev/null | \
     sed '/The following RuboCop extension libraries/,$d'
 fi

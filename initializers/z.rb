@@ -39,6 +39,7 @@ class Runger::RungerConfig
     log_expensive_queries
     log_verbose_ar_trace
     scratch
+    verbose_trace
   ].freeze
 
   CONFIG_KEYS.each do |config_key|
@@ -683,11 +684,15 @@ module RungerSentryPatches
       #{handled_from && AmazingPrint::Colors.cyanish("(handled from #{handled_from})")}
     LOG
     puts(AmazingPrint::Colors.red("#{exception.class}: #{exception.message}"))
-    puts(
-      Runger.
-        commonlit_stack_trace_lines_until_logging(exception.backtrace).
-        map { AmazingPrint::Colors.yellow(_1) },
-    )
+
+    backtrace_to_print =
+      if Runger.config.verbose_trace?
+        exception.backtrace
+      else
+        Runger.commonlit_stack_trace_lines_until_logging(exception.backtrace)
+      end
+
+    puts(backtrace_to_print.map { AmazingPrint::Colors.yellow(_1) })
 
     if (extra = options[:extra])
       Runger.log_puts_yellowish("[extra Sentry captured data]")

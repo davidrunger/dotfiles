@@ -37,4 +37,7 @@ touch ~/.pry_history
 #   simple_cov-formatter-terminal \
 #   slop \
 #   tapp
+
+# brew bundle
+
 # yarn global add ts-node

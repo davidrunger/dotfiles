@@ -12,7 +12,7 @@
 .fcom.yml
 
 # Personal stuff and customization
-personal/
+/personal/
 config/initializers/z.rb
 spec/.rubocop.yml
 app/workers/load_runner.rb

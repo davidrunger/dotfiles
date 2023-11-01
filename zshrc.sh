@@ -11,14 +11,38 @@ source $ZSH/oh-my-zsh.sh
 . ~/code/dotfiles/shell/functions.sh
 
 # asdf setup
-. "$HOME/.asdf/asdf.sh"
+if [ -d "$HOME/.asdf/" ]; then
+  . "$HOME/.asdf/asdf.sh"
+fi
 
 # ruby setup
-eval "$(rbenv init - zsh)"
+if [ -e ~/.rbenv/bin/rbenv ]; then
+  eval "$(~/.rbenv/bin/rbenv init - zsh)"
+else
+  eval "$(rbenv init - zsh)"
+fi
 
 # path setup
-export PATH=node_modules/.bin:$(yarn global bin):bin:$HOME/bin:$HOME/code/dotfiles/bin:$PATH:\
-/opt/homebrew/bin:/opt/homebrew/sbin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin
+export PATH=$PATH:/opt/homebrew/bin:/opt/homebrew/sbin
+
+# yarn setup
+if command -v yarn &> /dev/null ; then
+  export PATH=$(yarn global bin):$PATH
+fi
+
+# pnpm setup
+if [ -d "$HOME/Library/pnpm" ]; then
+  export PNPM_HOME="$HOME/Library/pnpm"
+  case ":$PATH:" in
+    *":$PNPM_HOME:"*) ;;
+    *) export PATH="$PNPM_HOME:$PATH" ;;
+  esac
+fi
+# pnpm end
+
+export PATH=node_modules/.bin:$PATH
+
+export PATH=$HOME/code/dotfiles/bin:$HOME/bin:$PATH
 
 # load fzf (fuzzy searching)
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh

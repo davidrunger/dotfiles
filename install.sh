@@ -20,6 +20,12 @@ if [ -d "~/code/commonlit/" ]; then
     ~/code/commonlit/app/workers/load_runner.rb
 fi
 
+if [ -e "$HOME/code/dotfiles-personal/install.sh" ]; then
+  cd $HOME/code/dotfiles-personal/
+  $HOME/code/dotfiles-personal/install.sh
+  cd - &> /dev/null
+fi
+
 git config core.hookspath ~/code/dotfiles/githooks/dotfiles
 
 touch ~/.hushlogin

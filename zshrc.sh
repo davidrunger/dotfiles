@@ -10,6 +10,10 @@ source $ZSH/oh-my-zsh.sh
 . ~/code/dotfiles/shell/aliases.sh
 . ~/code/dotfiles/shell/functions.sh
 
+if [ -e "$HOME/code/dotfiles-personal/zshrc.sh" ]; then
+  . "$HOME/code/dotfiles-personal/zshrc.sh"
+fi
+
 # asdf setup
 if [ -d "$HOME/.asdf/" ]; then
   . "$HOME/.asdf/asdf.sh"

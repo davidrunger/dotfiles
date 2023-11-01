@@ -1,0 +1,19 @@
+#!/usr/bin/env zsh
+
+# [m]o[v]e and make [p]arent directory(s) if needed
+# Example:
+#   mvp some_dir/file.txt some/directories/
+
+set -euo pipefail # exit on any error, don't allow undefined variables, pipes don't swallow errors
+
+source="$1"
+destination="$2"
+
+if [[ $destination =~ "/$" ]]; then
+  destination_dir="$destination"
+else
+  destination_dir=`dirname $destination`
+fi
+
+mkdir -p $destination_dir
+mv "$source" "$destination"

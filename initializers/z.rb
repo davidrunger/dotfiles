@@ -475,6 +475,11 @@ ensure
   ActiveRecord::Base.logger = original_logger
 end
 
+# [j]son [p]arse [f]ile
+def jpf(path)
+  JSON.parse(File.read(path))
+end
+
 # [b]ench[m]ark [m]easure
 def bmm
   result = nil

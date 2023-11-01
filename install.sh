@@ -20,6 +20,8 @@ if [ -d "~/code/commonlit/" ]; then
     ~/code/commonlit/app/workers/load_runner.rb
 fi
 
+git config core.hookspath ~/code/dotfiles/githooks/dotfiles
+
 touch ~/.hushlogin
 touch ~/.pry_history
 

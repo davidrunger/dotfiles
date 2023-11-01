@@ -5,6 +5,7 @@
 # Commits directly to main branch are allowed for some projects.
 if [[
   $PWD == "$HOME/code/dotfiles" ||
+  $PWD == "$HOME/code/dotfiles-personal" ||
   $PWD == "$HOME/code/playground"
 ]]
 then

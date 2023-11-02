@@ -119,9 +119,9 @@ def show_runger_config
 end
 
 Runger::RungerConfig::CONFIG_KEYS.each do |runger_config_key|
-  define_method("#{runger_config_key}!") do |value = true, silent: false|
+  define_method("#{runger_config_key}!") do |value = true, quiet: false, silent: false|
     Runger.config.set_in_redis(runger_config_key, value)
-    unless silent
+    unless quiet || silent
       show_runger_config
     end
     true

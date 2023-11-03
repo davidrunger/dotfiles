@@ -1,0 +1,20 @@
+[core]
+  editor = code --wait
+  excludesfile = /Users/david/.gitignore
+  pager = delta
+[user]
+  name = David Runger
+  email = david.runger@commonlit.org
+[interactive]
+  diffFilter = delta --color-only
+  singlekey = true
+[delta]
+  navigate = true    # use n and N to move between diff sections
+  light = false
+  side-by-side = true
+[merge]
+  conflictstyle = diff3
+[diff]
+  colorMoved = default
+[push]
+  default = current

@@ -31,6 +31,8 @@ git config core.hookspath ~/code/dotfiles/githooks/dotfiles
 touch ~/.hushlogin
 touch ~/.pry_history
 
+# brew bundle
+
 # gem install \
 #   amazing_print \
 #   benchmark-ips \
@@ -45,7 +47,5 @@ touch ~/.pry_history
 #   simple_cov-formatter-terminal \
 #   slop \
 #   tapp
-
-# brew bundle
 
 # yarn global add ts-node

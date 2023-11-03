@@ -38,6 +38,7 @@ class Runger::RungerConfig
     log_ar_trace
     log_expensive_queries
     log_response_body
+    log_to_stdout
     log_verbose_ar_trace
     scratch
     verbose_trace
@@ -683,13 +684,13 @@ module RungerSentryPatches
       else
         AmazingPrint::Colors.redish("unhandled")
       end
-    puts(<<~LOG.squish)
+    Runger.log_puts(<<~LOG.squish)
       #{AmazingPrint::Colors.yellowish('[Sentry captured')}
       #{handled_display}
       #{AmazingPrint::Colors.yellowish('exception]')}
       #{handled_from && AmazingPrint::Colors.cyanish("(handled from #{handled_from})")}
     LOG
-    puts(AmazingPrint::Colors.red("#{exception.class}: #{exception.message}"))
+    Runger.log_puts(AmazingPrint::Colors.red("#{exception.class}: #{exception.message}"))
 
     backtrace_to_print =
       if Runger.config.verbose_trace?
@@ -698,7 +699,7 @@ module RungerSentryPatches
         Runger.commonlit_stack_trace_lines_until_logging(exception.backtrace)
       end
 
-    puts(backtrace_to_print.map { AmazingPrint::Colors.yellow(_1) })
+    Runger.log_puts(backtrace_to_print.map { AmazingPrint::Colors.yellow(_1) })
 
     if (extra = options[:extra])
       Runger.log_puts_yellowish("[extra Sentry captured data]")
@@ -709,12 +710,12 @@ module RungerSentryPatches
   end
 
   def capture_message(message)
-    puts(AmazingPrint::Colors.red("[Sentry captured message] #{message}"))
+    Runger.log_puts(AmazingPrint::Colors.red("[Sentry captured message] #{message}"))
 
     super
   end
 end
-if Rails.env.development?
+if Rails.env.development? || Rails.env.test?
   Sentry.singleton_class.prepend(RungerSentryPatches)
 end
 
@@ -805,7 +806,7 @@ module Runger
       if Rails.env.test?
         Rails.logger.clear_tags!
         [[Rails.logger, :info]].tap do |pair_list|
-          if ENV["RUNGER_WRITE_LOGS_TO_STDOUT"]
+          if Runger.config.log_to_stdout?
             pair_list << [self, :puts]
           end
         end

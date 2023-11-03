@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+
+# [g]it [r]ebase [i]nteractive since [m]ain branch or last push to origin remote
+
+set -euo pipefail # exit on any error, don't allow undefined variables, pipes don't swallow errors
+
+if branch-exists-on-remote ; then
+  git rebase -i origin/$(branch)
+else
+  git rebase -i origin/$(main-branch)
+fi

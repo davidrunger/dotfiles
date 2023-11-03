@@ -13,7 +13,7 @@ ln -sf ~/code/dotfiles/rubocop.yml ~/.rubocop.yml
 ln -sf ~/code/dotfiles/zsh/themes/bolso.zsh-theme ~/.oh-my-zsh/custom/themes/bolso.zsh-theme
 ln -sf ~/code/dotfiles/zshrc.sh ~/.zshrc
 
-if [ -d "~/code/commonlit/" ]; then
+if [ -d "$HOME/code/commonlit" ]; then
   ln -sf ~/code/dotfiles/commonlit/initializers/z.rb ~/code/commonlit/config/initializers/z.rb
   ln -sf ~/code/dotfiles/commonlit/personal/qr.rb ~/code/commonlit/personal/qr.rb
   ln -sf \

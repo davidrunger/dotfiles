@@ -1,1 +1,2 @@
 brew "exa"
+brew "gitleaks"

@@ -19,6 +19,11 @@ class OpensearchExplorer
     response_body { @connection.get("/_cat/indices") }
   end
 
+  # DELETE /<index-name>
+  def delete_index(concrete_name:)
+    response_body { @connection.delete("/#{concrete_name}") }
+  end
+
   # GET /my-index-000001/_mapping
   def mapping(index:)
     response_body { @connection.get("/#{index}/_mapping") }

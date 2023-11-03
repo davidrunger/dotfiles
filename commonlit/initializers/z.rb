@@ -37,6 +37,7 @@ class Runger::RungerConfig
     headful_browser
     log_ar_trace
     log_expensive_queries
+    log_response_body
     log_verbose_ar_trace
     scratch
     verbose_trace

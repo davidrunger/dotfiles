@@ -14,10 +14,9 @@ tlint
 # Check translations.
 trlint
 
+# Run Ruby linter(s).
+rlint
+
 # Run ESLint.
 # Don't fail the push if there are errors/warnings fails; print for informational purposes only.
 elint || true
-
-# Run Ruby linter(s).
-# Don't fail the push if there are errors/warnings fails; print for informational purposes only.
-rlint || true

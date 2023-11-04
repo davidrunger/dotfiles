@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+# [g]it [r]evert, accepting the default commit [m]essage provided by git
+
+set -euo pipefail # exit on any error, don't allow undefined variables, pipes don't swallow errors
+
+git revert --no-edit "$@"

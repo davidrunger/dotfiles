@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+# [s]ublime [n]otes
+
+set -euo pipefail # exit on any error, don't allow undefined variables, pipes don't swallow errors
+
+$EDITOR $NOTES_DIRECTORY

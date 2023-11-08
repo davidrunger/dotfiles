@@ -72,7 +72,6 @@ alias sdm='safe; gdm'
 alias sha='git log $(main-branch) --format=format:%H | head -n 1 | cut -c 1-8 | cpy'
 alias shaf='git log $(main-branch) --format=format:%H | head -n 1 | cpy'
 alias sk="bin/sidekiq"
-alias sn='$EDITOR $NOTES_DIRECTORY'
 alias ss='bin/spring stop'
 alias td='s $HOME/notes/TODO.md'
 alias vds='bin/vite dev'

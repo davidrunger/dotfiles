@@ -200,15 +200,20 @@ if defined?(RSpec)
 
   # https://github.com/simplecov-ruby/simplecov/issues/ 389
   module RungerObjectLoadPatch
-    def load(...)
+    def load(file, **kwargs)
       if caller.any?(%r{/spec/})
-        SimpleCov.result
-        SimpleCov.start do
-          command_name("RungerObjectLoadPatch-#{SecureRandom.alphanumeric(5)}")
+        coverage_target =
+          ENV["SIMPLECOV_TARGET_FILE"].presence || RSpec.configuration.files_to_run.first
+
+        if coverage_target.present? && file.to_s.include?(coverage_target)
+          SimpleCov.result
+          SimpleCov.start do
+            command_name("RungerObjectLoadPatch-#{SecureRandom.alphanumeric(5)}")
+          end
         end
       end
 
-      super
+      super(file, **kwargs)
     end
   end
 

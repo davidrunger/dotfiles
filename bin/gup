@@ -4,6 +4,11 @@
 
 set -euo pipefail # exit on any error, don't allow undefined variables, pipes don't swallow errors
 
+if [[ "$(git show -s --format=%B HEAD)" =~ "Merge remote-tracking branch 'origin/trunk'" ]]; then
+  echo "Not updating, because the most recent commit is a merge commit."
+  exit 1
+fi
+
 if [[ $(git rev-list --right-only --count origin/$(main-branch)...HEAD) -eq 0 ]] ; then
   echo "Not updating, because you are not ahead of origin/$(main-branch)."
   exit 1

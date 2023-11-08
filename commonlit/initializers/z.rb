@@ -201,10 +201,13 @@ if defined?(RSpec)
   # https://github.com/simplecov-ruby/simplecov/issues/ 389
   module RungerObjectLoadPatch
     def load(...)
-      SimpleCov.result
-      SimpleCov.start do
-        command_name("#{command_name}-RungerObjectLoadPatch-#{SecureRandom.alphanumeric(20)}")
+      if caller.any?(%r{/spec/})
+        SimpleCov.result
+        SimpleCov.start do
+          command_name("RungerObjectLoadPatch-#{SecureRandom.alphanumeric(5)}")
+        end
       end
+
       super
     end
   end

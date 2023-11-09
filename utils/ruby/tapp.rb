@@ -29,6 +29,7 @@ module Tapp::Printer
 
       puts("#{AmazingPrint::Colors.yellow(tapped_object_name)}:")
       amazing_print(tapped_object)
+      puts
     end
   end
 

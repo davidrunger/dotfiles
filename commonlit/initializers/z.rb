@@ -313,6 +313,12 @@ if (Rails.env.development? || Rails.env.test?) && ENV["QUIET_AR"] == "1"
   end
 end
 
+if Rails.env.development? && Runger.config.log_to_stdout?
+  Rails.logger =
+    ActiveSupport::Logger.new($stdout).
+      tap { |logger| logger.formatter = ActiveSupport::Logger::SimpleFormatter.new }
+end
+
 # write ActiveRecord queries and other Rails logs in Sidekiq process to stdout in development
 if Rails.env.development? && $PROGRAM_NAME.include?("sidekiq")
   puts("Logging to $stdout for Rails and ActiveRecord in Sidekiq process.")

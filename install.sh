@@ -38,7 +38,6 @@ touch ~/.pry_history
 #   benchmark-ips \
 #   chronic \
 #   fcom \
-#   foreman \
 #   guard \
 #   guard-shell \
 #   memery \

@@ -4,7 +4,6 @@ mkdir -p ~/.config/
 
 ln -sf ~/code/dotfiles/aprc.rb ~/.config/aprc
 ln -sf ~/code/dotfiles/gemrc.yml ~/.gemrc
-ln -sf ~/code/dotfiles/gitconfig.toml ~/.gitconfig
 ln -sf ~/code/dotfiles/global_gitignore ~/.gitignore
 ln -sf ~/code/dotfiles/irbrc.rb ~/.irbrc.rb
 ln -sf ~/code/dotfiles/pryrc.rb ~/.pryrc

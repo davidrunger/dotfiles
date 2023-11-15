@@ -5,7 +5,7 @@
 set -euo pipefail # exit on any error, don't allow undefined variables, pipes don't swallow errors
 
 if branch-exists-on-remote ; then
-  git rebase -i origin/$(branch)
+  git rebase -i $(first-merge-commit-after-latest-post-push-merge || echo "origin/$(branch)")
 else
   git rebase -i origin/$(main-branch)
 fi

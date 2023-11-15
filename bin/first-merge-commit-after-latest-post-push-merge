@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+# [add some documentation]
+
+set -euo pipefail # exit on any error, don't allow undefined variables, pipes don't swallow errors
+
+git log origin/$(branch).. --oneline --author="$GIT_SELF_AUTHOR_NAME" | rg -F "Merge remote-tracking branch 'origin/trunk'" | cut -d ' ' -f 1 | head -1

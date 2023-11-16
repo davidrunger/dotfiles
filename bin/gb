@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+# [g]it [b]ranches (filtered to active ones)
+
+set -euo pipefail # exit on any error, don't allow undefined variables, pipes don't swallow errors
+
+git branch -vv --color | rg -v "\sz-" | git-branch-list-whitespace-reducer

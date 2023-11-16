@@ -10,9 +10,13 @@ source $HOME/code/dotfiles/shell/functions.sh
 which_output=$(which "$@")
 
 if [ -f $which_output ] ; then
-  echo "Executable $which_output :"
-  hr
-  bat $which_output --style=plain
+  if [[ $which_output =~ dotfiles ]] ; then
+    echo "Executable $which_output :"
+    hr
+    bat $which_output --style=plain
+  else
+    ls $which_output
+  fi
 elif [[ $which_output =~ 'aliased to (.*)' ]] ; then
   alias_content="$match[1]"
   echo "Alias $@ :"

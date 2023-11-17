@@ -38,6 +38,10 @@ if (
   target = File.read(file_location).rstrip
   # debug('open with VSCode')
   system("/usr/local/bin/code -g #{dir}/#{target}:#{file_and_line.sub(':::', '')}")
+elsif (match = file_and_line.match(/#\(?(?<pr_number>\d{3,})\)?/))
+  # debug('open PR with default browser')
+  pr_number = match[:pr_number]
+  system(%(open "https://github.com/commonlit/commonlit/pull/#{pr_number}"))
 elsif file_and_line.match?(GIT_SHA_REGEX)
   # debug('open git sha with default browser')
   system(%(open "https://github.com/commonlit/commonlit/commit/#{file_and_line}"))

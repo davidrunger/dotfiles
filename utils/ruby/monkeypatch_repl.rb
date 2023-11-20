@@ -86,6 +86,13 @@ class String
       cpp
   end
 
+  def spec
+    gsub(%r{\A(lib/)}, "").
+      then { |path| "spec/#{path}" }.
+      gsub(%r{\.rb}, "_spec.rb").
+      cpp
+  end
+
   # Remove colorizing ANSI escape codes.
   def uncolor
     gsub(/\e\[([;\d]+)?m/, "")

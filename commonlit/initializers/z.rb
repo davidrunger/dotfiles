@@ -170,7 +170,7 @@ if defined?(RSpec)
 
     SimpleCov.formatter = SimpleCov::Formatter::Terminal
     SimpleCov::Formatter::Terminal.config.spec_to_app_file_map.merge!(
-      %r{\Aspec/datamigrate/} => "lib/datamigrate/",
+      %r{\Aspec/(cops|datamigrate)/} => 'lib/\1/',
       %r{
         \Aspec/
         (

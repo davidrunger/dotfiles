@@ -5,11 +5,9 @@
 set -euo pipefail # exit on any error, don't allow undefined variables, pipes don't swallow errors
 set -x # print executed commands
 
-# Don't lint schema.rb because autocorrection introduces a diff.
 files_for_rubocop=$(
   changed-not-deleted-files | \
-    rg -v "\.(tsx?|json)$" | \
-    rg -v "^db/schema.rb$" || \
+    rg -v "\.(tsx?|json)$" || \
     true
 )
 

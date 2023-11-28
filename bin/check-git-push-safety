@@ -19,20 +19,20 @@ then
 fi
 
 # don't push if there are still `!!!` markers in the code
-git diff --diff-filter=dr origin/$(main-branch)..HEAD  | grep '^\+' | rg --quiet --fixed-strings '!!!'
+git diff --diff-filter=dr origin/$(main-branch)...  | grep '^\+' | rg --quiet --fixed-strings '!!!'
 if [ $? -eq 0 ]
 then
   echo "Easy there, cowboy! You still have some markers in your code."
-  git diff --diff-filter=dr --name-status $(main-branch) | cut -f2 | xargs rg --with-filename --fixed-strings ' !!!'
+  git diff --diff-filter=dr --name-status origin/$(main-branch)... | cut -f2 | xargs rg --with-filename --fixed-strings '!!!'
   exit 1
 fi
 
 # don't push if there are still `!!!` markers in the code (renamed files)
-git diff --diff-filter=R origin/$(main-branch)..HEAD  | grep '^\+' | rg --quiet --fixed-strings '!!!'
+git diff --diff-filter=R origin/$(main-branch)...  | grep '^\+' | rg --quiet --fixed-strings '!!!'
 if [ $? -eq 0 ]
 then
   echo "Easy there, cowboy! You still have some markers in your code in renamed files."
-  git diff --diff-filter=R --name-status $(main-branch) | cut -f3 | xargs rg --with-filename --fixed-strings ' !!!'
+  git diff --diff-filter=R --name-status origin/$(main-branch)... | cut -f3 | xargs rg --with-filename --fixed-strings '!!!'
   exit 1
 fi
 

@@ -631,6 +631,11 @@ def su
   end
 end
 
+# [c]urrent [u]ser
+def cu
+  ube(Runger.config.current_user)
+end
+
 # [s]et current_[a]dmin_[u]ser
 def sau
   admin_emails =

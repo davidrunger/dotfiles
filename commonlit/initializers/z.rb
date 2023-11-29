@@ -823,7 +823,9 @@ module Runger
   def write_log(message)
     pairs =
       if Rails.env.test?
-        Rails.logger.clear_tags!
+        if Rails.logger.respond_to?(:clear_tags!)
+          Rails.logger.clear_tags!
+        end
         [[Rails.logger, :info]].tap do |pair_list|
           if Runger.config.log_to_stdout?
             pair_list << [self, :puts]

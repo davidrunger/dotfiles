@@ -631,6 +631,11 @@ def su
   end
 end
 
+# Set the [c]urrent [u]ser[!]
+def cu!(...)
+  current_user!(...)
+end
+
 # [c]urrent [u]ser
 def cu
   ube(Runger.config.current_user)

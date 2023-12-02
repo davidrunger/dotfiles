@@ -10,7 +10,7 @@ fi
 
 # don't push if there's still debugging code
 rg -g '!public/' -g '*.rake' -g '*.rb' -g '*.js' -g '*.coffee' -g '*.haml' -g '*.html' -g '*.erb' \
-  '^((\s*|RSpec\.)(fit|fdescribe|fcontext|fspecify|open_page))|(^| )(binding\.pry|byebug)'
+  '^((\s*|RSpec\.)(fit|fdescribe|fcontext|fscenario|fspecify|open_page))|(^| )(binding\.pry|byebug)'
 if [ $? -eq 0 ]
 then
   echo

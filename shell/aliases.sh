@@ -11,7 +11,7 @@ alias dots='cd ~/code/dotfiles'
 alias down='cd ~/Downloads'
 alias fix='git diff --name-only | uniq | xargs $EDITOR'
 alias fs='format-sql'
-alias fsk='redis-cli -n 1 FLUSHDB && SIDEKIQ_CONCURRENCY=1 bin/sidekiq' # `-n 1` because of `REDIS_DATABASE_NUMBER=1` in `.env`
+alias fsk='redis-cli -n 1 FLUSHDB && sk' # `-n 1` because of `REDIS_DATABASE_NUMBER=1` in `.env`
 alias fx='open -a Firefox\ Developer\ Edition'
 alias ga='git add'
 alias gaa='git add -p'
@@ -70,7 +70,7 @@ alias say='say -v Rishi'
 alias sdm='safe; gdm'
 alias sha='git log $(main-branch) --format=format:%H | head -n 1 | cut -c 1-8 | cpy'
 alias shaf='git log $(main-branch) --format=format:%H | head -n 1 | cpy'
-alias sk="bin/sidekiq"
+alias sk="SIDEKIQ_CONCURRENCY=1 bin/sidekiq"
 alias ss='bin/spring stop'
 alias td='s $HOME/notes/TODO.md'
 alias vds='bin/vite dev'

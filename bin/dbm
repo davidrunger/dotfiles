@@ -2,4 +2,4 @@
 
 # run Rails database migrations
 
-bin/rails db:migrate db:test:prepare
+bin/rails db:migrate db:rollback && bin/rails db:migrate db:test:prepare

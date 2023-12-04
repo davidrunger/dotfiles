@@ -23,9 +23,6 @@ if [[ $files_for_rubocop != "" ]]; then
     sed '/The following RuboCop extension libraries/,$d' || \
     true
 
-  # Autocorrection introduces a diff in schema.rb (removing an extra newline); undo that.
-  git checkout db/schema.rb
-
   # Exit with error if any autocorrections were introduced (and check them out / undo them).
   files_with_unstaged_changes=$(git diff --name-only 2>&1)
   if [[ $files_with_unstaged_changes != "" ]] ; then

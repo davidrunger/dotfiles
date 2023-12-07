@@ -1,6 +1,5 @@
-# load "#{Dir.home}/code/dotfiles/tools/opensearch_explorer.rb"
-
 # Example usage:
+# load "#{Dir.home}/code/dotfiles/tools/opensearch_explorer.rb"
 #
 # opensearch_exlorer = OpensearchExplorer.new
 # opensearch_exlorer.mapping(index: "english_texts_development").tapp

@@ -13,6 +13,13 @@ class OpensearchExplorer
       )
   end
 
+  # Show document.
+  # GET my-index-000001/_doc/0
+  # https://www.elastic.co/guide/en/elasticsearch/reference/current/docs-get.html
+  def get(index:, id:)
+    response_body { @connection.get("/#{index}/_doc/#{id}") }
+  end
+
   # GET /_cat/indices
   def indices
     response_body { @connection.get("/_cat/indices") }

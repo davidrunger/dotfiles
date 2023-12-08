@@ -19,6 +19,6 @@ echo "Creating database backups..."
 save-db-backups
 
 echo "Reindexing..."
-bin/rails searchkick:reindex:all
+bin/rails search:index_all_commonlit_content
 
 echo "Done."

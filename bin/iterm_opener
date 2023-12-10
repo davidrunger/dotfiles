@@ -38,6 +38,18 @@ if (
   target = File.read(file_location).rstrip
   # debug('open with VSCode')
   system("/usr/local/bin/code -g #{dir}/#{target}:#{file_and_line.sub(':::', '')}")
+elsif (match = file_and_line.match(/(?<controller>[\w\/]+.rb)@(?<action>\w+)/))
+  # debug('open controller action with VSCode')
+  controller, action = match.named_captures.values_at('controller', 'action')
+  controller_path = "#{dir}/app/controllers/#{controller}"
+  line_match = nil
+  line_index =
+    File.
+      readlines(controller_path).
+      index { |line| line_match = line.match(/(?<spaces> +)def #{action}\n/) }
+  line_number = line_index + 1
+  num_spaces = line_match[:spaces].size
+  system("/usr/local/bin/code -g #{controller_path}:#{line_number}:#{num_spaces + 1}")
 elsif (match = file_and_line.match(/#\(?(?<pr_number>\d{3,})\)?/))
   # debug('open PR with default browser')
   pr_number = match[:pr_number]

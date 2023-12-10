@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+# [p]aste [g]it diff
+
+set -euo pipefail # exit on any error, don't allow undefined variables, pipes don't swallow errors
+
+pbpaste | git apply

@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+# "clear" the screen _without_ clearing / removing access to the scrollback history.
+
+set -euo pipefail # exit on any error, don't allow undefined variables, pipes don't swallow errors
+
+tput clear

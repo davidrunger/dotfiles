@@ -36,29 +36,19 @@ then
   exit 1
 fi
 
-# don't push if there are still `!!!` markers in .env
-if [ -f .env ]
-then
-  rg --quiet --fixed-strings '!!!' .env
-  if [ $? -eq 0 ]
+# don't push if there are still `!!!` markers in .env* files
+for file in .env .env.development.local .env.test.local ; do
+  if [ -f $file ]
   then
-    rg --with-filename --fixed-strings '!!!' .env
-    echo "Easy there, cowboy! You still have some markers in your .env file."
-    exit 1
+    rg --quiet --fixed-strings '!!!' $file
+    if [ $? -eq 0 ]
+    then
+      rg --with-filename --fixed-strings '!!!' $file
+      echo "Easy there, cowboy! You still have some markers in $file ."
+      exit 1
+    fi
   fi
-fi
-
-# don't push if there are still `!!!` markers in .env.development.local
-if [ -f .env.development.local ]
-then
-  rg --quiet --fixed-strings '!!!' .env.development.local
-  if [ $? -eq 0 ]
-  then
-    rg --with-filename --fixed-strings '!!!' .env.development.local
-    echo "Easy there, cowboy! You still have some markers in your .env.development.local file."
-    exit 1
-  fi
-fi
+done
 
 # Don't push if there are any TEMP or Z commits.
 if git log --oneline $(main-branch).. | rg --quiet 'TEMP|Z' ; then

@@ -161,7 +161,7 @@ class Runner
   end
 
   def set_nina_cruz_canvas_user_id
-    nina_cruz_canvas_user_id = "60e90db7-4e1c-4534-b5ae-df897dfd7931"
+    nina_cruz_canvas_user_id = ENV.fetch("NINA_CRUZ_CANVAS_USER_ID")
 
     User.where(canvas_user_id: nina_cruz_canvas_user_id).find_each do |user|
       user.update!(canvas_user_id: nil)

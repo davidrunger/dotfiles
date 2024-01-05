@@ -97,7 +97,17 @@ kr() {
 
 # copy my IP address to clipboard
 myip() {
-  curl -s ifconfig.co -4 | rg '\A\d+\.\d+\.\d+\.\d+\z' | cpy
+  curl -s ifconfig.co | cpy
+}
+
+# copy my IP v4 address to clipboard
+myip4() {
+  curl -s ifconfig.co -4 | cpy
+}
+
+# copy my IP v6 address to clipboard
+myip6() {
+  curl -s ifconfig.co -6 | cpy
 }
 
 # make directory and cd into it

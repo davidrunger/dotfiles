@@ -1216,7 +1216,11 @@ if Rails.env.test? && Runger.config.walk_through_system_specs?
           def #{method}(*args, **kwargs, &block)
             p(["#{method}", args, kwargs])
             puts("Hit enter.")
-            $stdin.gets
+            if !$stop_skipping_at || (Time.now >= $stop_skipping_at)
+              if $stdin.gets.rstrip == "skip!"
+                skip!
+              end
+            end
             page.method("#{method}").call(*args, **kwargs, &block)
           end
         METHOD

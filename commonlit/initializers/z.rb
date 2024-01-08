@@ -42,6 +42,7 @@ class Runger::RungerConfig
     log_verbose_ar_trace
     scratch
     verbose_trace
+    walk_through_system_specs
   ].freeze
 
   CONFIG_KEYS.each do |config_key|
@@ -228,7 +229,7 @@ if defined?(RSpec)
     end
 
     config.before(:each, type: :system, js: true) do
-      if Runger.config.headful_browser?
+      if Runger.config.headful_browser? || Runger.config.walk_through_system_specs?
         ENV["NO_HEADLESS"] = "true"
       else
         ENV.delete("NO_HEADLESS")
@@ -1203,6 +1204,23 @@ class RungerDatabaseStateSaver
       "It's a database view."
     elsif table_name.in?(TABLES_TO_SKIP)
       "It's a table to skip."
+    end
+  end
+end
+
+if Rails.env.test? && Runger.config.walk_through_system_specs?
+  module Capybara
+    module DSL
+      Session::DSL_METHODS.each do |method|
+        class_eval <<~METHOD, __FILE__, __LINE__ + 1
+          def #{method}(*args, **kwargs, &block)
+            p(["#{method}", args, kwargs])
+            puts("Hit enter.")
+            $stdin.gets
+            page.method("#{method}").call(*args, **kwargs, &block)
+          end
+        METHOD
+      end
     end
   end
 end

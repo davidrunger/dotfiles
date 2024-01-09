@@ -4,4 +4,7 @@
 
 set -euo pipefail # exit on any error, don't allow undefined variables, pipes don't swallow errors
 
-git diff --name-only --diff-filter=d HEAD^..HEAD
+commit=${1:-HEAD}
+
+# shellcheck disable=SC2140
+git diff --name-only --diff-filter=d "$commit^".."$commit"

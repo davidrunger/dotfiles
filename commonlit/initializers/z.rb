@@ -1228,3 +1228,14 @@ if Rails.env.test? && Runger.config.walk_through_system_specs?
     end
   end
 end
+
+module RungerSprocketsPatches
+  def javascript_include_tag(*sources)
+    if sources[0] == "/statusPageV2.js"
+      ""
+    else
+      super
+    end
+  end
+end
+Sprockets::Rails::Helper.prepend(RungerSprocketsPatches)

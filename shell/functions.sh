@@ -1,9 +1,3 @@
-# print absolute path of a file
-# Ex.:
-#   abs Gemfile
-#   prints=> /Users/david/code/commonlit/Gemfile
-abs() { echo $(pwd)/$(ls $@ | sed "s|^\./||") }
-
 # bundle
 b() { bundle install }
 

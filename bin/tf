@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+# [t]ally occurrences of distinct lines in a [f]ile
+
+set -euo pipefail # exit on any error, don't allow undefined variables, pipes don't swallow errors
+
+sort "$1" | uniq -c | sort -nr

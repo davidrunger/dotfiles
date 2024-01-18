@@ -167,7 +167,34 @@ class Runner
       user.update!(canvas_user_id: nil)
     end
 
-    ube("ninacruz10").update!(canvas_user_id: nina_cruz_canvas_user_id)
+    nina_cruz_user = ube("ninacruz10")
+    nina_cruz_user.update!(canvas_user_id: nina_cruz_canvas_user_id)
+    nina_cruz_user.faculty_memberships.find_each { _1.update!(verified: true) }
+
+    Roster.for_teacher(nina_cruz_user.person).find_each do |roster|
+      if roster.archived?
+        roster.activate(category: :manually_activated, actor_id: tme.person_id)
+      end
+
+      roster.update!(classlink_ended_on: nil)
+    end
+
+    Subscription.find(1818).update!(canvas_client_id: ENV.fetch("NINA_CRUZ_CANVAS_CLIENT_ID"))
+
+    nina_cruz_user.faculty_memberships.where(
+      school: School.find_by!(
+        name: "Maple Hills High",
+        id: 409370,
+      ),
+    ).find_each(&:destroy!)
+
+    nina_cruz_user.faculty_memberships.where(
+      school_id: School.find_by!(
+        name: "Golden Eagle Elementary School", id: 513516,
+      ).id,
+    ).find_each do
+      _1.update!(school: School.find_by!(name: "Maple Hills High", id: 409370))
+    end
   end
 
   def ensure_in_roster(roster, person)

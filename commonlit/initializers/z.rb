@@ -1217,7 +1217,7 @@ if Rails.env.test? && Runger.config.walk_through_system_specs?
             p(["#{method}", args, kwargs])
             puts("Hit enter.")
             if !$stop_skipping_at || (Time.now >= $stop_skipping_at)
-              if $stdin.gets.rstrip == "skip!"
+              if $stdin.gets.rstrip == "s"
                 skip!
               end
             end

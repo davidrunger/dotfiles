@@ -1,3 +1,5 @@
+require 'active_support'
+require 'active_support/core_ext/string/filters'
 require 'memo_wise'
 require 'slop'
 
@@ -20,6 +22,6 @@ class CliProgram
           @options[option.key]
         end
       end
-    @stdin_content = STDIN.read
+    @stdin_content = STDIN.tty? ? nil : STDIN.read
   end
 end

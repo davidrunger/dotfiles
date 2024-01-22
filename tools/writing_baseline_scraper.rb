@@ -16,7 +16,7 @@ require "amazing_print"
 require "dotenv/load"
 require "ferrum"
 require "nokogiri"
-require "yaml"bund
+require "yaml"
 
 class Scraper
   BAD_PATTERNS = [

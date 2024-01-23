@@ -24,7 +24,8 @@ bin/rubocop
 
 # Execting TypeScript in node
 # we need this to be in `app/javascript/` (not `personal/`) to use the project TypeScript config
-app/javascript/typescript.ts
-app/javascript/typescript.tsx
+# We can't have a file called `typescript.ts`! https://commonlit.slack.com/archives/C5BFTS7NC/p1706036960165969?thread_ts=1706023596.962889&cid=C5BFTS7NC
+app/javascript/typescript-scratchpad.ts
+app/javascript/typescript-scratchpad.tsx
 # we need this config for `ts-node` to work correctly (https://stackoverflow.com/a/72507086/4009384)
 node.tsconfig.json

@@ -39,7 +39,7 @@ guard(:shell, all_on_start: true) do
 
   watch_regex =
     %r{^(
-      #{directories_to_watch.map { "#{_1}/.*" }.join("|\n")}
+      #{directories_to_watch.map { "#{_1}/.*\.rb" }.join("|\n")}
     )}x
 
   watch(watch_regex) do |guard_match_result|

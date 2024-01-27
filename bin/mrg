@@ -1,0 +1,57 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+# [m]ulti-phase [r]ip[g]rep
+#
+# Examples:
+#   Search for "def self" in files that contain "slop":
+#     mrg slop 'def self'
+#
+#   Search for "options" in files that contain "require 'slop'",
+#   except for files starting with "utils/":
+#     mrg "require 'slop'" options -e utils/
+
+load("#{Dir.home}/code/dotfiles/utils/ruby/debug.rb")
+load("#{Dir.home}/code/dotfiles/utils/ruby/cli_program.rb")
+
+sloptions =
+  Slop.parse do |o|
+    o.string('-e', '--exclude', 'file pattern to exclude')
+    o.on('-h', '--help', 'view this help info') do
+      puts(o.to_s.dup.sub(%r{#{Dir.home}/code/dotfiles/bin/}, ''))
+      exit
+    end
+  end
+
+class MultiLevelRipgrep < CliProgram
+  def call
+    *@initial_filters, @final_search = arguments
+
+    system(command, exception: true)
+  end
+
+  private
+
+  def command
+    "rg '#{@final_search}' #{subshell_for_files_matching_initial_filters}"
+  end
+
+  memo_wise \
+  def subshell_for_files_matching_initial_filters
+    file_filter_command = ''
+
+    @initial_filters.each do |initial_filter|
+      file_filter_command =
+        "$(rg '#{initial_filter}' -l -F #{file_filter_command})".
+          sub(/-F \)\z/, '-F)')
+    end
+
+    if (exclude = options[:exclude])
+      file_filter_command.gsub!(/\)\z/, "| rg -v '#{exclude}')")
+    end
+
+    file_filter_command
+  end
+end
+
+MultiLevelRipgrep.new(sloptions:).call

@@ -1,14 +1,16 @@
+# frozen_string_literal: true
+
 require 'active_support'
 require 'active_support/core_ext/string/filters'
 require 'memo_wise'
 require 'slop'
 
 class CliProgram
+  prepend MemoWise
+
   OPTION_TYPES_TO_EXPOSE = [
     Slop::IntegerOption,
-  ]
-
-  prepend MemoWise
+  ].freeze
 
   attr_reader :arguments, :options, :stdin_content
 

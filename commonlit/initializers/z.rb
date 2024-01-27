@@ -1240,3 +1240,43 @@ module RungerSprocketsPatches
   end
 end
 Sprockets::Rails::Helper.prepend(RungerSprocketsPatches)
+
+if Rails.env.development?
+  # This monkeypatch makes it easy to restore the DB w/ `dbrest` without having to
+  # shut down and then restart all running Rails processes.
+  # Inspired by https://github.com/dafalcon/pgreset.
+  class ActiveRecord::ConnectionAdapters::PostgreSQLAdapter
+    private
+
+    def exec_no_cache(sql, name, binds, async:, allow_retry:, materialize_transactions:)
+      retries ||= 0
+      mark_transaction_written_if_write(sql)
+
+      # make sure we carry over any changes to ActiveRecord.default_timezone that have been
+      # made since we established the connection
+      update_typemap_for_default_timezone
+
+      type_casted_binds = type_casted_binds(binds)
+      log(sql, name, binds, type_casted_binds, async:) do
+        with_raw_connection do |conn|
+          result = conn.exec_params(sql, type_casted_binds)
+          verified!
+          result
+        end
+      end
+    rescue ActiveRecord::ConnectionFailed, ActiveRecord::NoDatabaseError
+      retries += 1
+
+      if retries <= 10
+        $stdout.puts("DB connection failed. Re-establishing...")
+        sleep(0.08)
+        ActiveRecord::Base.establish_connection
+        retry
+      end
+    end
+  end
+
+  # Silence the above method in backtraces, so that not every query is
+  # attributed to it.
+  Rails.backtrace_cleaner.add_silencer { |line| line =~ /exec_no_cache/ }
+end

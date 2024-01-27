@@ -7,5 +7,13 @@
 set -euo pipefail # exit on any error, don't allow undefined variables, pipes don't swallow errors
 set -x # print executed commands
 
+# Kill existing connections. They will be re-established via the #exec_no_cache monkeypatch in z.rb.
+psql -c "\
+SELECT pg_terminate_backend(pg_stat_activity.pid)
+FROM pg_stat_activity
+WHERE datname='commonlit_development'
+AND pid <> pg_backend_pid();
+"
+
 dropdb --if-exists commonlit_development && \
   createdb -T commonlit_development_bak commonlit_development --no-password

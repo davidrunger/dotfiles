@@ -65,10 +65,6 @@ class InstallPackagesInBackground
       javascript_command_parts << 'yarn install --check-files'
     end
 
-    if !seen_hash?('packages/component-library/')
-      javascript_command_parts << 'cd ./packages/component-library && yarn build'
-    end
-
     javascript_command_parts.join(' && ')
   end
 

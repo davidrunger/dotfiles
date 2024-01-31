@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+# cd into [gem] [d]irectory
+
+set -euo pipefail # exit on any error, don't allow undefined variables, pipes don't swallow errors
+
+echo "$(gem environment | rg '/Users/.*/gems/' | head -1 | awk '{print $NF}')/gems"

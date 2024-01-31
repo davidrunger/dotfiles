@@ -32,7 +32,7 @@ alias gcu='git add . && git commit -m "Z Update"'
 alias gd='git diff --no-prefix'
 alias gdc='git diff --no-prefix --cached'
 alias gdob='git diff origin/$(git branch --show-current)..$(git branch --show-current)'
-alias gemd='cd  ~/.rbenv/versions/3.2.2/lib/ruby/gems/3.2.0/gems/'
+alias gemd='cd "$(gem-directory)"'
 alias gemdg='cd  ~/.rbenv/versions/3.2.2/lib/ruby/gems/3.2.0/bundler/gems'
 alias gg="git log --graph --abbrev-commit --decorate --date=relative --format=format:'%C(bold blue)%h%C(reset) %C(bold green)%d%C(reset) %C(white)%s%C(reset) - %C(bold white)%an%C(reset) %C(bold yellow)(%ar)%C(reset)' --all"
 alias gig='s ~/.gitignore'

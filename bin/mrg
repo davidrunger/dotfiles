@@ -14,6 +14,7 @@
 # load("#{Dir.home}/code/dotfiles/utils/ruby/debug.rb")
 
 require_relative "#{Dir.home}/code/dotfiles/utils/ruby/command_line_program.rb"
+require_relative "#{Dir.home}/code/dotfiles/utils/ruby/string_patches.rb"
 
 sloptions =
   Slop.parse do |o|

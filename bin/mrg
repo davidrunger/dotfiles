@@ -11,7 +11,7 @@
 #   except for files starting with "utils/":
 #     mrg "require 'slop'" options -e utils/
 
-load("#{Dir.home}/code/dotfiles/utils/ruby/debug.rb")
+# load("#{Dir.home}/code/dotfiles/utils/ruby/debug.rb")
 load("#{Dir.home}/code/dotfiles/utils/ruby/cli_program.rb")
 
 sloptions =

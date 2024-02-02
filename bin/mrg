@@ -29,13 +29,44 @@ class MultiLevelRipgrep < CommandLineProgram
   def call
     *@initial_filters, @final_search = arguments
 
-    system(command, exception: true)
+    line_matches =
+      `#{command}`.split("\n").map do |line|
+        line.
+          match(/(?<prefix>\A\e\[0m\e\[35m\S+:\e\[0m\e\[32m\d+\e\[0m: )(?<remainder>.*\z)/).
+          named_captures.symbolize_keys
+      end.map do |line_match|
+        path, line_number = line_match[:prefix].split(':').map { _1.split(':').first }
+        line_match.merge(path_segments: path.split('/'), line_number:)
+      end
+
+    max_prefix_length = line_matches.map { _1[:prefix].size }.max
+
+    current_path_segments = nil
+
+    line_matches.
+      sort_by do |line_match|
+        line_match[:path_segments] + [Integer(line_match[:line_number].uncolor)]
+      end.each do |line_match|
+        next_path_segments = line_match[:path_segments]
+        if current_path_segments != next_path_segments
+          if !current_path_segments.nil?
+            puts
+          end
+
+          puts("-- #{next_path_segments.join('/').uncolor} ".ljust(80, '-'))
+        end
+        current_path_segments = next_path_segments
+
+        prefix, remainder = line_match.values_at(:prefix, :remainder)
+        puts("#{prefix.rjust(max_prefix_length)}#{remainder}")
+      end
   end
 
   private
 
   def command
-    "rg '#{@final_search}' #{subshell_for_files_matching_initial_filters}"
+    'rg -n -H --no-heading --color=always ' \
+      "'#{@final_search}' #{subshell_for_files_matching_initial_filters}"
   end
 
   memo_wise \

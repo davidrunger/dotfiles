@@ -42,8 +42,8 @@ class MultiLevelRipgrep < CliProgram
 
     @initial_filters.each do |initial_filter|
       file_filter_command =
-        "$(rg '#{initial_filter}' -l -F #{file_filter_command})".
-          sub(/-F \)\z/, '-F)')
+        "$(rg '#{initial_filter}' -l #{file_filter_command})".
+          sub(/ \)\z/, ')')
     end
 
     if (exclude = options[:exclude])

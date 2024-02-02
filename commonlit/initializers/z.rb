@@ -103,14 +103,10 @@ module Runger
       @config ||= Runger::RungerConfig.instance
     end
 
-    def log_caller
-      stack_trace =
-        Runger.
-          commonlit_stack_trace_lines_until_logging.
-          map { AmazingPrint::Colors.yellow(_1) }
-
-      puts(stack_trace)
-      Runger.log_puts(stack_trace)
+    def print_caller
+      Runger.log_puts(
+        Runger.commonlit_stack_trace_lines_until_logging.map { AmazingPrint::Colors.yellow(_1) },
+      )
     end
 
     def print_verbose_caller
@@ -283,7 +279,7 @@ ActiveSupport::Notifications.subscribe("sql.active_record") do |_name, start, fi
       --
       #{AmazingPrint::Colors.green("query # #{$runger_query_count}")}
     MESSAGE
-    log_verbose_ar_trace ? Runger.print_verbose_caller : Runger.log_caller
+    log_verbose_ar_trace ? Runger.print_verbose_caller : Runger.print_caller
     Runger.log_puts
   end
 end
@@ -916,7 +912,7 @@ if ENV.key?("RUNGER_DEBUG_EXCON")
 
       if event_name == "request.excon"
         Runger.log_puts(AmazingPrint::Colors.yellow("^^^"))
-        Runger.log_caller
+        Runger.print_caller
       end
 
       Runger.log_puts
@@ -1045,14 +1041,14 @@ module RungerApplicationControllerPatches
 
   def redirect_to(*args, **kwargs)
     Runger.log_puts(AmazingPrint::Colors.purple("Redirecting to: #{args.first} #{kwargs}"))
-    Runger.log_caller
+    Runger.print_caller
     super
   end
 
   def sign_in(*args)
     record = args.detect { |arg| arg.respond_to?(:email) }
     Runger.log_puts(AmazingPrint::Colors.purple("Signing in #{record.class.name} #{record.email || record.user_name}"))
-    Runger.log_caller
+    Runger.print_caller
     super
   end
 end

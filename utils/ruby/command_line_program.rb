@@ -1,11 +1,11 @@
 # frozen_string_literal: true
 
 require 'active_support'
-require 'active_support/core_ext/string/filters'
+require 'active_support/all'
 require 'memo_wise'
 require 'slop'
 
-class CliProgram
+class CommandLineProgram
   prepend MemoWise
 
   OPTION_TYPES_TO_EXPOSE = [

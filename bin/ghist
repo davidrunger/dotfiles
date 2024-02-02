@@ -11,7 +11,7 @@
 #   ghist app/controllers/application_controller.rb 10
 
 # load("#{Dir.home}/code/dotfiles/utils/ruby/debug.rb")
-load("#{Dir.home}/code/dotfiles/utils/ruby/cli_program.rb")
+load("#{Dir.home}/code/dotfiles/utils/ruby/command_line_program.rb")
 
 sloptions =
   Slop.parse do |o|
@@ -21,7 +21,7 @@ sloptions =
     end
   end
 
-class GitHistory < CliProgram
+class GitHistory < CommandLineProgram
   def call
     # puts(%(most_recent_commit_with_file: #{most_recent_commit_with_file}))
     # puts(%(num_commits: #{num_commits}))

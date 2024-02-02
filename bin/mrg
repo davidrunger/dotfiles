@@ -12,7 +12,8 @@
 #     mrg "require 'slop'" options -e utils/
 
 # load("#{Dir.home}/code/dotfiles/utils/ruby/debug.rb")
-load("#{Dir.home}/code/dotfiles/utils/ruby/cli_program.rb")
+
+require_relative "#{Dir.home}/code/dotfiles/utils/ruby/command_line_program.rb"
 
 sloptions =
   Slop.parse do |o|
@@ -23,7 +24,7 @@ sloptions =
     end
   end
 
-class MultiLevelRipgrep < CliProgram
+class MultiLevelRipgrep < CommandLineProgram
   def call
     *@initial_filters, @final_search = arguments
 

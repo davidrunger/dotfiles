@@ -13,9 +13,7 @@ function scrapeColumn() {
 
   console.log(answer);
 
-  const nextButton = document.querySelector(
-    '[data-source-file="pagination.tsx"][aria-label="Next"]:not([disabled])'
-  );
+  const nextButton = document.querySelector('[aria-label="Next"]:not([disabled])');
 
   if (nextButton) {
     nextButton.click();

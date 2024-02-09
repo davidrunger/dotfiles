@@ -48,6 +48,9 @@ export PATH=node_modules/.bin:$PATH
 
 export PATH=$HOME/code/dotfiles/bin:$HOME/bin:$PATH
 
+# https://github.com/Homebrew/homebrew-core/issues/ 121043#issuecomment-1397888835
+export PATH=$PATH:$HOMEBREW_PREFIX/opt/postgresql@16/bin
+
 # load fzf (fuzzy searching)
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 

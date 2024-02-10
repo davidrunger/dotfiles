@@ -26,6 +26,7 @@ sloptions =
   end
 
 class MultiLevelRipgrep < CommandLineProgram
+  # rubocop:disable Metrics/MethodLength
   def call
     *@initial_filters, @final_search = arguments
 
@@ -36,10 +37,12 @@ class MultiLevelRipgrep < CommandLineProgram
           named_captures.symbolize_keys
       end.map do |line_match|
         path, line_number = line_match[:prefix].split(':').map { _1.split(':').first }
-        line_match.merge(path_segments: path.split('/'), line_number:)
+        path_segments = path.split('/')
+        line_match.merge(
+          path_segments:,
+          line_number:,
+        )
       end
-
-    max_prefix_length = line_matches.map { _1[:prefix].size }.max
 
     current_path_segments = nil
 
@@ -53,14 +56,20 @@ class MultiLevelRipgrep < CommandLineProgram
             puts
           end
 
-          puts("-- #{next_path_segments.join('/').uncolor} ".ljust(80, '-'))
+          puts(
+            "-- #{next_path_segments.join('/').uncolor.yellowish} ".
+              ljust(80, '-').
+              gsub('-', '-'.cyanish),
+          )
         end
         current_path_segments = next_path_segments
 
         prefix, remainder = line_match.values_at(:prefix, :remainder)
-        puts("#{prefix.rjust(max_prefix_length)}#{remainder}")
+        puts(prefix)
+        puts(remainder)
       end
   end
+  # rubocop:enable Metrics/MethodLength
 
   private
 

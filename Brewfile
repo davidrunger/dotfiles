@@ -1,3 +1,5 @@
+brew "bat"
 brew "exa"
 brew "git-delta"
 brew "gitleaks"
+brew "ripgrep"

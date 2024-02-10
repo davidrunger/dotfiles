@@ -48,4 +48,7 @@ touch ~/.pry_history
 #   slop \
 #   tapp
 
-# yarn global add collapsify http-server ts-node
+# yarn global add \
+#   collapsify \
+#   http-server \
+#   ts-node

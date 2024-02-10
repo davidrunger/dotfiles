@@ -272,6 +272,7 @@ ActiveSupport::Notifications.subscribe("sql.active_record") do |_name, start, fi
   end
 
   if (log_ar_trace || log_verbose_ar_trace) && !defined?(Rails::Console)
+    Runger.log_puts(AmazingPrint::Colors.blue(sql))
     Runger.log_puts(AmazingPrint::Colors.yellow(<<~MESSAGE.squish))
       ^^^ (took
       #{AmazingPrint::Colors.red((finish - start).round(3).to_s)}

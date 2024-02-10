@@ -1,6 +1,12 @@
 # frozen_string_literal: true
 
 class String
+  AmazingPrint::Colors.methods(false).each do |color|
+    define_method(color) do
+      AmazingPrint::Colors.send(color, self)
+    end
+  end
+
   def cpp
     # copying SQL, e.g. User.select(:id, :email).to_sql.cpp
     if start_with?('SELECT')

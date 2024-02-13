@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 
-# [g]it [o]ne[l]ine [m]ine
+# [g]it [o]ne[l]ine (used to be [m]ine only but now it's the commits since main)
 
 set -euo pipefail # exit on any error, don't allow undefined variables, pipes don't swallow errors
 
 git_end=${1:-HEAD}
 
-git log $(main-branch)..$git_end --oneline --author="$GIT_SELF_AUTHOR_NAME"
+git log $(main-branch)..$git_end --oneline

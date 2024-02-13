@@ -28,12 +28,11 @@ class GitBranchListWhitespaceReducer < CommandLineProgram
     if shortest_space_string <= desired_num_spaces
       @stdin_content
     else
+      spaces_to_remove = shortest_space_string - desired_num_spaces
+
       @stdin_content.
         split("\n").
-        map do |line|
-          spaces_to_remove = shortest_space_string - desired_num_spaces
-          line.sub(/ {#{spaces_to_remove}}/, "")
-        end.
+        map { _1.sub(/(\A[ *]{2}\S+)#{' ' * spaces_to_remove}/, '\1') }.
         join("\n")
     end
   end
@@ -49,7 +48,7 @@ class GitBranchListWhitespaceReducer < CommandLineProgram
   end
 
   def num_spaces_in_line(line)
-    line.match(/[ *]{2,}\S+(?<spaces> +)\S+/)[:spaces].size
+    line.match(/[ *]{2}\S+(?<spaces> +)\S+/)[:spaces].size
   end
 
   def lengths_of_spaces

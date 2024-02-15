@@ -22,6 +22,11 @@ if Rails.env.in?(%w[development test])
   load("#{Dir.home}/code/dotfiles/utils/ruby/tapp.rb")
 end
 
+if Rails.env.test? && !defined?(Rails::Console)
+  # This is needed on z-dr-silence-irb-context-warning branch.
+  require("rspec/core")
+end
+
 module Runger
 end
 
@@ -219,21 +224,27 @@ if defined?(RSpec)
     end
   end
 
-  RSpec.configure do |config|
-    # Allow focusing RSpec test(s) using `fit`, `fdescribe`, and `fcontext`.
-    config.filter_run_when_matching(:focus)
+  if !defined?(Rails::Console)
+    RSpec.configure do |config|
+      # Allow focusing RSpec test(s) using `fit`, `fdescribe`, and `fcontext`.
+      config.filter_run_when_matching(:focus)
 
-    config.before(:all) do
-      if show_code_coverage && !Object.ancestors.include?(RungerObjectLoadPatch)
-        Object.prepend(RungerObjectLoadPatch)
+      config.before(:all) do
+        if show_code_coverage && !Object.ancestors.include?(RungerObjectLoadPatch)
+          Object.prepend(RungerObjectLoadPatch)
+        end
       end
-    end
 
-    config.before(:each, type: :system, js: true) do
-      if Runger.config.headful_browser? || Runger.config.walk_through_system_specs?
-        ENV["NO_HEADLESS"] = "true"
-      else
-        ENV.delete("NO_HEADLESS")
+      config.before(:each) do |example|
+        Rails.logger.info("@@@: #{example.full_description}")
+      end
+
+      config.before(:each, type: :system, js: true) do
+        if Runger.config.headful_browser? || Runger.config.walk_through_system_specs?
+          ENV["NO_HEADLESS"] = "true"
+        else
+          ENV.delete("NO_HEADLESS")
+        end
       end
     end
   end
@@ -421,14 +432,6 @@ if Rails.env.development? && $PROGRAM_NAME.include?("sidekiq")
     else
       Sidekiq::Logger.prepend(RungerSidekiqLoggerPatches)
       config[:job_logger] = SidekiqExt::JobLogger
-    end
-  end
-end
-
-if Rails.env.test?
-  RSpec.configure do |config|
-    config.before(:each) do |example|
-      Rails.logger.info("@@@: #{example.full_description}")
     end
   end
 end
@@ -671,7 +674,7 @@ def lr
   load("./personal/runner.rb")
 end
 
-if Rails.env.test?
+if Rails.env.test? && !defined?(Rails::Console)
   # Don't print full details about ActiveRecord objects if really long.
   class ActiveRecord::Base
     module RungerPatches

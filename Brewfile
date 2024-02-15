@@ -1,5 +1,5 @@
-brew "bat"
-brew "eza"
-brew "git-delta"
-brew "gitleaks"
-brew "ripgrep"
+brew 'bat'
+brew 'eza'
+brew 'git-delta'
+brew 'gitleaks'
+brew 'ripgrep'

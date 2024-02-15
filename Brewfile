@@ -3,6 +3,7 @@
 brew 'bat'
 brew 'coreutils'
 brew 'eza'
+brew 'fzf'
 brew 'git-delta'
 brew 'gitleaks'
 brew 'memcached'

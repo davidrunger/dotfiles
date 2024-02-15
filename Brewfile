@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 brew 'bat'
+brew 'coreutils'
 brew 'eza'
 brew 'git-delta'
 brew 'gitleaks'

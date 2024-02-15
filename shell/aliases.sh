@@ -55,7 +55,7 @@ alias gstash='git stash --include-untracked --keep-index'
 alias gunstage='git reset HEAD'
 alias gunstash='git stash apply'
 alias hwm='hpr && echo && wm'
-alias ls='exa'
+alias ls='eza'
 alias md='mkdir -p'
 alias rc="bin/rails console"
 alias rcg='rg --max-columns=1000 --context=2 --ignore-case'

@@ -1095,7 +1095,10 @@ end
 
 module RungerPaperclipPatches
   def url(...)
-    if (super_value = super).match?(%r{\A/system/\w+/images/\d+|\.(jpe?g|png)(\?\d+)?\z}i)
+    if (super_value = super).match?(%r{\A/system/\w+/images/\d+|\.(jpe?g|png)(\?\d+)?\z}i) &&
+        # Using factories in development will try to alter public/images/commonlit_library_logo.png.
+        caller.none? { _1.include?("spec/factories/") }
+      Runger.print_caller
       "/images/commonlit_library_logo.png"
     else
       super_value

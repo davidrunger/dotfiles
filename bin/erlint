@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+
+# Run ERB Lint.
+
+set -euo pipefail # exit on any error, don't allow undefined variables, pipes don't swallow errors
+set -x # print executed commands
+
+files_for_erblint=$(changed-not-deleted-files | rg "\.erb$" || true)
+
+if [[ $files_for_erblint != "" ]]; then
+  # shellcheck disable=SC2086
+  if ! bin/erblint $files_for_erblint ; then
+    set +x
+    blue "Autocorrecting..."
+    bin/erblint --autocorrect $files_for_erblint
+    blue "... done."
+    set -x
+
+    exit 1
+  fi
+fi

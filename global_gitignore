@@ -19,6 +19,7 @@ spec/.rubocop.yml
 app/workers/load_runner.rb
 
 # binstubs missing from commonlit repo
+bin/erblint
 bin/i18n-tasks
 bin/rubocop
 

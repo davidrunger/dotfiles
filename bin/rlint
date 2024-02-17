@@ -7,7 +7,7 @@ set -x # print executed commands
 
 files_for_rubocop=$(
   changed-not-deleted-files | \
-    rg -v "\.(tsx?|json)$" || \
+    rg -v "\.(erb|json|tsx?)$" || \
     true
 )
 

@@ -23,7 +23,7 @@ bin/erblint
 bin/i18n-tasks
 bin/rubocop
 
-# Execting TypeScript in node
+# Executing TypeScript in node
 # we need this to be in `app/javascript/` (not `personal/`) to use the project TypeScript config
 # We can't have a file called `typescript.ts`! https://commonlit.slack.com/archives/C5BFTS7NC/p1706036960165969?thread_ts=1706023596.962889&cid=C5BFTS7NC
 app/javascript/typescript-scratchpad.ts

@@ -1089,6 +1089,20 @@ module Commonlit
   class Application < Rails::Application
     config.to_prepare do
       $runger_patch_application_controller.call(ApplicationController)
+
+      # https://owaiskhan.me/post/improving-performance-in-development-on-a-big-rails-app
+      # This does actually seem to save a few hundred milliseconds. It's a
+      # decent fraction of the overall time (which is ~800 milliseconds before
+      # and maybe ~600 milliseconds after.)
+      if Rails.env.development?
+        if $skipped_once
+          def (Commonlit::Application.routes_reloader.send(:updater)).execute
+            execute_if_updated
+          end
+        else
+          $skipped_once = true
+        end
+      end
     end
   end
 end

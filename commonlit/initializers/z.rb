@@ -794,6 +794,20 @@ $stdout.sync = true
 Rails.application.configure do
   config.lograge.enabled = true
   config.lograge.formatter = ->(data) { Runger::LogFormatter.new(data).call }
+  config.lograge.custom_options = lambda do |event|
+    {
+      path: event.payload[:path],
+      admin_user: event.payload[:admin_user],
+      exception: event.payload[:exception]&.first,
+      host: event.payload[:host],
+      ip: event.payload[:ip],
+      remote_ip: event.payload[:remote_ip],
+      queue_wait: event.payload[:queue_wait],
+      x_forwarded_for: event.payload[:x_forwarded_for],
+      user_id: event.payload[:user_id],
+      params: event.payload[:params],
+    }.compact
+  end
 end
 
 module Runger

@@ -49,9 +49,10 @@ opts =
     o.string('-t', '--target', 'jest target pattern')
     o.string('--coverage-target', 'specify SIMPLECOV_TARGET_FILE')
     o.bool('-b', '--backtrace', 'print backtrace when errors occur or tests fail')
+    o.bool('-f', '--fail-fast', 'stop running specs after first failure')
     o.bool('-s', '--skip-spring', 'do not use spring')
     o.bool('-c', '--force-coverage-detail', 'print code coverage info even if 100% covered')
-    o.bool('-f', '--force-guardfile-template-copy', 'force copying guardfile to personal directory')
+    o.bool('--force', 'force copying guardfile to personal directory')
     o.bool('-d', '--debug-guard', 'enable guard debug logging')
     o.bool('-l', '--debug-listen', 'enable listen debug logging')
     o.bool('-v', '--headful-chrome', 'run tests with headful chrome browser')
@@ -143,6 +144,7 @@ class Runner
     {
       'RUBYGEMS_GEMDEPS' => '', # this suppresses a warning from guard
       'RSPEC_BACKTRACE' => @opts.backtrace? ? '1' : nil,
+      'FAIL_FAST' => @opts.fail_fast? ? '1' : nil,
       'HEADFUL_CHROME' => @opts.headful_chrome? ? '1' : nil,
       'LISTEN_GEM_DEBUGGING' => @opts.debug_listen? ? 'debug' : nil,
       'TARGET_SPEC_FILES' => @opts.arguments.empty? ? nil : @opts.arguments.join(' '),

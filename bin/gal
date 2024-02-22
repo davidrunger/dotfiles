@@ -158,7 +158,7 @@ class Runner
 
   memoize \
   def guardfile_path
-    if !File.exist?(working_directory_guardfile_path) || @opts.force_guardfile_template_copy?
+    if !File.exist?(working_directory_guardfile_path) || @opts.force?
       copy_dotfile_to_working_directory
     end
     working_directory_guardfile_path

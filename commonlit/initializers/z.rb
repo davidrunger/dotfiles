@@ -112,6 +112,7 @@ module Runger
       Runger.log_puts(
         Runger.commonlit_stack_trace_lines_until_logging.map { AmazingPrint::Colors.yellow(_1) },
       )
+      puts # Print an extra newline at the end so multiple calls don't blend together.
     end
 
     def print_verbose_caller

@@ -1314,3 +1314,28 @@ if Rails.env.development?
   # attributed to it.
   Rails.backtrace_cleaner.add_silencer { |line| line =~ /exec_no_cache/ }
 end
+
+class String
+  # reverse translate (ruby)
+  def rtr
+    if (translation_key = rt)
+      %(t("#{translation_key}")).cpp
+    end
+  end
+
+  # reverse translate (javascript)
+  def rtj
+    if (translation_key = rt)
+      %(I18n.t('#{translation_key}')).cpp
+    end
+  end
+
+  private
+
+  # reverse translate
+  def rt
+    jpf("config/locales/en.json")["en"].
+      detect { |_key, value| value == self }.
+      first
+  end
+end

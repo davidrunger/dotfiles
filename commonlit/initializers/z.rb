@@ -115,6 +115,8 @@ module Runger
       puts # Print an extra newline at the end so multiple calls don't blend together.
     end
 
+    alias_method(:log_caller, :print_caller)
+
     def print_verbose_caller
       Runger.log_puts(
         Runger.caller_lines_until_logging.map { AmazingPrint::Colors.yellow(_1) },

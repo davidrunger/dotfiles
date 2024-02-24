@@ -2,6 +2,7 @@
 
 require 'active_support'
 require 'active_support/all'
+require 'amazing_print'
 require 'memo_wise'
 require 'slop'
 

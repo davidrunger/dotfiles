@@ -11,17 +11,23 @@
 #
 # Written laregly by ChatGPT.
 
-require 'active_support/all'
-require 'amazing_print'
-require 'slop'
+load("#{Dir.home}/code/dotfiles/utils/ruby/command_line_program.rb")
 
-class SpecFileFinder
-  def initialize(file_paths, options)
-    @file_paths = file_paths
-    @options = options
+sloptions =
+  Slop.parse do |o|
+    o.bool('-D', '--exclude-deleted', 'exclude deleted files', default: false)
+    o.integer('-t', '--top', 'number of files to show', default: 40)
+    o.string('-f', '--filter', 'a string that spec paths must include')
+    o.on('-h', '--help', 'view this help info') do
+      Sf.print_options(o)
+      exit
+    end
   end
 
-  def print_spec_files
+class SpecFileFinder < CommandLineProgram
+  alias file_paths arguments
+
+  def call
     frequently_changed_spec_files.first(@options[:top]).each do |file_changed, lines_changed|
       if File.exist?(file_changed)
         puts("#{lines_changed} #{file_changed}")
@@ -43,7 +49,7 @@ class SpecFileFinder
     line_changes = Hash.new(0)
 
     commits = []
-    @file_paths.each do |file_path|
+    file_paths.each do |file_path|
       commits.concat(`git log --follow --format=%H -- #{file_path}`.strip.split("\n"))
     end
     commits.uniq!
@@ -54,7 +60,7 @@ class SpecFileFinder
       files_changed = `git diff-tree --no-commit-id --name-only -r #{commit}`.strip.split("\n")
 
       files_changed.each do |file_changed|
-        next if @file_paths.include?(file_changed)
+        next if file_paths.include?(file_changed)
         next if @options.exclude_deleted? && !File.exist?(file_changed)
 
         if matching_test_file?(file_changed)
@@ -104,19 +110,4 @@ module Sf
   end
 end
 
-opts =
-  Slop.parse do |o|
-    o.bool('-D', '--exclude-deleted', 'exclude deleted files', default: false)
-    o.integer('-t', '--top', 'number of files to show', default: 40)
-    o.string('-f', '--filter', 'a string that spec paths must include')
-    o.on('-h', '--help', 'view this help info') do
-      Sf.print_options(o)
-      exit
-    end
-  end
-
-if opts.arguments.empty?
-  Sf.print_options(opts.options)
-else
-  SpecFileFinder.new(opts.arguments, opts).print_spec_files
-end
+SpecFileFinder.new(sloptions:).call

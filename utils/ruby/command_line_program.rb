@@ -11,6 +11,7 @@ class CommandLineProgram
 
   OPTION_TYPES_TO_EXPOSE = [
     Slop::IntegerOption,
+    Slop::StringOption,
   ].freeze
 
   attr_reader :arguments, :options, :stdin_content

@@ -18,6 +18,7 @@ sloptions =
     o.bool('-D', '--exclude-deleted', 'exclude deleted files', default: false)
     o.integer('-t', '--top', 'number of files to show', default: 40)
     o.string('-f', '--filter', 'a string that spec paths must include')
+    o.string('-e', '--exclude', 'a string that spec paths must not include')
     o.on('-h', '--help', 'view this help info') do
       Sf.print_options(o)
       exit
@@ -78,10 +79,9 @@ class SpecFileFinder < CommandLineProgram
     (
       file.match?(%r{\.test\.tsx?\z}) ||
         file.match?(%r{\Aspec/(?!(cassettes|factories|fixtures|support)/)})
-    ) && (
-      (filter = @options[:filter]).blank? ||
-        file.include?(filter)
-    )
+    ) &&
+      (filter.blank? || file.include?(filter)) &&
+      (exclude.blank? || !file.include?(exclude))
   end
 
   def ignore_revs_from_file(ignore_revs_file)

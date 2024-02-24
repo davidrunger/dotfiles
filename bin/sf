@@ -71,7 +71,7 @@ class SpecFileFinder
   def matching_test_file?(file)
     (
       file.match?(%r{\.test\.tsx?\z}) ||
-        file.match?(%r{\Aspec/(?!factories/)})
+        file.match?(%r{\Aspec/(?!(cassettes|factories|fixtures|support)/)})
     ) && (
       (filter = @options[:filter]).blank? ||
         file.include?(filter)

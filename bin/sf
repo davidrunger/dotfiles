@@ -34,8 +34,11 @@ class SpecFileFinder
   private
 
   # rubocop:disable Metrics/CyclomaticComplexity
+  # rubocop:disable Metrics/PerceivedComplexity
   def frequently_changed_spec_files
-    ignore_revs = ignore_revs_from_file('.git-blame-ignore-revs')
+    ignore_revs =
+      ignore_revs_from_file('.git-blame-ignore-revs') +
+      ignore_revs_from_file('personal/.git-blame-ignore-revs')
 
     line_changes = Hash.new(0)
 
@@ -62,6 +65,7 @@ class SpecFileFinder
 
     line_changes.sort_by { |_file, lines_changed| -lines_changed }
   end
+  # rubocop:enable Metrics/PerceivedComplexity
   # rubocop:enable Metrics/CyclomaticComplexity
 
   def matching_test_file?(file)

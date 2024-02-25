@@ -4,10 +4,10 @@
 # Opens a GitHub PR in the browser (based on input piped from stdout).
 # (Used in `hpr`, not standalone.)
 
-require 'memery'
+require_relative "#{Dir.home}/code/dotfiles/utils/ruby/memoization.rb"
 
 class OpenPrInBrowser
-  include Memery
+  prepend Memoization
 
   def initialize(create_pr_command_output)
     @create_pr_command_output = create_pr_command_output

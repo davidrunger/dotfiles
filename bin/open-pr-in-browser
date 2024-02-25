@@ -19,7 +19,7 @@ class OpenPrInBrowser
 
   memoize \
   def pr_link
-    @create_pr_command_output[%r{https://github.com/commonlit/.+/pull/\d+}]
+    @create_pr_command_output[%r{https://github.com/[^/]+/[^/]+/pull/\d+}]
   end
 end
 

@@ -11,13 +11,23 @@ RSpec.describe(OpenPrInBrowser) do # rubocop:disable RSpec/FilePath
   describe '#pr_link' do
     subject(:pr_link) { runner.pr_link }
 
-    context 'when the output includes a PR link' do
+    context 'when the output includes a PR link for commonlit' do
       let(:create_pr_command_output) do
         'content https://github.com/commonlit/commonlit/pull/198 more content'
       end
 
       it 'returns the PR link' do
         expect(pr_link).to eq('https://github.com/commonlit/commonlit/pull/198')
+      end
+    end
+
+    context 'when the output includes a PR link for david_runger' do
+      let(:create_pr_command_output) do
+        'content https://github.com/davidrunger/david_runger/pull/199 more content'
+      end
+
+      it 'returns the PR link' do
+        expect(pr_link).to eq('https://github.com/davidrunger/david_runger/pull/199')
       end
     end
 

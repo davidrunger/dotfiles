@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 # Run these tests with:
-#     rspec spec/bin/open-pr-in-browser_spec.rb
+#     gal spec/bin/open-pr-in-browser_spec.rb
 
 load File.expand_path('../../bin/open-pr-in-browser', __dir__)
 

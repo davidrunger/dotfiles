@@ -1,5 +1,4 @@
 [core]
-  editor = code --wait
   excludesfile = /Users/david/.gitignore
   pager = delta
 [include]

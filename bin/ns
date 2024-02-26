@@ -8,7 +8,8 @@ set -euo pipefail # exit on any error, don't allow undefined variables, pipes do
 
 system_spec_focus_files=$(rg --files-with-matches '^ +(fit|fscenario) ' spec/system/ || true)
 if [[ $system_spec_focus_files != "" ]]; then
-  sed -E -i '' -e 's/ (fit|fscenario) / scenario /g' $system_spec_focus_files
+  sed -E -i '' -e 's/ fit / it /g' $system_spec_focus_files
+  sed -E -i '' -e 's/ fscenario / scenario /g' $system_spec_focus_files
 fi
 
 spec_focus_files=$(rg --files-with-matches '^( +|RSpec\.)(fit|fdescribe|fcontext) ' spec/ || true)

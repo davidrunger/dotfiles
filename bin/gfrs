@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+# [g]it [f]iles changed that are [r]uby [s]pec files
+
+set -euo pipefail # exit on any error, don't allow undefined variables, pipes don't swallow errors
+
+gf | rg '^spec/' | rg -v '^spec/(cassettes|factories|fixtures|support)'

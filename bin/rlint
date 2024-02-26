@@ -29,7 +29,6 @@ if [[ $files_for_rubocop != "" ]]; then
     set +x
     red "There were autocorrectable RuboCop violations in these files:"
     blue "$files_with_unstaged_changes"
-    git checkout .
     exit 1
   fi
 fi

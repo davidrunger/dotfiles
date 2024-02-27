@@ -4,4 +4,5 @@
 
 set -euo pipefail # exit on any error, don't allow undefined variables, pipes don't swallow errors
 
-sort "$1" | uniq -c | sort -nr
+# Get input from file argument (if provided) or otherwise from stdin.
+cat "${1:-/dev/stdin}" | sort | uniq -c | sort -nr

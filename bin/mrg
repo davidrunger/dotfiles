@@ -18,7 +18,7 @@ require_relative "#{Dir.home}/code/dotfiles/utils/ruby/string_patches.rb"
 
 sloptions =
   Slop.parse do |o|
-    o.string('-e', '--exclude', 'file pattern to exclude')
+    o.array('-e', '--exclude', 'file pattern(s) to exclude')
     o.on('-h', '--help', 'view this help info') do
       puts(o.to_s.dup.sub(%r{#{Dir.home}/code/dotfiles/bin/}, ''))
       exit
@@ -88,8 +88,8 @@ class MultiLevelRipgrep < CommandLineProgram
           sub(/ \)\z/, " | rg -v ' ' | rg -v ^public/)")
     end
 
-    if (exclude = options[:exclude])
-      file_filter_command.gsub!(/\)\z/, "| rg -v '#{exclude}')")
+    if (exclude = options[:exclude]).present?
+      file_filter_command.gsub!(/\)\z/, "| rg -v '#{exclude.join('|')}')")
     end
 
     file_filter_command

@@ -12,6 +12,8 @@ class Runner
     unpublish_announcements
     set_up_for_canvas
     set_nina_cruz_canvas_user_id
+    verify_tme_faculty_memberships
+    destroy_maple_hills_subscriptions_without_assessment_series
   end
 
   private
@@ -195,6 +197,20 @@ class Runner
     ).find_each do
       _1.update!(school: School.find_by!(name: "Maple Hills High", id: 409370))
     end
+  end
+
+  def verify_tme_faculty_memberships
+    tme.faculty_memberships.find_each { _1.update!(verified: true) }
+  end
+
+  def destroy_maple_hills_subscriptions_without_assessment_series
+    School.
+      find_by!(id: 409370, name: "Maple Hills High").
+      school_district.
+      subscriptions.
+      active.
+      where(includes_assessment_series: false).
+      find_each(&:destroy!)
   end
 
   def ensure_in_roster(roster, person)

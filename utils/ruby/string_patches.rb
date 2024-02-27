@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'io/console'
+
 if !defined?(AmazingPrint)
   require_relative "#{Dir.home}/code/dotfiles/utils/ruby/load_gem.rb"
   load_gem 'amazing_print'
@@ -49,5 +51,9 @@ class String
   # Remove colorizing ANSI escape codes.
   def uncolor
     gsub(/\e\[([;\d]+)?m/, '')
+  end
+
+  def hr
+    self * IO.console.winsize[1]
   end
 end

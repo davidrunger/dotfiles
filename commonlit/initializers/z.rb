@@ -1339,7 +1339,7 @@ class String
 
   # reverse translate
   def rt
-    jpf("config/locales/en.json")["en"].
+    I18n.backend.translations[:en].
       detect { |_key, value| value == self }.
       first
   end

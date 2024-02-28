@@ -1051,6 +1051,8 @@ module RungerApplicationControllerPatches
           ube(config_user_identifier).tap do |user_by_config|
             if user_by_config.present? && user_by_config != super_current_user
               sign_in(user_by_config)
+              # Having signed the user in, now allow logging out or logging in as a different user.
+              Runger.config.current_user!(nil)
             end
           end
         end

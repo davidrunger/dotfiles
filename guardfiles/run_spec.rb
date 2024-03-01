@@ -30,6 +30,10 @@ class RspecPrefixer
   end
 end
 
+IGNORED_FILES = %w[
+  spec/examples.txt
+].freeze
+
 rspec_prefixer = RspecPrefixer.new
 
 guard(:shell, all_on_start: true) do
@@ -49,6 +53,10 @@ guard(:shell, all_on_start: true) do
     )
     }x,
   ) do |guard_match_result|
+    if IGNORED_FILES.include?(guard_match_result.instance_variable_get(:@original_value))
+      next
+    end
+
     begin
       match = guard_match_result.instance_variable_get(:@match_result) || "[no match]"
       puts("Match for #{match} triggered execution.")

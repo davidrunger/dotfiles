@@ -13,8 +13,12 @@ class RspecPrefixer
   def rspec_prefix
     if project_uses_spring? && ENV.fetch("DISABLE_SPRING", nil) != "1"
       "spring "
-    else
+    elsif File.exist?("bin/rspec")
       "bin/"
+    elsif File.exist?("Gemfile")
+      "bundle exec "
+    else
+      fail "Could not determine how to run RSpec."
     end
   end
 

@@ -80,3 +80,7 @@ alias work='cd ~/code'
 alias yic='yarn install --check-files'
 alias zrc='$EDITOR ~/.zshrc'
 alias zs='source ~/.zshrc'
+
+if [ -e "$HOME/code/dotfiles-personal/shell/aliases.sh" ]; then
+  . "$HOME/code/dotfiles-personal/shell/aliases.sh"
+fi

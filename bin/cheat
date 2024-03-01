@@ -6,8 +6,7 @@
 #   $ cheat sayhey 'echo "hi there!"'
 #   $ sayhey #=> prints "hi there!"
 
-dotfiles="$HOME/code/dotfiles"
-file="$dotfiles/bin/$1"
+file="./bin/$1"
 command="$2"
 touch $file
 chmod a+x $file
@@ -22,5 +21,5 @@ set -euo pipefail # exit on any error, don't allow undefined variables, pipes do
 $command
 EOF
 
-$EDITOR $dotfiles
+$EDITOR .
 $EDITOR $file

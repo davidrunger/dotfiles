@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 # Make it easy to copy any object as a string to the clipboard.
-require_relative "#{Dir.home}/code/dotfiles/utils/ruby/copy_utils.rb"
-require_relative "#{Dir.home}/code/dotfiles/utils/ruby/string_patches.rb"
+require_relative "#{ENV['USER_HOME'] || Dir.home}/code/dotfiles/utils/ruby/copy_utils.rb"
+require_relative "#{ENV['USER_HOME'] || Dir.home}/code/dotfiles/utils/ruby/string_patches.rb"
 
 # rubocop:disable Style/TopLevelMethodDefinition
 def skip_for!(seconds) ;

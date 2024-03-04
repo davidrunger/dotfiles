@@ -259,7 +259,8 @@ ActiveSupport::Notifications.subscribe("sql.active_record") do |_name, start, fi
 
   sql = payload[:sql]
 
-  if sql.match?(/\bpg_/)
+  # Ignore Postgres internal queries/commands.
+  if sql.match?(/\bpg_/) || sql.start_with?("SET ")
     next
   end
 

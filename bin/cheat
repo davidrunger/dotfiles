@@ -6,8 +6,10 @@
 #   $ cheat sayhey 'echo "hi there!"'
 #   $ sayhey #=> prints "hi there!"
 
-file="./bin/$1"
+directory="./bin"
+file="$directory/$1"
 command="$2"
+mkdir -p "$directory"
 touch $file
 chmod a+x $file
 

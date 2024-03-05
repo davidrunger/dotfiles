@@ -24,4 +24,5 @@ $command
 EOF
 
 $EDITOR .
-$EDITOR $file
+# Open the file to the documentation line and column.
+editor "$file:3:3"

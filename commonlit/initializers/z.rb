@@ -1300,6 +1300,7 @@ if Rails.env.development?
   class ActiveRecord::ConnectionAdapters::PostgreSQLAdapter
     private
 
+    # rubocop:disable Lint/UnusedMethodArgument
     def exec_no_cache(sql, name, binds, async:, allow_retry:, materialize_transactions:)
       retries ||= 0
       mark_transaction_written_if_write(sql)
@@ -1327,6 +1328,7 @@ if Rails.env.development?
       end
     end
   end
+  # rubocop:enable Lint/UnusedMethodArgument
 
   # Silence the above method in backtraces, so that not every query is
   # attributed to it.

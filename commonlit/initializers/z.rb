@@ -609,6 +609,11 @@ class User
   end
 end
 
+# [a]dminuser that is [me]
+def ame
+  AdminUser.find_by!(email: ENV.fetch("MY_ADMIN_USER_EMAIL"))
+end
+
 # [s]tudent user that is [me]
 def sme
   User.find_by!(user_name: ENV.fetch("MY_STUDENT_USER_NAME"))

@@ -6,12 +6,12 @@
 if [ -f Gemfile ] && rg --quiet "rubocop" Gemfile; then
   # and there is a `bin/rubocop` executable, then run it.
   if [ -f bin/rubocop ]; then
-    bin/rubocop $(git ls-tree -r HEAD --name-only) --force-exclusion "$@"
+    bin/rubocop $(git ls-files) --force-exclusion "$@"
   # otherwise, run rubocop with `bundle exec`.
   else
-    bundle exec rubocop $(git ls-tree -r HEAD --name-only) --force-exclusion "$@"
+    bundle exec rubocop $(git ls-files) --force-exclusion "$@"
   fi
 else
   # otherwise, run rubocop using the latest version on the machine.
-  rubocop $(git ls-tree -r HEAD --name-only) --force-exclusion "$@"
+  rubocop $(git ls-files) --force-exclusion "$@"
 fi

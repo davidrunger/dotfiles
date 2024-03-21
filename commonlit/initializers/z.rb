@@ -728,9 +728,16 @@ end
 # Print Sentry messages to the terminal
 module RungerSentryPatches
   def capture_exception(exception, **options)
+    penultimate_caller_line = caller(1..1).first
+
+    if Rails.env.test? && penultimate_caller_line.include?("lib/sentry/puma.rb")
+      # In test, double logs get generated. Ignore this one. We'll log the one
+      # via lib/sentry/integrable.rb, instead.
+      return # rubocop:disable CommonLit/NoReturn
+    end
+
     handled_display =
-      if caller.any? { _1.match?(/\bswitch_locale\b/) }
-        handled_from = caller(1..1).first
+      if handled?(penultimate_caller_line)
         AmazingPrint::Colors.greenish("handled")
       else
         AmazingPrint::Colors.redish("unhandled")
@@ -739,7 +746,7 @@ module RungerSentryPatches
       #{AmazingPrint::Colors.yellowish('[Sentry captured')}
       #{handled_display}
       #{AmazingPrint::Colors.yellowish('exception]')}
-      #{handled_from && AmazingPrint::Colors.cyanish("(handled from #{handled_from})")}
+      #{penultimate_caller_line && AmazingPrint::Colors.cyanish("(sent from #{penultimate_caller_line})")}
     LOG
     Runger.log_puts(AmazingPrint::Colors.red("#{exception.class}: #{exception.message}"))
 
@@ -764,6 +771,20 @@ module RungerSentryPatches
     Runger.log_puts(AmazingPrint::Colors.red("[Sentry captured message] #{message}"))
 
     super
+  end
+
+  private
+
+  def handled?(penultimate_caller_line)
+    match = penultimate_caller_line.match(%r{\A(?<filename>.+\.rb):\d+:in})
+
+    if match.nil?
+      false
+    else
+      filename = match["filename"]
+
+      !filename.include?("sentry-ruby")
+    end
   end
 end
 if Rails.env.development? || Rails.env.test?

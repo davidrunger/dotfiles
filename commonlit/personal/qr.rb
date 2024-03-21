@@ -4,7 +4,9 @@ class Runner
   include FactoryBot::Syntax::Methods
 
   def run
+    fbs
     touch_user_sign_in_timestamps
+    create_test_user
     update_passwords
     unabbreviate_names
     dismiss_questionnaire
@@ -29,10 +31,33 @@ class Runner
     end
   end
 
+  def create_test_user
+    PermittedEmail.where(entry: "login_test@cl-test.org").find_each(&:destroy!)
+    teacher = create(
+      :teacher,
+      :with_person_profile,
+      :with_person_survey,
+      email: "login_test@cl-test.org",
+    )
+    create(
+      :roster,
+      name: "Test Login User Roster #1",
+      primary_faculty_membership: create(
+        :faculty_membership,
+        person: teacher.person,
+      ),
+      grades: [Grade.find(6)],
+      subjects: [Subject.last],
+    )
+  end
+
   def update_passwords
     update_password!("jackdawson@cl.org")
     update_password!("david.runger@commonlit.org")
     update_password!("dsdemo@cl-test.org")
+    update_password!("login_test@cl-test.org")
+    update_password!("restricted_content@cl.org", ENV.fetch("RC_USER_PASSWORD"))
+    update_password!("t2@cl.org", ENV.fetch("RC_USER_PASSWORD"))
   end
 
   def unabbreviate_names
@@ -222,8 +247,8 @@ class Runner
     end
   end
 
-  def update_password!(email)
-    User.find_by!(email:).update!(password: ENV.fetch("USER_PASSWORD"))
+  def update_password!(email, password = ENV.fetch("USER_PASSWORD"))
+    User.find_by!(email:).update!(password:)
   end
 end
 

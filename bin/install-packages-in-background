@@ -61,8 +61,12 @@ class InstallPackagesInBackground
   def javascript_dependencies_update_command
     javascript_command_parts = []
 
-    if !seen_hash?('yarn.lock')
+    if File.exist?('yarn.lock') && !seen_hash?('yarn.lock')
       javascript_command_parts << 'yarn install --check-files'
+    end
+
+    if File.exist?('pnpm-lock.yaml') && !seen_hash?('pnpm-lock.yaml')
+      javascript_command_parts << 'pnpm install --frozen-lockfile'
     end
 
     javascript_command_parts.join(' && ')

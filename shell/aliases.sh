@@ -74,8 +74,6 @@ alias shaf='git log $(main-branch) --format=format:%H | head -n 1 | cpy'
 alias sk="SIDEKIQ_CONCURRENCY=1 bin/sidekiq"
 alias ss='bin/spring stop'
 alias td='s $HOME/notes/TODO.md'
-alias vds='bin/vite dev'
-alias vdsd='bin/vite dev --debug --trace-deprecation'
 alias work='cd ~/code'
 alias yic='yarn install --check-files'
 alias zrc='$EDITOR ~/.zshrc'

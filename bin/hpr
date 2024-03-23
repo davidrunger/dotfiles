@@ -15,7 +15,6 @@ then
   # Remove hard wrapping from paragraphs in the body.
   # Capture the stdout output in a variable.
   PR_CREATE_OUTPUT=$(gh pr create \
-    --draft \
     --title "$(git log -1 --format=%s)" \
     --body "$(git log -1 --format=%b | ruby -r active_support/core_ext/string/filters -e 'puts(ARGF.read.gsub(":\n- ", ":\n\n- ").split(/\n\n+/).map { _1.gsub(/\s+(?!-)/, " ") }.join("\n\n").strip)')"
   )

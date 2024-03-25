@@ -54,6 +54,9 @@ else if [ -d "$HOME/.local/share/pnpm" ]
 fi
 # pnpm end
 
+# Homebrew
+export HOMEBREW_AUTO_UPDATE_SECS=86400
+
 export PATH=node_modules/.bin:$PATH
 
 export PATH=$HOME/code/dotfiles-personal/bin:$HOME/code/dotfiles/bin:$HOME/bin:$PATH

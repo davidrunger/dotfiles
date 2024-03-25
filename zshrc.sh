@@ -14,6 +14,10 @@ if [ -e "$HOME/code/dotfiles-personal/zshrc.sh" ]; then
   . "$HOME/code/dotfiles-personal/zshrc.sh"
 fi
 
+if [ "$(uname)" = 'Linux' ] ; then
+  . "./shell/linux.sh"
+fi
+
 # asdf setup
 if [ -d "$HOME/.asdf/" ]; then
   . "$HOME/.asdf/asdf.sh"

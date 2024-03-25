@@ -1,5 +1,5 @@
 [core]
-  excludesfile = /Users/david/.gitignore
+  excludesfile = ~/.gitignore
   pager = delta
 [include]
   path = ~/code/dotfiles-personal/git/gitconfig

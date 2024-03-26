@@ -55,7 +55,7 @@ fi
 # pnpm end
 
 # Homebrew
-export HOMEBREW_AUTO_UPDATE_SECS=86400
+export HOMEBREW_NO_AUTO_UPDATE=1
 
 export PATH=node_modules/.bin:$PATH
 

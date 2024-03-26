@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+brew 'awscli'
 brew 'bat'
 brew 'coreutils'
 brew 'eza'

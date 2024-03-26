@@ -8,7 +8,10 @@ set -euo pipefail # exit on any error, don't allow undefined variables, pipes do
 git checkout --quiet $(main-branch)
 
 # delete merged branches
-git branch --merged | rg -v "(\*|$(main-branch)|safe)" | xargs -n 1 git branch -d || true
+merged_branches=$(git branch --merged | rg -v "(\*|$(main-branch)|safe)")
+if [ -n "$merged_branches" ]; then
+    echo "$merged_branches" | xargs -n 1 git branch -d
+fi
 # delete branches where there is no
 git for-each-ref --format='%(refname:short)' refs/heads |
     while read -r branch; do

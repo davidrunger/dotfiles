@@ -43,6 +43,7 @@ touch ~/.pry_history
 #   amazing_print \
 #   benchmark-ips \
 #   chronic \
+#   clipboard \
 #   fcom \
 #   guard \
 #   guard-shell \

@@ -16,6 +16,7 @@ fi
 
 if [ "$(uname)" = 'Linux' ] ; then
   . "$HOME/code/dotfiles/shell/linux.sh"
+  export LINUX=true
 fi
 
 # asdf setup

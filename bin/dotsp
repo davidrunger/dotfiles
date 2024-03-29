@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+# [add some documentation]
+
+set -euo pipefail # exit on any error, don't allow undefined variables, pipes don't swallow errors
+
+cd "$HOME/code/dotfiles-personal"

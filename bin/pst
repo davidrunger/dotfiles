@@ -1,0 +1,11 @@
+#!/usr/bin/env zsh
+
+# [p]a[st]e text from the clipboard
+
+set -euo pipefail # exit on any error, don't allow undefined variables, pipes don't swallow errors
+
+if [ -v LINUX ]; then
+  xclip -o -selection clipboard
+else
+  pbpaste
+fi

@@ -7,16 +7,16 @@ export ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=#555555"
 zstyle ':omz:lib:theme-and-appearance' gnu-ls no
 source $ZSH/oh-my-zsh.sh
 
+if [ "$(uname)" = 'Linux' ] ; then
+  . "$HOME/code/dotfiles/shell/linux.sh"
+  export LINUX=true
+fi
+
 . ~/code/dotfiles/shell/aliases.sh
 . ~/code/dotfiles/shell/functions.sh
 
 if [ -e "$HOME/code/dotfiles-personal/zshrc.sh" ]; then
   . "$HOME/code/dotfiles-personal/zshrc.sh"
-fi
-
-if [ "$(uname)" = 'Linux' ] ; then
-  . "$HOME/code/dotfiles/shell/linux.sh"
-  export LINUX=true
 fi
 
 # asdf setup

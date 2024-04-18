@@ -4,4 +4,5 @@
 
 set -euo pipefail # exit on any error, don't allow undefined variables, pipes don't swallow errors
 
-echo "$(gem environment | rg '/Users/.*/gems/' | head -1 | awk '{print $NF}')/gems"
+gem_directory_pattern="$HOME/.*/gems"
+echo "$(gem environment | rg $gem_directory_pattern | head -1 | awk '{print $NF}')/gems"

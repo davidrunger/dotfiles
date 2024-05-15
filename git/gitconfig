@@ -19,3 +19,5 @@
   default = current
 [log]
   date = iso
+[init]
+  defaultBranch = main

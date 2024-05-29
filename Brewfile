@@ -2,6 +2,7 @@
 
 brew 'awscli'
 brew 'bat'
+brew 'choose-rust'
 brew 'coreutils'
 brew 'eza'
 brew 'fzf'

@@ -3,6 +3,9 @@
 # Example:
 # ./tools/upgrade-ruby.sh 3.3.0 3.3.2
 
+# Tip: after running this and merging the PRs, then run
+# ./tools/delete-merged-branches.sh to delete the branches.
+
 set -uo pipefail # don't allow undefined variables, pipes don't swallow errors
 
 ruby_version_file=".ruby-version"

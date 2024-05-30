@@ -12,10 +12,14 @@ for dir in */ ; do
   echo
   blue "# $dir"
 
-  git checkout safe || gfcob safe
-  update-main-branches
-  gdm
-  gb
+  if [[ "$dir" =~ ^dotfiles ]] ; then
+    echo 'Skipping a dotfiles directory.'
+  else
+    git checkout safe || gfcob safe
+    update-main-branches
+    gdm
+    gb
+  fi
 
   cd - || exit
 done

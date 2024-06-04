@@ -7,6 +7,9 @@ export ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=#555555"
 zstyle ':omz:lib:theme-and-appearance' gnu-ls no
 source $ZSH/oh-my-zsh.sh
 
+# Delete oh-my-zsh d function (which lists directories, I think).
+unfunction d
+
 if [ "$(uname)" = 'Linux' ] ; then
   . "$HOME/code/dotfiles/shell/linux.sh"
   export LINUX=true

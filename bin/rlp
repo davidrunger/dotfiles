@@ -8,5 +8,12 @@ source $HOME/code/dotfiles/bin/rp
 
 processes_of_interest="$processes_to_term|$processes_to_quit|$processes_to_int"
 
-# print the processes of interest
-ps -e | egrep $processes_of_interest | egrep -v $processes_to_ignore
+# Capture info about all processes.
+if [ -v LINUX ]; then
+  all_processes_output=$(ps -eo pid,cmd)
+else
+  all_processes_output=$(ps -e)
+fi
+
+# Print the processes of interest.
+echo "$all_processes_output" | egrep $processes_of_interest | egrep -v $processes_to_ignore

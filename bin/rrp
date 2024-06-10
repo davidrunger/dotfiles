@@ -27,17 +27,17 @@ stop_processes() {
 
   # print the processes to end
   echo 'Trying to kill ...'
-  ps -e | egrep $processes_to_kill | egrep -v $processes_to_ignore
+  ps -eo pid,cmd | egrep $processes_to_kill | egrep -v $processes_to_ignore
 
   # end the processes
-  ps -e | egrep $processes_to_quit | egrep -v $processes_to_ignore | awk '{print $1}' | xargs kill -QUIT
-  ps -e | egrep $processes_to_int | egrep -v $processes_to_ignore | awk '{print $1}' | xargs kill -INT
-  ps -e | egrep $processes_to_term | egrep -v $processes_to_ignore | awk '{print $1}' | xargs kill -TERM
+  ps -eo pid,cmd | egrep $processes_to_quit | egrep -v $processes_to_ignore | awk '{print $1}' | xargs -r kill -QUIT
+  ps -eo pid,cmd | egrep $processes_to_int | egrep -v $processes_to_ignore | awk '{print $1}' | xargs -r kill -INT
+  ps -eo pid,cmd | egrep $processes_to_term | egrep -v $processes_to_ignore | awk '{print $1}' | xargs -r kill -TERM
   sleep 0.5 # wait a moment for processes to exit
 
   # print processes that are still running (though there might be none)
   printf "\nRemaining processes:\n"
-  ps -e | egrep $processes_to_kill | egrep -v $processes_to_ignore
+  ps -eo pid,cmd | egrep $processes_to_kill | egrep -v $processes_to_ignore
 }
 
 # stop processes iff invoked directly (but not if sourced into another script)

@@ -76,12 +76,6 @@ gcomm() {
 # Ex: `gri 3` to rebase with the most recent 3 commits.
 gri() { git rebase -i HEAD~$1 && git status -sb }
 
-# kill rubocop processes
-# (I'm making this an alias so I don't have to deal with escaping the single quotes)
-kr() {
-  ps -e | egrep rubocop | egrep -v e?grep | awk '{print $1}' | xargs kill
-}
-
 # copy my IP address to clipboard
 myip() {
   curl -s ifconfig.co | cpy

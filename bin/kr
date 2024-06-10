@@ -2,6 +2,6 @@
 
 # [k]ill [r]ubocop processes
 
-set -euo pipefail # exit on any error, don't allow undefined variables, pipes don't swallow errors
+set -eu # exit on any error, don't allow undefined variables
 
 ps -eo pid,cmd | egrep rubocop | egrep -v e?grep | awk '{print $1}' | xargs -r kill

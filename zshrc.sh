@@ -68,8 +68,8 @@ export PATH=$HOME/Filen/bin:$HOME/code/dotfiles-personal/bin:$HOME/code/dotfiles
 # https://github.com/Homebrew/homebrew-core/issues/ 121043#issuecomment-1397888835
 export PATH=$PATH:$HOMEBREW_PREFIX/opt/postgresql@16/bin
 
-# load fzf (fuzzy searching)
-[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+# Set up fzf key bindings and fuzzy completion
+source <(fzf --zsh)
 
 # less options
 export LESS='-Rj6 -X --quit-if-one-screen'

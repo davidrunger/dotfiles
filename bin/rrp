@@ -3,7 +3,8 @@
 # Stop/kill [rr]uby [p]rocesses.
 
 processes_to_ignore="e?grep|Slack|Postman|GitHub|rubocop|open-pr-in-browser|Helper|\bbrew\b\
-|solargraph|ionodecache|ruby-lsp|fuzzy-ruby-server|node-ipc|node.mojom|code.*extensions"
+|solargraph|ionodecache|ruby-lsp|fuzzy-ruby-server|node-ipc|node.mojom|code.*extensions\
+|esbuild.*linux.*ping"
 processes_to_quit='ruby'
 processes_to_term='spring'
 processes_to_int='puma|sidekiq'

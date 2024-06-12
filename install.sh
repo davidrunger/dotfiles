@@ -49,6 +49,7 @@ touch ~/.pry_history
 #   guard-shell \
 #   memery \
 #   memo_wise \
+#   redis \
 #   runger_config \
 #   runger_style \
 #   simple_cov-formatter-terminal \

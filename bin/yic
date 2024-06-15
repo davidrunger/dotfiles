@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+
+# Originally meant [y]arn [i]nstall [c]hecking the lockfile; now means install
+# JavaScript dependencies, however they are managed in a given repo.
+
+set -euo pipefail # exit on any error, don't allow undefined variables, pipes don't swallow errors
+
+if [[ $PWD =~ /david_runger$ ]] ; then
+  pnpm install --frozen-lockfile
+else
+  yarn install --check-files
+fi

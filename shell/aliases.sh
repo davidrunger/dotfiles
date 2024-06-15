@@ -75,7 +75,6 @@ alias sk="SIDEKIQ_CONCURRENCY=1 bin/sidekiq"
 alias ss='bin/spring stop'
 alias td='s $HOME/notes/TODO.md'
 alias work='cd ~/code'
-alias yic='yarn install --check-files'
 alias zrc='$EDITOR ~/.zshrc'
 alias zs='source ~/.zshrc'
 

@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+# Switch to [safe] branch and update it.
+
+set -euo pipefail # exit on any error, don't allow undefined variables, pipes don't swallow errors
+
+git checkout safe && gform

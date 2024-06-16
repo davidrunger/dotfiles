@@ -74,13 +74,7 @@ elsif system(%(file #{absolute_path} | egrep -q "json|text"))
   system("#{editor} #{dir}/#{cleaned.delete_prefix(dir)}")
 elsif system(%(file #{file} | egrep -q "json|text"))
   # debug('open file with editor')
-  stdout, stderr, status =
-    Open3.capture3("#{editor} #{cleaned}")
-  # debug(<<~LOG)
-  #   status: #{status}"
-  #   stdout: #{stdout}
-  #   stderr: #{stderr}
-  # LOG
+  system("#{editor} #{cleaned}")
 else
   # debug('open with default application chosen by MacOS')
   system("/usr/bin/open #{absolute_path}")

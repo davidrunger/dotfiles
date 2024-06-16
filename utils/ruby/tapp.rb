@@ -20,7 +20,7 @@ module Tapp::Printer
       filepath, line_number_string = calling_line.match(/\A([^:]*):(\d+)/).to_a.drop(1)
       line_number = Integer(line_number_string)
       calling_line =
-        if ["(irb)"].include?(filepath)
+        if ['(irb)'].include?(filepath)
           filepath
         else
           File.read(filepath).split("\n")[line_number - 1].strip

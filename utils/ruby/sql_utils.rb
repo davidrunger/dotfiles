@@ -8,12 +8,13 @@ module SqlUtils
     'db_host:',
     "-- format\n",
     ' Load (',
-  ]
+  ].freeze
 
   def reformat_match?(sql)
     FORMATTING_NEEDED_PATTERNS.any? { sql.include?(_1) }
   end
 
+  # rubocop:disable Metrics/CyclomaticComplexity, Metrics/MethodLength, Metrics/PerceivedComplexity
   def format_sql_if_necessary
     sql = File.read('personal/sql.sql')
     original_sql = sql.dup
@@ -54,8 +55,8 @@ module SqlUtils
     formatted_query = `cat personal/sql_unformatted.sql | sql-formatter --language=postgresql`
 
     if formatted_query.nil? || formatted_query.empty?
-       # If there was an error, restore original SQL.
-       File.write('personal/sql.sql', original_sql)
+      # If there was an error, restore original SQL.
+      File.write('personal/sql.sql', original_sql)
     else
       if File.exist?('personal/sql_substitutions.txt')
         sql_substitution_pairs = File.read('personal/sql_substitutions.txt').split(/====*/)
@@ -68,9 +69,10 @@ module SqlUtils
         end
       end
 
-      formatted_query.gsub!(/\n+/, "\n")
+      formatted_query.squeeze!("\n")
 
       File.write('personal/sql.sql', formatted_query)
     end
   end
+  # rubocop:enable Metrics/CyclomaticComplexity, Metrics/MethodLength, Metrics/PerceivedComplexity
 end

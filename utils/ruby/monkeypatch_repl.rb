@@ -5,7 +5,7 @@ require_relative "#{ENV['USER_HOME'] || Dir.home}/code/dotfiles/utils/ruby/copy_
 require_relative "#{ENV['USER_HOME'] || Dir.home}/code/dotfiles/utils/ruby/string_patches.rb"
 
 # rubocop:disable Style/TopLevelMethodDefinition
-def skip_for!(seconds) ;
+def skip_for!(seconds)
   $stop_skipping_at = Time.at(Integer(Time.now) + seconds)
 end
 
@@ -18,10 +18,10 @@ def code(filename = nil)
 end
 
 def fzf(options)
-  require "pty"
+  require 'pty'
   leader, follower = PTY.open
   read, write = IO.pipe
-  spawn("fzf", in: read, out: follower)
+  spawn('fzf', in: read, out: follower)
   read.close
   follower.close
   write.puts(options.join("\n"))
@@ -51,7 +51,7 @@ class Object
   # Alias Object#method as #m (because it's shorter to type).
   # Ex.:
   #     user.m(:access_to_library?).source_location
-  alias :m :method
+  alias m method
 
   # copy for a spec expectation
   def cpps

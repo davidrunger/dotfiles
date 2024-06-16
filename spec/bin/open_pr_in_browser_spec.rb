@@ -5,7 +5,7 @@
 
 load File.expand_path('../../bin/open-pr-in-browser', __dir__)
 
-RSpec.describe(OpenPrInBrowser) do # rubocop:disable RSpec/FilePath
+RSpec.describe(OpenPrInBrowser) do
   subject(:runner) { OpenPrInBrowser.new(create_pr_command_output) }
 
   describe '#pr_link' do

@@ -22,8 +22,9 @@ class Hash
       value_at_current_key =
         current_value.tapp.
           detect do |inner_key, _value|
-            inner_key.tapp ===
-              key.tapp
+            # rubocop:disable Style/CaseEquality
+            inner_key.tapp === key.tapp
+            # rubocop:enable Style/CaseEquality
           end&.second
 
       if value_at_current_key.tapp.nil?

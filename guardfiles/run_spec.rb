@@ -2,31 +2,31 @@
 
 # This is used by `gal` when the `spec` `--guardfile` option is used.
 
-require "active_support/core_ext/string/filters"
-require "guard/shell"
-require "memery"
+require 'active_support/core_ext/string/filters'
+require 'guard/shell'
+require 'memery'
 
 class RspecPrefixer
   include Memery
 
   memoize \
   def rspec_prefix
-    if project_uses_spring? && ENV.fetch("DISABLE_SPRING", nil) != "1"
-      "spring "
-    elsif File.exist?("bin/rspec")
-      "bin/"
-    elsif File.exist?("Gemfile")
-      "bundle exec "
+    if project_uses_spring? && ENV.fetch('DISABLE_SPRING', nil) != '1'
+      'spring '
+    elsif File.exist?('bin/rspec')
+      'bin/'
+    elsif File.exist?('Gemfile')
+      'bundle exec '
     else
-      fail "Could not determine how to run RSpec."
+      fail 'Could not determine how to run RSpec.'
     end
   end
 
   memoize \
   def project_uses_spring?
-    return false if !File.exist?("Gemfile")
+    return false if !File.exist?('Gemfile')
 
-    File.read("Gemfile").match?(/gem ['"]spring['"]/)
+    File.read('Gemfile').match?(/gem ['"]spring['"]/)
   end
 end
 
@@ -58,12 +58,12 @@ guard(:shell, all_on_start: true) do
     end
 
     begin
-      match = guard_match_result.instance_variable_get(:@match_result) || "[no match]"
+      match = guard_match_result.instance_variable_get(:@match_result) || '[no match]'
       puts("Match for #{match} triggered execution.")
       # rubocop:disable Rails/TimeZone, Lint/RedundantCopDisableDirective
       start_time = Time.now
       # rubocop:enable Rails/TimeZone, Lint/RedundantCopDisableDirective
-      system("clear")
+      system('clear')
       system(<<~SH.squish)
         #{rspec_prefixer.rspec_prefix}rspec
           #{'-b' if ENV.fetch('RSPEC_BACKTRACE', nil) == '1'}

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 if !defined?(CopyUtils) || !(Object <= CopyUtils)
-  require_relative './utils/ruby/monkeypatch_repl.rb'
+  require_relative 'utils/ruby/monkeypatch_repl.rb'
 end
 
 Pry.config.pager = false

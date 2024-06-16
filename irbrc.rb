@@ -8,7 +8,7 @@
 # - run `irb` via `bin/irb` and have that load this file
 
 if !defined?(CopyUtils) || !(Object <= CopyUtils)
-  require_relative './utils/ruby/monkeypatch_repl.rb'
+  require_relative 'utils/ruby/monkeypatch_repl.rb'
 end
 
 if !defined?(AmazingPrint)

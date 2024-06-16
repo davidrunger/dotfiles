@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 if !defined?(MemoWise)
   require_relative "#{Dir.home}/code/dotfiles/utils/ruby/load_gem.rb"
   load_gem 'memo_wise'

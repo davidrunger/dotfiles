@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require_relative './load_gem'
+require_relative 'load_gem'
 load_gem 'amazing_print' if !defined?(AmazingPrint)
 load_gem 'clipboard' if !defined?(Clipboard)
 

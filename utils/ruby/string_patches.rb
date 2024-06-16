@@ -10,7 +10,7 @@ end
 class String
   AmazingPrint::Colors.methods(false).each do |color|
     define_method(color) do
-      AmazingPrint::Colors.send(color, self)
+      AmazingPrint::Colors.public_send(color, self)
     end
   end
 

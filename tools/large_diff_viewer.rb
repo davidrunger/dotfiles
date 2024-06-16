@@ -2,9 +2,11 @@
 
 # Goes through changed files (relative to the main branch) one at a time.
 
+# rubocop:disable Style/TopLevelMethodDefinition
 def clear_scratch
   scratch!(nil, silent: true)
 end
+# rubocop:enable Style/TopLevelMethodDefinition
 
 last_viewed_file = Runger.config.scratch
 
@@ -21,9 +23,9 @@ changed_files.
       next
     end
 
-    system("hard-clear", exception: true)
+    system('hard-clear', exception: true)
     puts("#{position} / #{changed_files.size}")
-    system({ "DELTA_PAGER" => "cat" }, "gdom #{file}", exception: true)
+    system({ 'DELTA_PAGER' => 'cat' }, "gdom #{file}", exception: true)
     gets
     scratch!(file, silent: true)
   end

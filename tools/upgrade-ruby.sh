@@ -16,7 +16,6 @@ cd "$HOME/code" || exit
 
 for dir in */ ; do
   cd "$dir" || exit
-  echo
   blue "# $dir"
 
   if test -e $ruby_version_file && rg -F "$old_ruby_version" $ruby_version_file ; then
@@ -32,6 +31,8 @@ for dir in */ ; do
   else
     echo "Not at Ruby $old_ruby_version"
   fi
+
+  echo
 
   cd - || exit
 done

@@ -27,12 +27,12 @@ for dir in */ ; do
       gacm "Bump Ruby from $old_ruby_version to $new_ruby_version" && \
       hpr
 
-    set +x
+    { set +x; } 2>/dev/null
   else
     echo "Not at Ruby $old_ruby_version"
   fi
 
   echo
 
-  cd - || exit
+  cd - > /dev/null 2>&1 || exit
 done

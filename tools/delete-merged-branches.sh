@@ -12,9 +12,7 @@ for dir in */ ; do
   echo
   blue "# $dir"
 
-  if [[ "$dir" =~ ^dotfiles ]] ; then
-    echo 'Skipping a dotfiles directory.'
-  else
+  if branch-exists 'safe' ; then
     set -e
 
     safe
@@ -22,6 +20,8 @@ for dir in */ ; do
     gb
 
     set +e
+  else
+    echo 'Skipping because no "safe" branch is present.'
   fi
 
   cd - || exit

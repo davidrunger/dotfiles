@@ -26,5 +26,5 @@ for dir in */ ; do
 
   echo
 
-  cd - || exit
+  cd - > /dev/null || exit
 done

@@ -24,5 +24,7 @@ for dir in */ ; do
     echo 'Skipping because no "safe" branch is present.'
   fi
 
+  echo
+
   cd - || exit
 done

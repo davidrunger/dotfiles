@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+
+# Check if a [branch-exists].
+# Exits with 0 (success) if the branch exists, and 1 if it does not.
+
+# Example:
+#   branch-exists add-username-column-to-users
+
+set -euo pipefail # exit on any error, don't allow undefined variables, pipes don't swallow errors
+
+git show-ref --quiet "refs/heads/$1"

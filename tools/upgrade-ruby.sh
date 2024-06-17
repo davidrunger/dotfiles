@@ -19,15 +19,15 @@ for dir in */ ; do
   blue "# $dir"
 
   if test -e $ruby_version_file && rg -F "$old_ruby_version" $ruby_version_file ; then
-    set -x
+    set -ex
 
-    gfcob bump-ruby && \
-      sd -F "$old_ruby_version" "$new_ruby_version" .ruby-version && \
-      bundle update --ruby && \
-      gacm "Bump Ruby from $old_ruby_version to $new_ruby_version" && \
-      hpr
+    gfcob bump-ruby
+    sd -F "$old_ruby_version" "$new_ruby_version" .ruby-version
+    bundle update --ruby
+    gacm "Bump Ruby from $old_ruby_version to $new_ruby_version"
+    hpr
 
-    { set +x; } 2>/dev/null
+    { set +ex; } 2>/dev/null
   else
     echo "Not at Ruby $old_ruby_version"
   fi

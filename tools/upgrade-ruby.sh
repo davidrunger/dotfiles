@@ -18,7 +18,7 @@ for dir in */ ; do
   cd "$dir" || exit
   blue "# $dir"
 
-  if test -e $ruby_version_file && rg -F "$old_ruby_version" $ruby_version_file ; then
+  if test -e $ruby_version_file && rg --quiet -F "$old_ruby_version" $ruby_version_file ; then
     set -ex
 
     gfcob bump-ruby

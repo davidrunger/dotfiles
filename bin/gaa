@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+
+# [g]it [a]dd by patches (plus another [a] for some reason)
+
+set -euo pipefail # exit on any error, don't allow undefined variables, pipes don't swallow errors
+
+# `git add -N .` makes it so that new/untracked files will also be included.
+git add -N . && git add -p

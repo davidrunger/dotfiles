@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+
+# Display a (temporary, automatically disappearing) pop-up desktop notification.
+#
+# notify [TITLE] [BODY]
+#
+# Example:
+#   notify "Job completed" "bundle install"
+
+set -euo pipefail # exit on any error, don't allow undefined variables, pipes don't swallow errors
+
+title="$1"
+body="$2"
+
+if [ -v LINUX ]; then
+  notify-send "$title" "$body"
+else
+  osascript -e "display notification \"$body\" with title \"$title\""
+fi

@@ -117,8 +117,9 @@ class InstallPackagesInBackground
     zsh_command = <<~ZSH.squish
       {
         (
-          #{command} &&
-            osascript -e 'display notification "#{command}" with title "Job completed"'
+          #{command} && \
+            notify 'Command succeeded' '#{command}' || \
+            notify 'Command failed' '#{command}'
         ) & disown
       } > /dev/null 2>&1
     ZSH

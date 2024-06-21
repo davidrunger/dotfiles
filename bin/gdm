@@ -34,6 +34,6 @@ git checkout --quiet -
   (
     git remote prune origin && \
       notify 'Job complete' 'Pruned remote branches' || \
-      notify 'Job failed' 'Prune remote branches'
+      notify 'Job failed' 'Prune remote branches' --time 3600
   ) & disown
 } > /dev/null 2>&1

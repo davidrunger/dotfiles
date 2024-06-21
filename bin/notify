@@ -1,19 +1,52 @@
-#!/usr/bin/env bash
+#!/usr/bin/env ruby
+# frozen_string_literal: true
 
-# Display a (temporary, automatically disappearing) pop-up desktop notification.
-#
-# notify [TITLE] [BODY]
-#
-# Example:
-#   notify "Job completed" "bundle install"
+require 'command_kit'
 
-set -euo pipefail # exit on any error, don't allow undefined variables, pipes don't swallow errors
+class Notify < CommandKit::Command
+  usage 'TITLE BODY [options]'
 
-title="$1"
-body="$2"
+  option :time,
+    short: '-t',
+    value: {
+      type: Integer,
+      default: 5,
+    },
+    desc: 'Number of seconds for which to display the message. (Only works on Linux.)'
 
-if [ -v LINUX ]; then
-  notify-send "$title" "$body"
-else
-  osascript -e "display notification \"$body\" with title \"$title\""
-fi
+  argument :title,
+    required: true,
+    usage: 'TITLE',
+    desc: 'Message title'
+
+  argument :body,
+    required: true,
+    usage: 'BODY',
+    desc: 'Message body'
+
+  examples [
+    '"Job completed" "bundle install"',
+    '"Job completed" "bundle install" --time 60',
+  ]
+
+  description 'Display a pop-up desktop notification.'
+
+  def run(title, body)
+    if ENV['LINUX']
+      command = "notify-send '#{title}' '#{body}'"
+
+      if (time = options[:time])
+        command << " --expire-time=#{time}000"
+      end
+
+      system(command, exception: true)
+    else
+      system(
+        %(osascript -e 'display notification "#{body}" with title "#{title}"'),
+        exception: true,
+      )
+    end
+  end
+end
+
+Notify.start

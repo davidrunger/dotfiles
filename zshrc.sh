@@ -39,6 +39,9 @@ export PATH=$PATH:/opt/homebrew/bin:/opt/homebrew/sbin
 
 # yarn setup
 if command -v yarn &> /dev/null ; then
+  # https://github.com/yarnpkg/yarn/issues/ 9015#issuecomment-2141841791
+  export SKIP_YARN_COREPACK_CHECK=1
+
   export PATH=$(yarn global bin):$PATH
 fi
 

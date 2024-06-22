@@ -44,6 +44,7 @@ touch ~/.pry_history
 #   benchmark-ips \
 #   chronic \
 #   clipboard \
+#   command_kit \
 #   fcom \
 #   guard \
 #   guard-shell \

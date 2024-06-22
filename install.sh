@@ -39,24 +39,6 @@ touch ~/.pry_history
 
 # brew bundle
 
-# gem install \
-#   amazing_print \
-#   benchmark-ips \
-#   chronic \
-#   clipboard \
-#   command_kit \
-#   fcom \
-#   guard \
-#   guard-shell \
-#   memery \
-#   memo_wise \
-#   redis \
-#   runger_config \
-#   runger_style \
-#   simple_cov-formatter-terminal \
-#   slop \
-#   tapp
-
 # yarn global add \
 #   collapsify \
 #   http-server \

@@ -13,7 +13,7 @@ stop_processes() {
   ps -eo pid,cmd | rg "$processes_to_kill" | rg -v "\brg\b"
 
   # end the processes
-  ps -eo pid,cmd | rg "$processes_to_kill" | rg -v "\brg\b" | choose 0 | xargs kill
+  ps -eo pid,cmd | rg "$processes_to_kill" | rg -v "\brg\b" | choose 0 | xargs -r kill
   sleep 0.5 # wait a moment for processes to exit
 
   # print processes that are still running (though there might be none)

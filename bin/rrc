@@ -4,20 +4,21 @@
 
 set -uo pipefail # exit on any error, don't allow undefined variables, pipes don't swallow errors
 
-processes_to_kill='/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'
+processes_to_kill="/Applications/Google Chrome\.app/Contents/MacOS/Google Chrome|\
+/opt/google/chrome/chrome$"
 
 stop_processes() {
   # print the processes to end
   echo 'Trying to kill ...'
-  ps aux | rg "$processes_to_kill" | rg -v "\brg\b"
+  ps -eo pid,cmd | rg "$processes_to_kill" | rg -v "\brg\b"
 
   # end the processes
-  ps aux | rg "$processes_to_kill" | rg -v "\brg\b" | awk '{ print $2 }' | xargs kill
+  ps -eo pid,cmd | rg "$processes_to_kill" | rg -v "\brg\b" | choose 0 | xargs kill
   sleep 0.5 # wait a moment for processes to exit
 
   # print processes that are still running (though there might be none)
   printf "\nRemaining processes:\n"
-  ps aux | rg "$processes_to_kill" | rg -v "\brg\b"
+  ps -eo pid,cmd | rg "$processes_to_kill" | rg -v "\brg\b"
 }
 
 # stop processes iff invoked directly (but not if sourced into another script)

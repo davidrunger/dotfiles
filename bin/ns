@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/usr/bin/env zsh
 
 # [n]o [s]pec file focuses
 #
@@ -6,16 +6,18 @@
 
 set -euo pipefail # exit on any error, don't allow undefined variables, pipes don't swallow errors
 
-system_spec_focus_files=$(rg --files-with-matches '^ +(fit|fscenario) ' spec/system/ || true)
+setopt null_glob
+system_spec_focus_files=$(rg --files-with-matches '^ +(fit|fscenario) ' -g spec/{features,system}/** || true)
 if [[ $system_spec_focus_files != "" ]]; then
-  sed -E -i '' -e 's/ fit / it /g' $system_spec_focus_files
-  sed -E -i '' -e 's/ fscenario / scenario /g' $system_spec_focus_files
+  sd ' fit ' ' it ' $system_spec_focus_files
+  sd ' fscenario ' ' scenario ' $system_spec_focus_files
 fi
+unsetopt null_glob
 
 spec_focus_files=$(rg --files-with-matches '^( +|RSpec\.)(fit|fdescribe|fcontext) ' spec/ || true)
 if [[ $spec_focus_files != "" ]]; then
-  sed -i '' -e 's/ fit / it /g' $spec_focus_files
-  sed -i '' -e 's/ fdescribe / describe /g' $spec_focus_files
-  sed -i '' -e 's/ fcontext / context /g' $spec_focus_files
-  sed -i '' -e 's/RSpec.fdescribe/RSpec.describe/g' $spec_focus_files
+  sd ' fit ' ' it ' $spec_focus_files
+  sd ' fdescribe ' ' describe ' $spec_focus_files
+  sd ' fcontext ' ' context ' $spec_focus_files
+  sd 'RSpec.fdescribe' 'RSpec.describe' $spec_focus_files
 fi

@@ -4,7 +4,7 @@
 #
 # Example:
 #   $ abs Gemfile
-#   # =prints=> /Users/david/code/commonlit/Gemfile
+#   --prints--> /Users/david/code/david_runger/Gemfile
 
 set -euo pipefail # exit on any error, don't allow undefined variables, pipes don't swallow errors
 

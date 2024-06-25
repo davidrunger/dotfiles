@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+# Update the main branch and install dependecies.
+
+set -euo pipefail # exit on any error, don't allow undefined variables, pipes don't swallow errors
+
+update-main-branches && install-packages-in-background

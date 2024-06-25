@@ -14,14 +14,6 @@ ln -sf ~/code/dotfiles/rubocop.yml ~/.rubocop.yml
 ln -sf ~/code/dotfiles/zsh/themes/bolso.zsh-theme ~/.oh-my-zsh/custom/themes/bolso.zsh-theme
 ln -sf ~/code/dotfiles/zshrc.sh ~/.zshrc
 
-if [ -d "$HOME/code/commonlit" ]; then
-  ln -sf ~/code/dotfiles/commonlit/initializers/z.rb ~/code/commonlit/config/initializers/z.rb
-  ln -sf ~/code/dotfiles/commonlit/personal/qr.rb ~/code/commonlit/personal/qr.rb
-  ln -sf \
-    ~/code/dotfiles/commonlit/workers/load_runner.rb \
-    ~/code/commonlit/app/workers/load_runner.rb
-fi
-
 if [ -e "$HOME/code/dotfiles-personal/install.sh" ]; then
   cd $HOME/code/dotfiles-personal/
   $HOME/code/dotfiles-personal/install.sh

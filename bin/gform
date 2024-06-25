@@ -2,6 +2,8 @@
 
 # git fetch origin and rebase updates from main branch
 
+set -euo pipefail # exit on any error, don't allow undefined variables, pipes don't swallow errors
+
 update-main-branches
 
 # We only need to update non-safe/non-main branches; main and safe were updated already above.

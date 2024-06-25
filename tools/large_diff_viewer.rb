@@ -13,7 +13,7 @@ end
 
 last_viewed_file = Runger.config.scratch
 
-changed_files = `gf`.rstrip.split("\n")
+changed_files = `gfc`.rstrip.split("\n")
 
 if !last_viewed_file.in?(changed_files)
   clear_scratch
@@ -28,7 +28,7 @@ changed_files.
 
     system('hard-clear', exception: true)
     puts("#{position} / #{changed_files.size}")
-    system({ 'DELTA_PAGER' => 'cat' }, "gdom #{file}", exception: true)
+    system({ 'DELTA_PAGER' => 'cat' }, "gs #{file}", exception: true)
     gets
     scratch!(file, silent: true)
   end

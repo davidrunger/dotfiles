@@ -1,6 +1,9 @@
 # frozen_string_literal: true
 
-# Goes through changed files (relative to the main branch) one at a time.
+# Goes through changed files in the most recent commit one at a time.
+
+# Example (run from the repo that has the commit):
+#   bin/rails runner /home/david/code/dotfiles/tools/large_diff_viewer.rb
 
 # rubocop:disable Style/TopLevelMethodDefinition
 def clear_scratch

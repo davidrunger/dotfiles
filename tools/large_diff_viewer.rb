@@ -28,7 +28,7 @@ changed_files.
 
     system('hard-clear', exception: true)
     puts("#{position} / #{changed_files.size}")
-    system({ 'DELTA_PAGER' => 'cat' }, "gs #{file}", exception: true)
+    system({ 'DELTA_PAGER' => 'cat' }, "gs --pretty="" #{file}", exception: true)
     gets
     scratch!(file, silent: true)
   end

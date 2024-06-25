@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+
+# Exits with 0 (success) if the current branch is ahead of a specified branch,
+# otherwise exits with 1 (failure). (Used by other scripts, not on its own.)
+#
+# Example (checks whether the current branch is ahead of origin/main):
+#   ahead-of-branch origin/main
+
+set -euo pipefail # exit on any error, don't allow undefined variables, pipes don't swallow errors
+
+branch="$1"
+
+[[ $(git rev-list --right-only --count $branch...HEAD) -gt 0 ]]

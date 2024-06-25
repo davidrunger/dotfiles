@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+
+# Exits with 0 (success) if there are any uncommitted changes (whether staged or unstaged).
+# Exits with 1 (failure) otherwise.
+
+set -euo pipefail # exit on any error, don't allow undefined variables, pipes don't swallow errors
+
+[[ -n $(git status --porcelain) ]]

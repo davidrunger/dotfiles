@@ -4,8 +4,19 @@
 
 set -euo pipefail # exit on any error, don't allow undefined variables, pipes don't swallow errors
 
-# https://superuser.com/a/627529/515015
-git checkout --quiet --detach HEAD && \
-  git fetch --no-tags --quiet origin $(main-branch):$(main-branch) $(main-branch):safe
+# Record the current branch.
+original_branch=$(branch)
 
-git checkout --quiet -
+# Fetch the latest version of the main branch from origin.
+git fetch --no-tags --quiet origin $(main-branch)
+
+# Update the local main branch.
+reset-branch-to-ref $(main-branch) origin/$(main-branch)
+
+# Update the local `safe` branch (if it exists).
+if branch-exists safe ; then
+  reset-branch-to-ref safe origin/$(main-branch)
+fi
+
+# Switch back to the original branch.
+git checkout --quiet "$original_branch"

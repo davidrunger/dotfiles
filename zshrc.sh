@@ -88,7 +88,7 @@ export SIMPLECOV_WRITE_TARGET_TO_FILE=1
 # use homebrew curl rather than system curl
 export PATH="/opt/homebrew/opt/curl/bin:$PATH"
 
-# prevent horrible Mac/Ruby bug https://commonlit.slack.com/archives/C5BFTS7NC/p1643900889475599
+# prevent horrible Mac/Ruby/Rails bug
 export OBJC_DISABLE_INITIALIZE_FORK_SAFETY=YES
 
 # jest config

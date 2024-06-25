@@ -15,6 +15,11 @@ def debug(message)
     message,
   )
 end
+
+def github_path
+  `git remote -v`.match(%r{origin.*github\.com:(.*)\.git})&.to_a&.dig(1) ||
+    'davidrunger/david_runger'
+end
 # rubocop:enable Style/TopLevelMethodDefinition
 
 # debug(<<~LOG)
@@ -62,10 +67,10 @@ elsif (match = file_and_line.match(/(?<controller>[\w\/]+.rb)@(?<action>\w+)/))
 elsif (match = file_and_line.match(/#\(?(?<pr_number>\d{3,})\)?/))
   # debug('open PR with default browser')
   pr_number = match[:pr_number]
-  system(%(open "https://github.com/commonlit/commonlit/pull/#{pr_number}"))
+  system(%(open "https://github.com/#{github_path}/pull/#{pr_number}"))
 elsif file_and_line.match?(GIT_SHA_REGEX)
   # debug('open git sha with default browser')
-  system(%(open "https://github.com/commonlit/commonlit/commit/#{file_and_line}"))
+  system(%(open "https://github.com/#{github_path}/commit/#{file_and_line}"))
 elsif file_and_line.start_with?('http')
   # debug('open HTTP url with default browser')
   system("/usr/bin/open #{file_and_line}")

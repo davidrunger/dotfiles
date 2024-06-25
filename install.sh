@@ -25,13 +25,6 @@ git config core.hookspath ~/code/dotfiles/git/hooks/dotfiles
 touch ~/.hushlogin
 touch ~/.pry_history
 
-# Uninstall/untap commonlit Brewfile tools that I don't use.
-# brew uninstall dopplerhq/cli/doppler > /dev/null 2>&1 || true
-# brew untap dopplerhq/cli > /dev/null 2>&1 || true
-
 # brew bundle
 
-# yarn global add \
-#   collapsify \
-#   http-server \
-#   ts-node
+# pnpm add --global http-server

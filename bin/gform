@@ -4,8 +4,6 @@
 
 update-main-branches
 
-original_commit="$(current-sha)"
-
 # We only need to update non-safe/non-main branches; main and safe were updated already above.
 if ! on-safe-or-main ; then
   if use-strict-git-rules ; then

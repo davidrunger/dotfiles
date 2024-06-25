@@ -46,11 +46,11 @@ class InstallPackagesInBackground
   def ruby_dependencies_update_command
     ruby_command_parts = []
 
-    if !seen_hash?('Gemfile.lock')
+    if file_changed?('Gemfile.lock')
       ruby_command_parts << 'bundle install'
     end
 
-    if !seen_hash?('db/schema.rb')
+    if file_changed?('db/schema.rb')
       ruby_command_parts << 'dbm'
     end
 
@@ -61,15 +61,20 @@ class InstallPackagesInBackground
   def javascript_dependencies_update_command
     javascript_command_parts = []
 
-    if File.exist?('yarn.lock') && !seen_hash?('yarn.lock')
+    if file_changed?('yarn.lock')
       javascript_command_parts << 'yarn install --check-files'
     end
 
-    if File.exist?('pnpm-lock.yaml') && !seen_hash?('pnpm-lock.yaml')
+    if file_changed?('pnpm-lock.yaml')
       javascript_command_parts << 'pnpm install --frozen-lockfile'
     end
 
     javascript_command_parts.join(' && ')
+  end
+
+  memo_wise \
+  def file_changed?(file_name)
+    File.exist?(file_name) && !seen_hash?(file_name)
   end
 
   memo_wise \

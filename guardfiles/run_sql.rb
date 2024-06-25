@@ -31,7 +31,7 @@ guard(:shell, all_on_start: true) do
       # rubocop:enable Rails/TimeZone, Lint/RedundantCopDisableDirective
       system("clear")
       system(<<~SH.squish)
-        psql commonlit_development < personal/sql.sql
+        psql #{`basename $(pwd)`.strip}_development < personal/sql.sql
       SH
     rescue StandardError => exception
       pp(exception)

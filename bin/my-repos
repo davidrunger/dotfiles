@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+
+# Lists [my-repos] in `~/code`.
+
+set -euo pipefail # exit on any error, don't allow undefined variables, pipes don't swallow errors
+
+cd ~/code
+
+for dir in $(eza -D) ; do
+  cd "$dir" || exit
+
+  if [[ "$(github-path)" =~ ^davidrunger/ ]] ; then
+    echo "$dir"
+  fi
+
+  cd - > /dev/null || exit
+done

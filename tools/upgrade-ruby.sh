@@ -14,7 +14,7 @@ new_ruby_version="$2"
 
 cd "$HOME/code" || exit
 
-for dir in */ ; do
+for dir in $(my-repos) ; do
   cd "$dir" || exit
   blue "# $dir"
 

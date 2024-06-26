@@ -7,7 +7,7 @@ set -uo pipefail # don't allow undefined variables, pipes don't swallow errors
 
 cd "$HOME/code" || exit
 
-for dir in */ ; do
+for dir in $(my-repos) ; do
   cd "$dir" || exit
   echo
   blue "# $dir"

@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+# Returns the `organization/repo` string for a git repository that has a GitHub origin.
+
+set -euo pipefail # exit on any error, don't allow undefined variables, pipes don't swallow errors
+
+git remote -v | extract 'github\.com:(.*)\.git.*push'

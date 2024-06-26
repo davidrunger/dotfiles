@@ -1,0 +1,27 @@
+#!/usr/bin/env bash
+
+# [extract] the matching part of a string (or each line of a multi-line input).
+#
+# EXAMPLES:
+#   echo 'this test 12 of 30' | ./extract 'of (\d+)'
+#   #=> 30
+#
+#   echo 'this test 12 of 30' | ./extract '\d+'
+#   #=> 12
+#
+#   echo 'this test 12 of 30' | ./extract 'test \d+ of'
+#   #=> test 12 of
+
+set -euo pipefail # exit on any error, don't allow undefined variables, pipes don't swallow errors
+
+pattern="$1"
+
+perl -nle '
+  if (/'"$pattern"'/) {
+    if (defined $1) {
+      print $1;
+    } else {
+      print $&;
+    }
+  }
+'

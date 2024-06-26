@@ -1,15 +1,13 @@
 #!/usr/bin/env bash
 
-# Lists [my-repos] in `~/code`.
+# Lists the immediate subdirectories of the current directory that are [my-repos].
 
 set -euo pipefail # exit on any error, don't allow undefined variables, pipes don't swallow errors
-
-cd ~/code
 
 for dir in $(eza -D) ; do
   cd "$dir" || exit
 
-  if [[ "$(github-path)" =~ ^davidrunger/ ]] ; then
+  if [ -d .git ] && [[ "$(github-path)" =~ ^davidrunger/ ]] ; then
     echo "$dir"
   fi
 

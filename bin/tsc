@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+
+# # [t]ouch a file and open it in editor (which used to be [s]ublime) and [c]hmod it to executable
+
+set -euo pipefail # exit on any error, don't allow undefined variables, pipes don't swallow errors
+
+file_path=$1
+
+ts "$file_path"
+
+chmod +x "$file_path"
+
+cat <<EOF >> "$file_path"
+#!/usr/bin/env bash
+
+set -uo pipefail # don't allow undefined variables, pipes don't swallow errors
+EOF

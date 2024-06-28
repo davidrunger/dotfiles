@@ -115,16 +115,17 @@ class InstallPackagesInBackground
   end
 
   def executable_path_for_command(command, filename)
-    directory = './personal/installer_executables/'
-    FileUtils.mkdir_p(directory)
-    executable_path = File.join(directory, "#{filename}.sh")
+    current_directory = `basename "$PWD"`
+    installer_directory = './personal/installer_executables/'
+    FileUtils.mkdir_p(installer_directory)
+    executable_path = File.join(installer_directory, "#{filename}.sh")
 
     zsh_command = <<~ZSH.squish
       {
         (
           #{command} && \
-            notify 'Command succeeded' '#{command}' || \
-            notify 'Command failed' '#{command}' --time 3600
+            notify 'Command succeeded in #{current_directory}' '#{command}' || \
+            notify 'Command failed in #{current_directory}' '#{command}' --time 3600
         ) & disown
       } > /dev/null 2>&1
     ZSH

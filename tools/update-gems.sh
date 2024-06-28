@@ -13,7 +13,7 @@ for dir in $(my-repos) ; do
   cd "$dir" || exit
   blue "# $dir"
 
-  if test -e Gemfile.lock ; then
+  if fd --has-results --glob Gemfile.lock ; then
     set -ex
 
     if ! branch-exists 'bundle-update' ; then

@@ -24,9 +24,6 @@ gca() {
     gst
 }
 
-# git checkout
-gco() { git checkout $@ }
-
 # git checkout branch based on current branch
 gcob() {
   git checkout -b $@

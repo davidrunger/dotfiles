@@ -25,7 +25,7 @@ GEM
     diff-lcs (1.5.1)
     docile (1.4.0)
     drb (2.2.1)
-    fcom (0.7.0)
+    fcom (0.10.0)
       activesupport (>= 6, < 8)
       memo_wise (>= 1.7, < 2)
       rainbow (>= 3.0, < 4)

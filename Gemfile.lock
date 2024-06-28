@@ -171,7 +171,6 @@ DEPENDENCIES
   rubocop-performance
   rubocop-rspec
   ruby-lsp
-  runger_config
   runger_style
   simple_cov-formatter-terminal
   slop

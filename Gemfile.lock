@@ -127,7 +127,7 @@ GEM
     ruby2_keywords (0.0.5)
     runger_config (5.2.0)
       activesupport (>= 7.1.2)
-    runger_style (2.8.0)
+    runger_style (2.9.0)
       prism (>= 0.24.0)
       rubocop (>= 1.38.0, < 2)
     shellany (0.0.1)

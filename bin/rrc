@@ -10,15 +10,15 @@ processes_to_kill="/Applications/Google Chrome\.app/Contents/MacOS/Google Chrome
 stop_processes() {
   # print the processes to end
   echo 'Trying to kill ...'
-  ps -eo pid,cmd | rg "$processes_to_kill" | rg -v "\brg\b"
+  pid-cmd | rg "$processes_to_kill" | rg -v "\brg\b"
 
   # end the processes
-  ps -eo pid,cmd | rg "$processes_to_kill" | rg -v "\brg\b" | choose 0 | xargs -r kill
+  pid-cmd | rg "$processes_to_kill" | rg -v "\brg\b" | choose 0 | xargs -r kill
   sleep 0.5 # wait a moment for processes to exit
 
   # print processes that are still running (though there might be none)
   printf "\nRemaining processes:\n"
-  ps -eo pid,cmd | rg "$processes_to_kill" | rg -v "\brg\b"
+  pid-cmd | rg "$processes_to_kill" | rg -v "\brg\b"
 }
 
 # stop processes iff invoked directly (but not if sourced into another script)

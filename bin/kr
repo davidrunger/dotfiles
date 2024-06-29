@@ -4,4 +4,4 @@
 
 set -eu # exit on any error, don't allow undefined variables
 
-ps -eo pid,cmd | egrep rubocop | egrep -v e?grep | awk '{print $1}' | xargs -r kill
+pid-cmd | egrep rubocop | egrep -v e?grep | awk '{print $1}' | xargs -r kill

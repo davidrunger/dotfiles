@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+
+# Print the [pid] and originating [c]o[m]man[d] for all running processes.
+
+set -euo pipefail # exit on any error, don't allow undefined variables, pipes don't swallow errors
+
+if [[ "$(uname)" == "Darwin" ]]; then
+  # macOS
+  ps -eo pid,command
+else
+  # Linux
+  pid-cmd
+fi

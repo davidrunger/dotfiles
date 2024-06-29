@@ -4,10 +4,8 @@
 
 set -euo pipefail # exit on any error, don't allow undefined variables, pipes don't swallow errors
 
-if [[ "$(uname)" == "Darwin" ]]; then
-  # macOS
-  ps -eo pid,command
+if [ -v LINUX ]; then
+  ps -eo pid,cmd
 else
-  # Linux
-  pid-cmd
+  ps -eo pid,command
 fi

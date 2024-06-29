@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+
+# Run VS [code], suppressing an annoying error message.
+
+set -euo pipefail # exit on any error, don't allow undefined variables, pipes don't swallow errors
+
+# Inspired by https://github.com/microsoft/vscode/issues/ 204447#issuecomment-2002397044 .
+/usr/local/bin/code "$@" 2> >(sed 's|\[0629/.*-67062[)]||')

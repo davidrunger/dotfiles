@@ -75,6 +75,10 @@ export PATH=node_modules/.bin:$PATH
 
 export PATH=$HOME/Filen/bin:$HOME/code/dotfiles-personal/bin:$HOME/code/dotfiles/bin:$HOME/bin:$PATH
 
+if [[ "$(uname)" == "Darwin" ]]; then
+  export PATH=$HOME/code/dotfiles/bin-mac:$PATH
+fi
+
 # https://github.com/Homebrew/homebrew-core/issues/ 121043#issuecomment-1397888835
 export PATH=$PATH:$HOMEBREW_PREFIX/opt/postgresql@16/bin
 

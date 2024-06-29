@@ -1,3 +1,4 @@
+---
 version: 2
 updates:
   - package-ecosystem: bundler
@@ -7,4 +8,4 @@ updates:
       time: "04:04"
       timezone: America/Chicago
     allow:
-      - dependency-type: "all"
+      - dependency-type: all

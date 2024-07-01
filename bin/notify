@@ -10,9 +10,17 @@ class Notify < CommandKit::Command
     short: '-t',
     value: {
       type: Integer,
-      default: 5,
+      default: 8,
     },
-    desc: 'Number of seconds for which to display the message. (Only works on Linux.)'
+    desc: 'Number of seconds for which to display the message. Only works on Linux.'
+
+  option :icon,
+    short: '-i',
+    value: {
+      type: String,
+      default: 'information',
+    },
+    desc: 'Notification icon. Options: information|error. Only works on Linux.'
 
   argument :title,
     required: true,
@@ -33,7 +41,7 @@ class Notify < CommandKit::Command
 
   def run(title, body)
     if ENV['LINUX']
-      command = "notify-send '#{title}' '#{body}'"
+      command = "notify-send '#{title}' '#{body}' -i #{icon_path}"
 
       if (time = options[:time])
         command << " --expire-time=#{time}000"
@@ -46,6 +54,12 @@ class Notify < CommandKit::Command
         exception: true,
       )
     end
+  end
+
+  private
+
+  def icon_path
+    "/usr/share/icons/Adwaita/96x96/status/dialog-#{options[:icon]}-symbolic.symbolic.png"
   end
 end
 

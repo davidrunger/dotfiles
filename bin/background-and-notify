@@ -30,7 +30,7 @@ set +e
     if [ $exit_status -eq 0 ] ; then
       notify "$program succeeded in $current_directory" "$message"
     else
-      notify "$program failed in $current_directory" "$message" --time 3600
+      notify-error "$program failed in $current_directory" "$message"
     fi
   ) & disown
 } > /dev/null 2>&1

@@ -125,7 +125,7 @@ class InstallPackagesInBackground
         (
           #{command} && \
             notify 'Command succeeded in #{current_directory}' '#{command}' || \
-            notify 'Command failed in #{current_directory}' '#{command}' --time 3600
+            notify-error 'Command failed in #{current_directory}' '#{command}'
         ) & disown
       } > /dev/null 2>&1
     ZSH

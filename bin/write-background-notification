@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+
+# Write a message to a location.
+
+set -euo pipefail # exit on any error, don't allow undefined variables, pipes don't swallow errors
+
+message=$1
+program=$BACKGROUND_AND_NOTIFY_PROGRAM
+message_path=personal/background-messages/$program.txt
+mf "$message_path"
+
+echo "$message" > $message_path

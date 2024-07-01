@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+
+# [m]ake [f]ile (and create any directories needed along the way)
+
+set -euo pipefail # exit on any error, don't allow undefined variables, pipes don't swallow errors
+
+file_path="$1"
+dir_path=$(dirname "$file_path")
+mkdir -p "$dir_path"
+touch "$file_path"

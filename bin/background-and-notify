@@ -1,0 +1,36 @@
+#!/usr/bin/env zsh
+
+# Execute a provided program in the background and show a notification for success or failure.
+
+set -euo pipefail # exit on any error, don't allow undefined variables, pipes don't swallow errors
+
+program=$1
+message_path=personal/background-messages/$program.txt
+
+rm -f $message_path
+
+echo "Running $program in the background."
+
+set +e
+{
+  (
+    BACKGROUND_AND_NOTIFY_PROGRAM="$program" $program > /dev/null 2>&1
+    exit_status=$?
+    set -e
+
+    current_directory=$(basename "$PWD")
+
+    if [ -e $message_path ] ; then
+      message=$(cat $message_path)
+      rm $message_path
+    else
+      message='[no message]'
+    fi
+
+    if [ $exit_status -eq 0 ] ; then
+      notify "$program succeeded in $current_directory" "$message"
+    else
+      notify "$program failed in $current_directory" "$message" --time 3600
+    fi
+  ) & disown
+} > /dev/null 2>&1

@@ -1,0 +1,30 @@
+#!/usr/bin/env bash
+
+# Perform a piece of work from a program launched by background-and-silence.
+
+set -euo pipefail # exit on any error, don't allow undefined variables, pipes don't swallow errors
+
+program=$1
+message_path=personal/background-messages/$program.txt
+
+rm -f $message_path
+
+set +e
+BACKGROUND_AND_NOTIFY_PROGRAM="$program" $program
+exit_status=$?
+set -e
+
+current_directory=$(basename "$PWD")
+
+if [ -e $message_path ] ; then
+  message=$(cat $message_path)
+  rm $message_path
+else
+  message='[no message]'
+fi
+
+if [ $exit_status -eq 0 ] ; then
+  notify "$program succeeded in $current_directory" "$message"
+else
+  notify-error "$program failed in $current_directory" "$message"
+fi

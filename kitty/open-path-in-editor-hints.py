@@ -29,4 +29,4 @@ def handle_result(args, data, target_window_id, boss, extra_cli_args, *a):
         if m:
             matches.append(m), groupdicts.append(g)
     for word, match_data in zip(matches, groupdicts):
-        subprocess.run(f'editor {word}', shell=True, cwd=data['cwd'])
+        subprocess.run(f'$HOME/code/dotfiles-personal/bin/editor {word}', shell=True, cwd=data['cwd'])

@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+set -euo pipefail # exit on any error, don't allow undefined variables, pipes don't swallow errors
+
 mkdir -p ~/.config/
 
 ln -sf ~/code/dotfiles/aprc.rb ~/.config/aprc
@@ -13,6 +15,7 @@ ln -sf ~/code/dotfiles/rspec ~/.rspec
 ln -sf ~/code/dotfiles/rubocop.yml ~/.rubocop.yml
 ln -sf ~/code/dotfiles/zsh/themes/bolso.zsh-theme ~/.oh-my-zsh/custom/themes/bolso.zsh-theme
 ln -sf ~/code/dotfiles/zshrc.sh ~/.zshrc
+ln -sf $HOME/code/dotfiles/kitty/ $HOME/.config/
 
 if [ -e "$HOME/code/dotfiles-personal/install.sh" ]; then
   cd $HOME/code/dotfiles-personal/

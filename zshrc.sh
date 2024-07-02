@@ -10,6 +10,9 @@ source $ZSH/oh-my-zsh.sh
 # Delete oh-my-zsh d function (which lists directories, I think).
 unfunction d
 
+# Remove zsh fwd-i-search / history-incremental-search-forward keyboard shortcut.
+bindkey -r "^S"
+
 if [ "$(uname)" = 'Linux' ] ; then
   . "$HOME/code/dotfiles/shell/linux.sh"
   export LINUX=true

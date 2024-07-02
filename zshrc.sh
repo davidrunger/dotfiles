@@ -76,7 +76,8 @@ export HOMEBREW_NO_AUTO_UPDATE=1
 
 export PATH=node_modules/.bin:$PATH
 
-export PATH=$HOME/Filen/bin:$HOME/code/dotfiles-personal/bin:$HOME/code/dotfiles/bin:$HOME/bin:$PATH
+export PATH=$HOME/Filen/bin:$HOME/code/dotfiles-personal/bin:\
+$HOME/code/dotfiles/bin:$HOME/bin:$HOME/.local/bin/:$PATH
 
 if [[ "$(uname)" == "Darwin" ]]; then
   export PATH=$HOME/code/dotfiles/bin-mac:$PATH

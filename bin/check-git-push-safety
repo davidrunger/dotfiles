@@ -1,10 +1,8 @@
 #!/usr/bin/env bash
 
-# make sure that we're on a branch that's okay to push and that there isn't any debugging code etc
+# Make sure that we're on a branch that's okay to push and that there isn't any debugging code.
 
-verify-on-ok-branch
-if [ $? -ne 0 ]
-then
+if ! verify-on-ok-branch ; then
   exit 1
 fi
 
@@ -22,18 +20,16 @@ if rg -g '!public/' -g '*.rake' -g '*.rb' -g '*.js' -g '*.coffee' -g '*.haml' -g
 fi
 
 # don't push if there are still `!!!` markers in the code
-git diff --diff-filter=dr origin/$(main-branch)...  | grep '^\+' | rg --quiet --fixed-strings '!!!'
-if [ $? -eq 0 ]
-then
+if git diff --diff-filter=dr origin/$(main-branch)...  | \
+    grep '^\+' | rg --quiet --fixed-strings '!!!' ; then
   echo "Easy there, cowboy! You still have some markers in your code."
   git diff --diff-filter=dr --name-status origin/$(main-branch)... | cut -f2 | xargs rg --with-filename --fixed-strings '!!!'
   exit 1
 fi
 
 # don't push if there are still `!!!` markers in the code (renamed files)
-git diff --diff-filter=R origin/$(main-branch)...  | grep '^\+' | rg --quiet --fixed-strings '!!!'
-if [ $? -eq 0 ]
-then
+if git diff --diff-filter=R origin/$(main-branch)...  | \
+    grep '^\+' | rg --quiet --fixed-strings '!!!' ; then
   echo "Easy there, cowboy! You still have some markers in your code in renamed files."
   git diff --diff-filter=R --name-status origin/$(main-branch)... | cut -f3 | xargs rg --with-filename --fixed-strings '!!!'
   exit 1
@@ -43,9 +39,7 @@ fi
 for file in .env .env.development.local .env.test.local ; do
   if [ -f $file ]
   then
-    rg --quiet --fixed-strings '!!!' $file
-    if [ $? -eq 0 ]
-    then
+    if rg --quiet --fixed-strings '!!!' $file ; then
       rg --with-filename --fixed-strings '!!!' $file
       echo "Easy there, cowboy! You still have some markers in $file ."
       exit 1

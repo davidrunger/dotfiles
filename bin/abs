@@ -6,6 +6,7 @@
 #   $ abs Gemfile
 #   --prints--> /Users/david/code/david_runger/Gemfile
 
+# testing
 set -euo pipefail # exit on any error, don't allow undefined variables, pipes don't swallow errors
 
 if [[ -d "$1" ]] ; then

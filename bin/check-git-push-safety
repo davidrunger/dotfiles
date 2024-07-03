@@ -8,7 +8,7 @@ if ! verify-on-ok-branch ; then
   exit 1
 fi
 
-if [ "$(changed-not-deleted-files)" != "" ] ; then
+if [[ "$(changed-not-deleted-files)" != "" ]] ; then
   # don't push if there's still debugging code
   debugging_code_regex_parts=(
     '^((\s*|RSpec\.)(fit|fdescribe|fcontext|fscenario|fspecify))|'

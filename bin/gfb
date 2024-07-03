@@ -1,7 +1,9 @@
 #!/usr/bin/env bash
 
-# [g]it [f]etch the [m]ain branch
+# [g]it [f]etch [b]ranch
 
 set -euo pipefail # exit on any error, don't allow undefined variables, pipes don't swallow errors
 
-gfb "$(main-branch)"
+branch=$1
+
+git fetch --no-tags --quiet origin "$branch"

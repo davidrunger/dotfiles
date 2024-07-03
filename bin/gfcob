@@ -5,5 +5,5 @@
 set -euo pipefail # exit on any error, don't allow undefined variables, pipes don't swallow errors
 
 git fetch
-git checkout -b $1 "origin/$(main-branch)"
+git checkout -b "$1" "origin/$(main-branch)"
 install-packages-in-background

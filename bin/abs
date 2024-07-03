@@ -10,7 +10,7 @@ set -euo pipefail # exit on any error, don't allow undefined variables, pipes do
 
 if [[ -d "$1" ]] ; then
   cd "$1"
-  echo $(pwd)
+  pwd
 else
   echo $(pwd)/$(ls $@ | sed "s|^\./||")
 fi

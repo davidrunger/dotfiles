@@ -8,7 +8,7 @@ set -euo pipefail # exit on any error, don't allow undefined variables, pipes do
 original_branch=$(branch)
 
 # Fetch the latest version of the main branch from origin.
-git fetch --no-tags --quiet origin $(main-branch)
+gfb "$(main-branch)"
 
 # Update the local main branch.
 reset-branch-to-ref $(main-branch) origin/$(main-branch)

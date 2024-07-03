@@ -2,6 +2,8 @@
 
 # Make sure that we're on a branch that's okay to push and that there isn't any debugging code.
 
+set -euo pipefail # exit on any error, don't allow undefined variables, pipes don't swallow errors
+
 if ! verify-on-ok-branch ; then
   exit 1
 fi

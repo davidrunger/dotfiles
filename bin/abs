@@ -13,5 +13,6 @@ if [[ -d "$1" ]] ; then
   cd "$1"
   echo "$PWD/"
 else
-  echo $(pwd)/$(ls $@ | sed "s|^\./||")
+  file="$1"
+  echo "$(pwd)/${file//\.\//}"
 fi

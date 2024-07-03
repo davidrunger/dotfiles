@@ -18,18 +18,18 @@ class Hash
   def digc(*keys)
     current_value = self
 
-    keys.tapp.each do |key|
+    keys.each do |key|
       value_at_current_key =
-        current_value.tapp.
+        current_value.
           detect do |inner_key, _value|
             # rubocop:disable Style/CaseEquality
-            inner_key.tapp === key.tapp
+            key === inner_key
             # rubocop:enable Style/CaseEquality
-          end&.second
+          end&.dig(1)
 
-      if value_at_current_key.tapp.nil?
+      if value_at_current_key.nil?
         return nil
-      elsif value_at_current_key.is_a?(Hash)
+      else
         current_value = value_at_current_key
       end
     end

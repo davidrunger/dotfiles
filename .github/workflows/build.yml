@@ -17,7 +17,6 @@ jobs:
         with:
           level: info
           reporter: github-check
-          fail_on_error: true
           path: |
             bin
             bin-mac

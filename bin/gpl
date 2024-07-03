@@ -5,7 +5,6 @@
 set -euo pipefail # exit on any error, don't allow undefined variables, pipes don't swallow errors
 
 git fetch
-original_commit="$(current-sha)"
 git reset --hard "origin/$(branch)"
 install-packages-in-background
 gst

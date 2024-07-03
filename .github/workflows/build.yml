@@ -16,7 +16,7 @@ jobs:
       - uses: reviewdog/action-shellcheck@v1
         with:
           level: info
-          reporter: github-check
+          reporter: github-pr-review
           fail_on_error: 'true'
           path: |
             bin

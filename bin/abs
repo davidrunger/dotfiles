@@ -13,5 +13,5 @@ if [[ -d "$1" ]] ; then
   echo "$PWD/"
 else
   file="$1"
-  echo "$(pwd)/${file//\.\//}"
+  eza --absolute "$file" | rg "$HOME.*" --only-matching --color=never
 fi

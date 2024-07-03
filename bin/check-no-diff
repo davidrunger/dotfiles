@@ -10,7 +10,7 @@ branch=$1
 changed_files=$(git diff --name-only origin/$(main-branch)...$branch)
 for changed_file in $changed_files; do
   # If file exists in main branch...
-  if git cat-file -e origin/$(main-branch):$changed_file &> /dev/null
+  if git cat-file -e "origin/$(main-branch):$changed_file" &> /dev/null
   then
     # ... but not in current branch ...
     if ! git cat-file -e $branch:$changed_file &> /dev/null

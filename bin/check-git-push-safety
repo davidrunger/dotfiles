@@ -16,8 +16,9 @@ if [[ "$(changed-not-deleted-files)" != "" ]] ; then
     '\b(binding\.pry|byebug)\b|'
     '\btapp\b'
   )
+  readarray -t files_to_search < <(changed-not-deleted-files)
   if rg -g '!public/' -g '*.rake' -g '*.rb' -g '*.js' -g '*.coffee' -g '*.haml' -g '*.html' -g '*.erb' \
-      "$(printf %s "${debugging_code_regex_parts[@]}")" "$(changed-not-deleted-files)" ; then
+      "$(printf %s "${debugging_code_regex_parts[@]}")" "${files_to_search[@]}" ; then
     echo
     echo "Easy there, cowboy! Cleanup yo code, first."
     exit 1

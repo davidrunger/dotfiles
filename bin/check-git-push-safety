@@ -9,10 +9,13 @@ then
 fi
 
 # don't push if there's still debugging code
-rg -g '!public/' -g '*.rake' -g '*.rb' -g '*.js' -g '*.coffee' -g '*.haml' -g '*.html' -g '*.erb' \
-  '^((\s*|RSpec\.)(fit|fdescribe|fcontext|fscenario|fspecify|open_page))|(^| )(binding\.pry|byebug)'
-if [ $? -eq 0 ]
-then
+debugging_code_regex_parts=(
+  '^((\s*|RSpec\.)(fit|fdescribe|fcontext|fscenario|fspecify|open_page))|'
+  '(^| )(binding\.pry|byebug)|'
+  '\btapp\b'
+)
+if rg -g '!public/' -g '*.rake' -g '*.rb' -g '*.js' -g '*.coffee' -g '*.haml' -g '*.html' -g '*.erb' \
+    "$(printf %s "${debugging_code_regex_parts[@]}")" "$(changed-not-deleted-files)" ; then
   echo
   echo "Easy there, cowboy! Cleanup yo code, first."
   exit 1

@@ -10,7 +10,8 @@ set -euo pipefail # exit on any error, don't allow undefined variables, pipes do
 
 if [[ -d "$1" ]] ; then
   cd "$1"
-  pwd
+  echo "$PWD/"
 else
-  echo $(pwd)/$(ls $@ | sed "s|^\./||")
+  file="$1"
+  eza --absolute "$file" | rg "$HOME.*" --only-matching --color=never
 fi

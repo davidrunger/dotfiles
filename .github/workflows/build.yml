@@ -1,0 +1,24 @@
+name: Build
+
+on:
+  pull_request:
+    branches:
+      - "*"
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: reviewdog/action-shellcheck@v1
+        with:
+          level: info
+          reporter: github-pr-review
+          fail_on_error: true
+          path: |
+            bin
+            bin-mac
+          check_all_files_with_shebangs: true

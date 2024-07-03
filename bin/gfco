@@ -6,7 +6,7 @@ set -euo pipefail # exit on any error, don't allow undefined variables, pipes do
 
 branch=$1
 
-git fetch
-git checkout "$branch"
-install-packages-in-background
+gfb "$branch"
+gco "$branch"
 gsup
+install-packages-in-background

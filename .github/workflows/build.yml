@@ -17,7 +17,7 @@ jobs:
         with:
           level: info
           reporter: github-pr-review
-          fail_on_error: 'true'
+          fail_on_error: true
           path: |
             bin
             bin-mac

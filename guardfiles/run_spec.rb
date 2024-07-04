@@ -4,10 +4,11 @@
 
 require 'active_support/core_ext/string/filters'
 require 'guard/shell'
-require 'memery'
+
+require_relative "#{Dir.home}/code/dotfiles/utils/ruby/memoization.rb"
 
 class RspecPrefixer
-  include Memery
+  prepend Memoization
 
   memoize \
   def rspec_prefix

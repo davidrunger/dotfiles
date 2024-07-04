@@ -14,7 +14,7 @@ ln -sf ~/code/dotfiles/pryrc.rb ~/.pryrc
 ln -sf ~/code/dotfiles/rspec ~/.rspec
 ln -sf ~/code/dotfiles/rubocop.yml ~/.rubocop.yml
 ln -sf ~/code/dotfiles/zsh/themes/bolso.zsh-theme ~/.oh-my-zsh/custom/themes/bolso.zsh-theme
-ln -sf ~/code/dotfiles/zshrc.sh ~/.zshrc
+ln -sf ~/code/dotfiles/zshrc.zsh ~/.zshrc
 ln -sf "$HOME/code/dotfiles/kitty/" "$HOME/.config/"
 
 if [ -e "$HOME/code/dotfiles-personal/install.sh" ]; then

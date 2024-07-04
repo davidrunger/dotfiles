@@ -13,12 +13,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: reviewdog/action-shellcheck@v1
+      - uses: ludeeus/action-shellcheck@master
         with:
-          level: info
-          reporter: github-pr-review
-          fail_on_error: true
-          path: |
-            bin
-            bin-mac
-          check_all_files_with_shebangs: true
+          ignore_names: >-
+            *.zsh
+        env:
+          SHELLCHECK_OPTS: -x

@@ -1,3 +1,5 @@
+#!/usr/bin/env zsh
+
 setopt +o nomatch # https://unix.stackexchange.com/a/310553/276727
 export EDITOR='code'
 export ZSH=$HOME/.oh-my-zsh
@@ -14,15 +16,15 @@ unfunction d
 bindkey -r "^S"
 
 if [ "$(uname)" = 'Linux' ] ; then
-  . "$HOME/code/dotfiles/shell/linux.sh"
+  . "$HOME/code/dotfiles/shell/linux.zsh"
   export LINUX=true
 fi
 
-. ~/code/dotfiles/shell/aliases.sh
-. ~/code/dotfiles/shell/functions.sh
+. ~/code/dotfiles/shell/aliases.zsh
+. ~/code/dotfiles/shell/functions.zsh
 
-if [ -e "$HOME/code/dotfiles-personal/zshrc.sh" ]; then
-  . "$HOME/code/dotfiles-personal/zshrc.sh"
+if [ -e "$HOME/code/dotfiles-personal/zshrc.zsh" ]; then
+  . "$HOME/code/dotfiles-personal/zshrc.zsh"
 fi
 
 # asdf setup

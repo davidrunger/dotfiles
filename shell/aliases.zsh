@@ -1,3 +1,5 @@
+#!/usr/bin/env zsh
+
 alias bat='bat --paging=never'
 alias br='bin/rubocop'
 alias bs='bin/rspec'
@@ -71,6 +73,6 @@ alias work='cd ~/code'
 alias zrc='$EDITOR ~/.zshrc'
 alias zs='source ~/.zshrc'
 
-if [ -e "$HOME/code/dotfiles-personal/shell/aliases.sh" ]; then
-  . "$HOME/code/dotfiles-personal/shell/aliases.sh"
+if [ -e "$HOME/code/dotfiles-personal/shell/aliases.zsh" ]; then
+  . "$HOME/code/dotfiles-personal/shell/aliases.zsh"
 fi

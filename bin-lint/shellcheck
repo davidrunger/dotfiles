@@ -1,0 +1,32 @@
+#!/usr/bin/env bash
+
+# Run ShellCheck on relevant changed files.
+
+set -euo pipefail # exit on any error, don't allow undefined variables, pipes don't swallow errors
+
+shebang_files=$(
+  changed-not-deleted-files | \
+    xargs -r rg --files-with-matches '^#!/usr/bin/env (bash|sh)' || \
+    true
+)
+
+extension_files=$(
+  changed-not-deleted-files | \
+    rg '\.(bash|sh)$' || \
+    true
+)
+
+readarray -t files_for_shellcheck < <(
+  unique-union "$shebang_files" "$extension_files"
+)
+
+if [ ${#files_for_shellcheck[@]} -eq 0 ] ; then
+  write-background-notification 'No files need to be checked by ShellCheck.'
+else
+  if shellcheck "${files_for_shellcheck[@]}" ; then
+    write-background-notification 'Changed files satisfy ShellCheck.'
+  else
+    write-background-notification 'There were ShellCheck error(s).'
+    exit 1
+  fi
+fi

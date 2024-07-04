@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
 
-if ! gitleaks detect --log-opts="origin/$(main-branch)..." &> /dev/null ; then
-  gitleaks detect --log-opts="origin/$(main-branch)..." --verbose
-  exit 1
-fi
+set -euo pipefail # exit on any error, don't allow undefined variables, pipes don't swallow errors
+
+lint gitleaks

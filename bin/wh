@@ -4,8 +4,8 @@
 
 set -uo pipefail # don't allow undefined variables, pipes don't swallow errors
 
-source $HOME/code/dotfiles/shell/aliases.sh
-source $HOME/code/dotfiles/shell/functions.sh
+source $HOME/code/dotfiles/shell/aliases.zsh
+source $HOME/code/dotfiles/shell/functions.zsh
 
 which_output=$(which "$@")
 

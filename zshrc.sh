@@ -1,3 +1,5 @@
+#!/usr/bin/env zsh
+
 setopt +o nomatch # https://unix.stackexchange.com/a/310553/276727
 export EDITOR='code'
 export ZSH=$HOME/.oh-my-zsh

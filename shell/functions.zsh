@@ -1,5 +1,3 @@
-#!/usr/bin/env zsh
-
 # bundle
 b() { bundle install }
 

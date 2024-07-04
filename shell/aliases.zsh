@@ -1,5 +1,3 @@
-#!/usr/bin/env zsh
-
 alias bat='bat --paging=never'
 alias br='bin/rubocop'
 alias bs='bin/rspec'

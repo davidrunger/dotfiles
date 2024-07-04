@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+
+# Delete (via a background process) remote branches that we don't need anymore.
+
+set -euo pipefail # exit on any error, don't allow undefined variables, pipes don't swallow errors
+
+{
+  current_directory=$(basename "$PWD")
+  (
+    git remote prune origin && \
+      notify "Job complete in $current_directory" 'Pruned remote branches' || \
+      notify-error "Job failed in $current_directory" 'Prune remote branches'
+  ) & disown
+} > /dev/null 2>&1

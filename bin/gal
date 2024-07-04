@@ -68,9 +68,11 @@ class Runner
   PROJECT_LOCAL_SCRIPT_INFOS = {
     bash: {
       path: 'personal/bash.sh',
-      content: <<~RUBY,
+      content: <<~BASH,
         #!/usr/bin/env bash
-      RUBY
+
+        set -euo pipefail # exit on any error, don't allow undefined variables, pipes don't swallow errors
+      BASH
     },
     node: {
       path: 'app/javascript/typescript.ts',

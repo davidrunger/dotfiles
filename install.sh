@@ -23,7 +23,7 @@ if [ -e "$HOME/code/dotfiles-personal/install.sh" ]; then
   cd - &> /dev/null
 fi
 
-git config core.hookspath ~/code/dotfiles/git/hooks/dotfiles
+git config core.hookspath bin/githooks
 
 touch ~/.hushlogin
 touch ~/.pry_history

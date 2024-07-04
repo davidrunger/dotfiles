@@ -7,20 +7,20 @@ set -euo pipefail # exit on any error, don't allow undefined variables, pipes do
 
 branch=$1
 
-changed_files=$(git diff --name-only origin/$(main-branch)...$branch)
+changed_files=$(git diff --name-only "origin/$(main-branch)...$branch")
 for changed_file in $changed_files; do
   # If file exists in main branch...
   if git cat-file -e "origin/$(main-branch):$changed_file" &> /dev/null
   then
     # ... but not in current branch ...
-    if ! git cat-file -e $branch:$changed_file &> /dev/null
+    if ! git cat-file -e "$branch:$changed_file" &> /dev/null
     then
       # ... then branches are not the same.
       exit 1
     fi
   else # If file does not exist in main branch ...
     # ... but does exist in current branch ...
-    if git cat-file -e $branch:$changed_file &> /dev/null
+    if git cat-file -e "$branch:$changed_file" &> /dev/null
     then
       # ... then branch differs from master.
       exit 1
@@ -28,14 +28,14 @@ for changed_file in $changed_files; do
   fi
 done
 
-changed_files_still_in_main="$(git diff --name-only --diff-filter=d origin/$(main-branch)...$branch)"
+readarray -t changed_files_still_in_main < <(git diff --name-only --diff-filter=d "origin/$(main-branch)...$branch")
 changed_lines=$(
-  git diff --diff-filter=d origin/$(main-branch)..$branch $changed_files_still_in_main | \
+  git diff --diff-filter=d "origin/$(main-branch)..$branch" "${changed_files_still_in_main[@]}" | \
   wc -l | \
   tr -d '[:space:]'
 )
 
-if [ $changed_lines == "0" ]
+if [ "$changed_lines" == "0" ]
 then
   # If there are 0 changed lines, then there is no diff.
   exit 0

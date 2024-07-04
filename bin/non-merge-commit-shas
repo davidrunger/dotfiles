@@ -8,10 +8,10 @@ set -euo pipefail # exit on any error, don't allow undefined variables, pipes do
 
 branch="$1"
 
-git log $(main-branch)..$branch --format="%H|%s" | tac | \
-  while read line ; do
+git log "$(main-branch)..$branch" --format="%H|%s" | tac | \
+  while read -r line ; do
     if ! [[ "$line" =~ 'Merge remote-tracking branch' ]] ; then
-      sha="$(echo $line | cut -d "|" -f 1)"
+      sha="$(echo "$line" | cut -d "|" -f 1)"
       echo "$sha"
     fi
   done

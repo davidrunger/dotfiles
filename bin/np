@@ -5,7 +5,8 @@
 
 set -euo pipefail # exit on any error, don't allow undefined variables, pipes don't swallow errors
 
-binding_files=$(rg --files-with-matches 'binding\.pry' || true)
-if [[ $binding_files != "" ]]; then
-  sed -i '' -e '/binding\.pry/d' $binding_files
+readarray -t binding_files < <(rg --files-with-matches 'binding\.pry' || true)
+
+if [ ${#binding_files[@]} -ne 0 ] ; then
+  sed-in-place -e '/binding\.pry/d' "${binding_files[@]}"
 fi

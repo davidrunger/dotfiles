@@ -9,7 +9,7 @@ if [[ "$(git show -s --format=%B HEAD)" =~ "Merge remote-tracking branch 'origin
   exit 1
 fi
 
-if [[ $(git rev-list --right-only --count origin/$(main-branch)...HEAD) -eq 0 ]] ; then
+if [[ $(git rev-list --right-only --count "origin/$(main-branch)...HEAD") -eq 0 ]] ; then
   echo "Not updating, because you are not ahead of origin/$(main-branch)."
   exit 1
 fi

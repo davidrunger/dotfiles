@@ -5,8 +5,8 @@
 set -euo pipefail # exit on any error, don't allow undefined variables, pipes don't swallow errors
 set -x # print executed commands
 
-changed_ruby_tests=$(changed-not-deleted-files | rg "spec/.*_spec\.rb$" || true)
+readarray -t changed_ruby_tests < <(changed-not-deleted-files | rg "spec/.*_spec\.rb$" || true)
 
-if [[ $changed_ruby_tests != "" ]]; then
-  bin/rspec $changed_ruby_tests
+if [ ${#changed_ruby_tests[@]} -ne 0 ] ; then
+  bin/rspec "${changed_ruby_tests[@]}"
 fi

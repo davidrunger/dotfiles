@@ -9,4 +9,4 @@ if ! branch-exists-on-remote ; then
   exit 0
 fi
 
-[[ $(git rev-list --right-only --count origin/$(branch)...HEAD) -gt 0 ]]
+[[ $(git rev-list --right-only --count "origin/$(branch)"...HEAD) -gt 0 ]]

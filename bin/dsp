@@ -8,8 +8,8 @@ set -euo pipefail # exit on any error, don't allow undefined variables, pipes do
 # https://stackoverflow.com/a/74795510/4009384
 git log \
   --pretty=format: --no-merges --first-parent --name-only \
-  origin/$(branch).. \
+  "origin/$(branch).." \
   | grep -v '^$' \
   | sort \
   | uniq \
-  | xargs git diff origin/$(branch).. --
+  | xargs git diff "origin/$(branch).." --

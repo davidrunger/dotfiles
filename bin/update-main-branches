@@ -11,11 +11,11 @@ original_branch=$(branch)
 gfb "$(main-branch)"
 
 # Update the local main branch.
-reset-branch-to-ref $(main-branch) origin/$(main-branch)
+reset-branch-to-ref "$(main-branch)" "origin/$(main-branch)"
 
 # Update the local `safe` branch (if it exists).
 if branch-exists safe ; then
-  reset-branch-to-ref safe origin/$(main-branch)
+  reset-branch-to-ref safe "origin/$(main-branch)"
 fi
 
 # Switch back to the original branch.

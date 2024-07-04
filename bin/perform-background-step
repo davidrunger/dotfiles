@@ -7,7 +7,7 @@ set -euo pipefail # exit on any error, don't allow undefined variables, pipes do
 program=$1
 message_path=personal/background-messages/$program.txt
 
-rm -f $message_path
+rm -f "$message_path"
 
 set +e
 BACKGROUND_AND_NOTIFY_PROGRAM="$program" $program
@@ -16,9 +16,9 @@ set -e
 
 current_directory=$(basename "$PWD")
 
-if [ -e $message_path ] ; then
-  message=$(cat $message_path)
-  rm $message_path
+if [ -e "$message_path" ] ; then
+  message=$(cat "$message_path")
+  rm "$message_path"
 else
   message='[no message]'
 fi

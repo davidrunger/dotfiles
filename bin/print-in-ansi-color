@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+
+# Prints the content from stdin wrapped within the provided ANSI color code / escape sequences.
+#
+# Example:
+#   echo 'testing it' | print-in-ansi-color "$(echo -e "\e[1;34m")"
+
+set -euo pipefail # exit on any error, don't allow undefined variables, pipes don't swallow errors
+
+ansi_code=$1
+
+echo "$ansi_code$(cat -)[0m"

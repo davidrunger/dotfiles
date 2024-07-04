@@ -3,10 +3,12 @@
 # Git stats on who wrote something, from log and blame. Works on a files or directories.
 # I believe that this was written by Allan Grant (@allangrant).
 
+path_to_blame=$1
+
 echo "=> Finding out who wrote $1"
 # echo "# git shortlog -n -s -e $1"
 echo "Commits by author:"
-git shortlog -n -s $1 | cat
+git shortlog -n -s "$path_to_blame" | cat
 
 # This only works on a single file:
 # git blame --line-porcelain $1 | sed -n 's/^author //p' | sort | uniq -c | sort -nr
@@ -14,4 +16,4 @@ git shortlog -n -s $1 | cat
 # This works on a directory as well:
 # echo "\n# git ls-tree -r -z --name-only HEAD -- $1 | xargs -0 -n1 git blame --line-porcelain HEAD | sed -n 's/^author //p' | sort | uniq -c | sort -nr"
 echo "Lines in current version by author:"
-git ls-tree -r -z --name-only HEAD -- $1 | xargs -0 -n1 git blame --line-porcelain HEAD | sed -n 's/^author //p' | sort | uniq -c | sort -nr
+git ls-tree -r -z --name-only HEAD -- "$path_to_blame" | xargs -0 -n1 git blame --line-porcelain HEAD | sed -n 's/^author //p' | sort | uniq -c | sort -nr

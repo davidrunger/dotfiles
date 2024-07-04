@@ -5,7 +5,8 @@
 
 set -euo pipefail # exit on any error, don't allow undefined variables, pipes don't swallow errors
 
-tapp_files=$(rg --files-with-matches '\.tapp' || true)
-if [[ $tapp_files != "" ]]; then
-  sed -i '' -e 's/\.tapp//g' $tapp_files
+readarray -t tapp_files < <(rg --files-with-matches '\.tapp' || true)
+
+if [ ${#tapp_files[@]} -ne 0 ] ; then
+  sed-in-place -e 's/\.tapp//g' "${tapp_files[@]}"
 fi

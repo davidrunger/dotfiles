@@ -15,11 +15,11 @@ ln -sf ~/code/dotfiles/rspec ~/.rspec
 ln -sf ~/code/dotfiles/rubocop.yml ~/.rubocop.yml
 ln -sf ~/code/dotfiles/zsh/themes/bolso.zsh-theme ~/.oh-my-zsh/custom/themes/bolso.zsh-theme
 ln -sf ~/code/dotfiles/zshrc.sh ~/.zshrc
-ln -sf $HOME/code/dotfiles/kitty/ $HOME/.config/
+ln -sf "$HOME/code/dotfiles/kitty/" "$HOME/.config/"
 
 if [ -e "$HOME/code/dotfiles-personal/install.sh" ]; then
-  cd $HOME/code/dotfiles-personal/
-  $HOME/code/dotfiles-personal/install.sh
+  cd "$HOME/code/dotfiles-personal/"
+  "$HOME/code/dotfiles-personal/install.sh"
   cd - &> /dev/null
 fi
 

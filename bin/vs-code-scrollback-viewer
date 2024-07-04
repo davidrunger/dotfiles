@@ -6,8 +6,8 @@ set -euo pipefail # exit on any error, don't allow undefined variables, pipes do
 
 # The .txt extension ensures VS Code doesn't try to guess a language and just uses plain text.
 tempfile=$(mktemp /tmp/code-stdin-XXXXXX.txt)
-cat > $tempfile
+cat > "$tempfile"
 # Add linuxbrew to PATH, so we have `sd`.
 export PATH="/home/linuxbrew/.linuxbrew/bin:$PATH"
-sd '\x1B\[[0-9;]*[a-zA-Z]' '' $tempfile
-code $tempfile
+sd '\x1B\[[0-9;]*[a-zA-Z]' '' "$tempfile"
+code "$tempfile"

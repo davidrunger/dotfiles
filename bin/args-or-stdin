@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+
+# This program echoes to stdin any arguments (if provided), or else the stdin
+# content, or else prints and exits with an error.
+
+set -euo pipefail # exit on any error, don't allow undefined variables, pipes don't swallow errors
+
+input=""
+
+if [ $# -ne 0 ] ; then
+  input="${*}"
+elif [[ -p /dev/stdin ]] ; then
+  input="$(cat -)"
+else
+  echo "Error: received no arguments or stdin." >&2
+  exit 1
+fi
+
+echo "$input"

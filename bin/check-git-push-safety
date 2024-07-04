@@ -26,18 +26,18 @@ if [[ "$(changed-not-deleted-files)" != "" ]] ; then
 fi
 
 # don't push if there are still `!!!` markers in the code
-if git diff --diff-filter=dr origin/$(main-branch)...  | \
+if git diff --diff-filter=dr "origin/$(main-branch)..."  | \
     grep '^\+' | rg --quiet --fixed-strings '!!!' ; then
   echo "Easy there, cowboy! You still have some markers in your code."
-  git diff --diff-filter=dr --name-status origin/$(main-branch)... | cut -f2 | xargs rg --with-filename --fixed-strings '!!!'
+  git diff --diff-filter=dr --name-status "origin/$(main-branch)..." | cut -f2 | xargs rg --with-filename --fixed-strings '!!!'
   exit 1
 fi
 
 # don't push if there are still `!!!` markers in the code (renamed files)
-if git diff --diff-filter=R origin/$(main-branch)...  | \
+if git diff --diff-filter=R "origin/$(main-branch)"...  | \
     grep '^\+' | rg --quiet --fixed-strings '!!!' ; then
   echo "Easy there, cowboy! You still have some markers in your code in renamed files."
-  git diff --diff-filter=R --name-status origin/$(main-branch)... | cut -f3 | xargs rg --with-filename --fixed-strings '!!!'
+  git diff --diff-filter=R --name-status "origin/$(main-branch)..." | cut -f3 | xargs rg --with-filename --fixed-strings '!!!'
   exit 1
 fi
 
@@ -54,7 +54,7 @@ for file in .env .env.development.local .env.test.local ; do
 done
 
 # Don't push if there are any TEMP or Z commits.
-if git log --oneline $(main-branch).. | rg --quiet 'TEMP|Z' ; then
+if git log --oneline "$(main-branch).." | rg --quiet 'TEMP|Z' ; then
   echo "Woah! You still have a temp commit."
   exit 1
 fi

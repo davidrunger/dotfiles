@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+
+# This is a cross-platform script to use [sed] to modify file(s) [in-place].
+
+set -euo pipefail # exit on any error, don't allow undefined variables, pipes don't swallow errors
+
+# https://stackoverflow.com/a/57766728/4009384
+if [ -v LINUX ]; then
+  sed -i "$@"
+else
+  sed -i '' "$@"
+fi

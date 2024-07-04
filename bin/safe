@@ -9,7 +9,7 @@ if branch-exists safe ; then
   git checkout --quiet safe
 else
   # If there is no safe branch, we'll just check out the main branch.
-  git checkout --quiet $(main-branch)
+  git checkout --quiet "$(main-branch)"
 fi
 
 gform

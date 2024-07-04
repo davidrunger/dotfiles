@@ -10,7 +10,7 @@ if [ -v BACKGROUND_AND_NOTIFY_PROGRAM ] ; then
   program=$BACKGROUND_AND_NOTIFY_PROGRAM
   message_path=personal/background-messages/$program.txt
   mf "$message_path"
-  echo "$message" > $message_path
+  echo "$message" > "$message_path"
 else
   echo "$message"
 fi

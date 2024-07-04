@@ -10,5 +10,5 @@ branch=$(
 )
 
 if [[ $branch != "" ]]; then
-  git checkout $branch && gst
+  git checkout "$branch" && gst
 fi

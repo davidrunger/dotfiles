@@ -2,16 +2,18 @@
 
 # Runs rubocop over the appropriate files, using the best available executable.
 
+readarray -t all_git_files < <(git ls-files)
+
 # If rubocop is listed in the  Gemfile...
 if [ -f Gemfile ] && rg --quiet "rubocop" Gemfile; then
   # and there is a `bin/rubocop` executable, then run it.
   if [ -f bin/rubocop ]; then
-    bin/rubocop $(git ls-files) --force-exclusion "$@"
+    bin/rubocop "${all_git_files[@]}" --force-exclusion "$@"
   # otherwise, run rubocop with `bundle exec`.
   else
-    bundle exec rubocop $(git ls-files) --force-exclusion "$@"
+    bundle exec rubocop "${all_git_files[@]}" --force-exclusion "$@"
   fi
 else
   # otherwise, run rubocop using the latest version on the machine.
-  rubocop $(git ls-files) --force-exclusion "$@"
+  rubocop "${all_git_files[@]}" --force-exclusion "$@"
 fi

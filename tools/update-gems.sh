@@ -23,9 +23,9 @@ for dir in $(my-repos) ; do
         gstash
         gfcob bundle-update
         gunstash
-        gacm 'Update gems
+        gacm "Update gems
 
-`bundle update`'
+\`bundle update\`"
         hpr
       fi
     fi

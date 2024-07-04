@@ -9,7 +9,7 @@ set -euo pipefail # exit on any error, don't allow undefined variables, pass err
 # git push force
 gpf
 
-if [ $(git rev-list --right-only --count origin/$(main-branch)...HEAD) -eq 1 ]
+if [ "$(git rev-list --right-only --count "origin/$(main-branch)...HEAD")" -eq 1 ]
 then
   # If ahead of main-branch by 1 commit, then use the commit for PR title & description.
   # Remove hard wrapping from paragraphs in the body.
@@ -19,9 +19,9 @@ then
     --body "$(git log -1 --format=%b | ruby -r active_support/core_ext/string/filters -e 'puts(ARGF.read.gsub(":\n- ", ":\n\n- ").split(/\n\n+/).map { _1.gsub(/\s+(?!-)/, " ") }.join("\n\n").strip)')"
   )
   # print the output to the screen
-  echo $PR_CREATE_OUTPUT
+  echo "$PR_CREATE_OUTPUT"
   # pipe the output to `open-pr-in-browser`, which will parse it and open the PR in the browser
-  echo $PR_CREATE_OUTPUT | open-pr-in-browser
+  echo "$PR_CREATE_OUTPUT" | open-pr-in-browser
 else
   # otherwise, manually craft the PR title & description via the GitHub web UI
   gh pr create --web

@@ -1,7 +1,9 @@
 #!/usr/bin/env bash
 
-# [s]earch over [g]it [f]iles changed from the main branch (excluding spec files)
+# [add some documentation]
 
 set -euo pipefail # exit on any error, don't allow undefined variables, pipes don't swallow errors
 
-rg "$@" $(gf | rg -v '^spec/')
+ansi_code=$1
+
+echo "$ansi_code$(cat -)[0m"

@@ -1,7 +1,0 @@
-#!/usr/bin/env bash
-
-# Fetch and nicely print a [b]uildkite [l]og for a [s]ystem spec
-
-set -euo pipefail # exit on any error, don't allow undefined variables, pipes don't swallow errors
-
-curl -s "$1" | BAT_PAGER=cat bat --language log

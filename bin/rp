@@ -3,6 +3,7 @@
 # Stop/kill [r]uby and other [p]rocesses (specifically node processes, such as a javascript
 # compiler/server).
 
+# shellcheck source=bin/rrp
 source ~/code/dotfiles/bin/rrp
 
 processes_to_int+="|node"

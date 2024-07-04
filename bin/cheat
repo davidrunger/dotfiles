@@ -10,10 +10,10 @@ directory="./bin"
 file="$directory/$1"
 command="$2"
 mkdir -p "$directory"
-touch $file
-chmod a+x $file
+touch "$file"
+chmod a+x "$file"
 
-cat <<EOF > $file
+cat <<EOF > "$file"
 #!/usr/bin/env bash
 
 # [add some documentation]

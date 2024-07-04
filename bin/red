@@ -8,15 +8,4 @@
 
 set -euo pipefail # exit on any error, don't allow undefined variables, pipes don't swallow errors
 
-input=""
-
-if [ $# -ne 0 ] ; then
-  input="${@}"
-elif [[ -p /dev/stdin ]] ; then
-  input="$(cat -)"
-else
-  echo "Error: received no arguments or stdin."
-  exit 1
-fi
-
-echo "[1;31m$input[0m"
+args-or-stdin "$@" | print-in-ansi-color "[1;31m"

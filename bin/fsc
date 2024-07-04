@@ -6,6 +6,6 @@ set -euo pipefail # exit on any error, don't allow undefined variables, pipes do
 
 pbpaste > personal/sql.sql
 format-sql
-cat personal/sql.sql | pbcopy
+pbcopy < personal/sql.sql
 echo "Copied to clipboard:"
-BAT_PAGER=cat bat personal/sql.sql --language=sql
+BAT_PAGER="cat" bat personal/sql.sql --language=sql

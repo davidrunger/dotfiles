@@ -6,6 +6,6 @@ set -euo pipefail # exit on any error, don't allow undefined variables, pipes do
 
 branch="$1"
 
-for commit in $(non-merge-commit-shas $branch) ; do
-  git cherry-pick $commit
+for commit in $(non-merge-commit-shas "$branch") ; do
+  git cherry-pick "$commit"
 done

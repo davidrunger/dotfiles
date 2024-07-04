@@ -25,7 +25,7 @@ module Tapp::Printer
         else
           File.read(filepath).split("\n")[line_number - 1].strip
         end
-      tapped_object_name = calling_line.match(%r{([_a-z0-9]+)\.tapp})&.[](1) || calling_line
+      tapped_object_name = calling_line.match(%r{([_a-z0-9]+)\.tapp}i)&.[](1) || calling_line
 
       puts("#{AmazingPrint::Colors.yellow(tapped_object_name)}:")
       amazing_print(tapped_object)

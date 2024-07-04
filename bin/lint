@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+
+# Execute a linter script defined in this repo's `bin-lint/` directory.
+#
+# Example:
+#   lint gitleaks
+
+set -euo pipefail # exit on any error, don't allow undefined variables, pipes don't swallow errors
+
+linter=$1
+
+"$HOME/code/dotfiles/bin-lint/$linter"

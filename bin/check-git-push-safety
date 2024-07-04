@@ -4,8 +4,14 @@
 
 set -euo pipefail # exit on any error, don't allow undefined variables, pipes don't swallow errors
 
+exit_with_error_unless_checks_not_required() {
+  if [[ "${PUSH_CHECKS_REQUIRED:-true}" != "false" ]] ; then
+    exit 1
+  fi
+}
+
 if ! verify-on-ok-branch ; then
-  exit 1
+  exit_with_error_unless_checks_not_required
 fi
 
 if [[ "$(changed-not-deleted-files)" != "" ]] ; then
@@ -21,7 +27,7 @@ if [[ "$(changed-not-deleted-files)" != "" ]] ; then
       "$(printf %s "${debugging_code_regex_parts[@]}")" "${files_to_search[@]}" ; then
     echo
     echo "Easy there, cowboy! Cleanup yo code, first."
-    exit 1
+    exit_with_error_unless_checks_not_required
   fi
 fi
 
@@ -30,7 +36,7 @@ if git diff --diff-filter=dr "origin/$(main-branch)..."  | \
     grep '^\+' | rg --quiet --fixed-strings '!!!' ; then
   echo "Easy there, cowboy! You still have some markers in your code."
   git diff --diff-filter=dr --name-status "origin/$(main-branch)..." | cut -f2 | xargs rg --with-filename --fixed-strings '!!!'
-  exit 1
+  exit_with_error_unless_checks_not_required
 fi
 
 # don't push if there are still `!!!` markers in the code (renamed files)
@@ -38,7 +44,7 @@ if git diff --diff-filter=R "origin/$(main-branch)"...  | \
     grep '^\+' | rg --quiet --fixed-strings '!!!' ; then
   echo "Easy there, cowboy! You still have some markers in your code in renamed files."
   git diff --diff-filter=R --name-status "origin/$(main-branch)..." | cut -f3 | xargs rg --with-filename --fixed-strings '!!!'
-  exit 1
+  exit_with_error_unless_checks_not_required
 fi
 
 # don't push if there are still `!!!` markers in .env* files
@@ -48,7 +54,7 @@ for file in .env .env.development.local .env.test.local ; do
     if rg --quiet --fixed-strings '!!!' $file ; then
       rg --with-filename --fixed-strings '!!!' $file
       echo "Easy there, cowboy! You still have some markers in $file ."
-      exit 1
+      exit_with_error_unless_checks_not_required
     fi
   fi
 done
@@ -56,7 +62,7 @@ done
 # Don't push if there are any TEMP or Z commits.
 if git log --oneline "$(main-branch).." | rg --quiet 'TEMP|Z' ; then
   echo "Woah! You still have a temp commit."
-  exit 1
+  exit_with_error_unless_checks_not_required
 fi
 
 # if all of the above checks passed, we're good to push! :)

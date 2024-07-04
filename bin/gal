@@ -15,8 +15,9 @@
 require 'active_support/core_ext/object/blank'
 require 'amazing_print'
 require 'fileutils'
-require 'memery'
 require 'slop'
+
+require_relative "#{Dir.home}/code/dotfiles/utils/ruby/memoization.rb"
 
 module Gal
   GUARDFILE_TYPES = %i[
@@ -63,7 +64,7 @@ opts =
   end
 
 class Runner
-  include Memery
+  prepend Memoization
 
   PROJECT_LOCAL_SCRIPT_INFOS = {
     bash: {

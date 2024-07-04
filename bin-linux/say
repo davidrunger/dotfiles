@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+# Use text-to-speech to dictate aloud the first provided argument.
+
+set -euo pipefail # exit on any error, don't allow undefined variables, pipes don't swallow errors
+
+/usr/bin/spd-say "$1"

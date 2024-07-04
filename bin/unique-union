@@ -1,0 +1,59 @@
+#!/usr/bin/env lua
+
+-- Function to split a string into words
+local function split_words(s)
+    local words = {}
+    for word in s:gmatch("%S+") do
+        table.insert(words, word)
+    end
+    return words
+end
+
+-- Function to compute the union of two sets
+local function union(set1, set2)
+    local union_set = {}
+    local seen = {}
+
+    -- Add elements from set1
+    for _, item in ipairs(set1) do
+        if not seen[item] then
+            table.insert(union_set, item)
+            seen[item] = true
+        end
+    end
+
+    -- Add elements from set2
+    for _, item in ipairs(set2) do
+        if not seen[item] then
+            table.insert(union_set, item)
+            seen[item] = true
+        end
+    end
+
+    -- Sort the union set alphabetically
+    table.sort(union_set)
+
+    return union_set
+end
+
+-- Main function
+local function main()
+    if #arg < 2 then
+        print("Usage: unique-union <set1> <set2>")
+        return
+    end
+
+    -- Read inputs from command line arguments
+    local set1 = split_words(arg[1])
+    local set2 = split_words(arg[2])
+
+    -- Compute the union of set1 and set2
+    local result = union(set1, set2)
+
+    -- Print the result
+    for _, item in ipairs(result) do
+        print(item)
+    end
+end
+
+main()

@@ -29,12 +29,4 @@ git for-each-ref --format='%(refname:short)' refs/heads |
 
 # check back out the branch that we were originally on
 git checkout --quiet -
-# delete remote branches that we don't need anymore
-{
-  current_directory=$(basename "$PWD")
-  (
-    git remote prune origin && \
-      notify "Job complete in $current_directory" 'Pruned remote branches' || \
-      notify-error "Job failed in $current_directory" 'Prune remote branches'
-  ) & disown
-} > /dev/null 2>&1
+prune-remote-branches-in-background

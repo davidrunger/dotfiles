@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/usr/bin/env zsh
 
 # Delete (via a background process) remote branches that we don't need anymore.
 

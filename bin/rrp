@@ -39,6 +39,8 @@ stop_processes() {
   # print processes that are still running (though there might be none)
   printf "\nRemaining processes:\n"
   pid-cmd | grep -E "$processes_to_kill" | grep -Ev "$processes_to_ignore"
+
+  return 0
 }
 
 # stop processes iff invoked directly (but not if sourced into another script)

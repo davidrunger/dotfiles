@@ -9,7 +9,6 @@ source ~/code/dotfiles/bin/rrp
 processes_to_int+="|node"
 
 # stop processes iff invoked directly (but not if sourced into another script)
-if [ "${BASH_SOURCE[0]}" -ef "$0" ]
-then
+if [ "${BASH_SOURCE[0]}" -ef "$0" ] ; then
   stop_processes
 fi

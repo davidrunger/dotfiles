@@ -10,7 +10,7 @@ message_path=personal/background-messages/$program.txt
 rm -f "$message_path"
 
 set +e
-BACKGROUND_AND_NOTIFY_PROGRAM="$program" $program
+BACKGROUND_AND_NOTIFY_FILENAME="$program" $program
 exit_status=$?
 set -e
 

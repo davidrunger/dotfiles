@@ -6,9 +6,9 @@ set -euo pipefail # exit on any error, don't allow undefined variables, pipes do
 
 message=$1
 
-if [ -v BACKGROUND_AND_NOTIFY_PROGRAM ] ; then
-  program=$BACKGROUND_AND_NOTIFY_PROGRAM
-  message_path=personal/background-messages/$program.txt
+if [ -v BACKGROUND_AND_NOTIFY_FILENAME ] ; then
+  message_filename=$BACKGROUND_AND_NOTIFY_FILENAME
+  message_path=personal/background-messages/$message_filename.txt
   mf "$message_path"
   echo "$message" > "$message_path"
 else

@@ -4,13 +4,13 @@
 
 set -euo pipefail # exit on any error, don't allow undefined variables, pipes don't swallow errors
 
-program=$1
-message_path=personal/background-messages/$program.txt
+message_filename=$(echo "$@" | tr ' ' '-')
+message_path=personal/background-messages/$message_filename.txt
 
 rm -f "$message_path"
 
 set +e
-BACKGROUND_AND_NOTIFY_FILENAME="$program" $program
+BACKGROUND_AND_NOTIFY_MESSAGE_PATH="$message_path" "$@"
 exit_status=$?
 set -e
 
@@ -24,7 +24,7 @@ else
 fi
 
 if [ $exit_status -eq 0 ] ; then
-  notify "$program succeeded in $current_directory" "$message"
+  notify "\`$*\` succeeded in $current_directory" "$message"
 else
-  notify-error "$program failed in $current_directory" "$message"
+  notify-error "\`$*\` failed in $current_directory" "$message"
 fi

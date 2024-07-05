@@ -5,7 +5,6 @@
 set -euo pipefail # exit on any error, don't allow undefined variables, pipes don't swallow errors
 
 message_filename=$(echo "$@" | tr ' ' '-')
-
 message_path=personal/background-messages/$message_filename.txt
 
 rm -f $message_path
@@ -15,7 +14,7 @@ echo "Running \`$*\` in the background."
 set +e
 {
   (
-    BACKGROUND_AND_NOTIFY_FILENAME="$message_filename" "$@" > /dev/null 2>&1
+    BACKGROUND_AND_NOTIFY_MESSAGE_PATH="$message_path" "$@" > /dev/null 2>&1
     exit_status=$?
     set -e
 

@@ -14,6 +14,20 @@ if ! verify-on-ok-branch ; then
   exit_with_error_unless_checks_not_required
 fi
 
+if my-repo ; then
+  if [ "$(git config core.hooksPath)" != "bin/githooks" ] ; then
+    red "\`git config core.hooksPath\` is not set to \`bin/githooks\`."
+    blue "Run \`git config core.hooksPath bin/githooks\` to correct."
+    exit_with_error_unless_checks_not_required
+  fi
+
+  if ! [ -f 'bin/githooks/pre-push' ] ; then
+    red "\`bin/githooks/pre-push\` does not exist (as a file)."
+    blue "Run \`tsc bin/githooks/pre-push\` to correct."
+    exit_with_error_unless_checks_not_required
+  fi
+fi
+
 if [[ "$(changed-not-deleted-files)" != "" ]] ; then
   # don't push if there's still debugging code
   debugging_code_regex_parts=(

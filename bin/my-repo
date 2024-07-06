@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+
+# Exit with 0 if the current directory is a repo whose remote origin URL's
+# GitHub organization is `davidrunger`. Otherwise, exit with a non-zero status.
+
+set -euo pipefail # exit on any error, don't allow undefined variables, pipes don't swallow errors
+
+[ -d .git ] && [[ "$(github-path)" =~ ^davidrunger/ ]]

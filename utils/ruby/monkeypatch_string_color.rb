@@ -1,12 +1,14 @@
 # frozen_string_literal: true
 
-if !defined?(AmazingPrint)
+if !defined?(Rainbow)
   require_relative "#{Dir.home}/code/dotfiles/utils/ruby/load_gem.rb"
-  load_gem 'amazing_print'
+  load_gem 'rainbow'
 end
 
-AmazingPrint::Colors.methods(false).each do |color|
-  define_method(color) do
-    AmazingPrint::Colors.public_send(color, self)
+class String
+  Rainbow::Color::Named.color_names.each do |color|
+    define_method(color) do
+      Rainbow(self).color(color)
+    end
   end
 end

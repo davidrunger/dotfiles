@@ -57,7 +57,7 @@ class MultiLevelRipgrep < CommandLineProgram
           end
 
           puts(
-            "-- #{next_path_segments.join('/').uncolor.cyanish} ".
+            "-- #{next_path_segments.join('/').uncolor.cyan} ".
               ljust(100, '-').
               gsub('-', '-'.cyan),
           )

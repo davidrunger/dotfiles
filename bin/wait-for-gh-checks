@@ -42,7 +42,20 @@ class WaitForChecksRunner
 
   memoize \
   def expected_num_passed_checks
-    YAML.load_file(NUM_CHECKS_CONFIG_PATH).fetch(repo)
+    num_checks_config.fetch(repo) do
+      puts("Add #{repo} to #{NUM_CHECKS_CONFIG_PATH} .".red)
+      exit(1)
+    end
+  end
+
+  memoize \
+  def num_checks_config
+    if File.exist?(NUM_CHECKS_CONFIG_PATH)
+      YAML.load_file(NUM_CHECKS_CONFIG_PATH)
+    else
+      puts("Create a config at #{NUM_CHECKS_CONFIG_PATH} .".red)
+      exit(1)
+    end
   end
 
   memoize \

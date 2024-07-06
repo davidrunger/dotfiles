@@ -46,17 +46,6 @@ gsd() {
   git show $1 | EXT=diff tos
 }
 
-# git commit (and write message in editor)
-gcom() {
-  verify-on-ok-branch
-  if [ $? -ne 0 ]
-  then
-    return 1
-  fi
-
-  git commit --verbose
-}
-
 # git commit with message written in terminal
 gcomm() {
   verify-on-ok-branch

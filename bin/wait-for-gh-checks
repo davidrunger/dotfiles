@@ -11,6 +11,7 @@ require 'open3'
 require 'yaml'
 
 require_relative "#{Dir.home}/code/dotfiles/utils/ruby/memoization.rb"
+require_relative "#{Dir.home}/code/dotfiles/utils/ruby/monkeypatch_string_color.rb"
 require_relative "#{Dir.home}/code/dotfiles/utils/ruby/printer.rb"
 
 class WaitForChecksRunner

@@ -5,7 +5,7 @@
 
 set -eo pipefail # exit on any error, pipes don't swallow errors
 
-if use-strict-git-rules && ! ahead-of-remote-branch ; then
+if use-strict-git-rules && ! may-edit-latest-commit ; then
   echo "Refusing to amend commit because you are not ahead of origin/$(branch)!"
 elif ahead-of-main ; then
   if [ -z "$1" ] ; then

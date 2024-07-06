@@ -14,7 +14,7 @@ if [[ $(git rev-list --right-only --count "origin/$(main-branch)...HEAD") -eq 0 
   exit 1
 fi
 
-if use-strict-git-rules && ! ahead-of-remote-branch ; then
+if use-strict-git-rules && ! may-edit-latest-commit ; then
   echo "Not updating, because use-strict-git-rules is true" \
     "and you are not ahead of origin/$(branch)."
   exit 1

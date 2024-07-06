@@ -6,11 +6,10 @@
 
 set -euo pipefail # exit on any error, don't allow undefined variables, pipes don't swallow errors
 
-# copy text to clipboard
 TEXT=$(</dev/stdin)
 
 if [ -v LINUX ]; then
-  echo -n $TEXT | xclip -selection clipboard
+  echo -n $TEXT | xsel --clipboard --input
 else
   echo -n $TEXT | pbcopy
 fi

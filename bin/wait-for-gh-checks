@@ -10,28 +10,33 @@ require 'forwardable'
 require 'open3'
 require 'yaml'
 
-require_relative "#{Dir.home}/code/dotfiles/utils/ruby/memoization.rb"
-require_relative "#{Dir.home}/code/dotfiles/utils/ruby/monkeypatch_string_color.rb"
-require_relative "#{Dir.home}/code/dotfiles/utils/ruby/printer.rb"
+require_relative '../utils/ruby/memoization.rb'
+require_relative '../utils/ruby/monkeypatch_string_color.rb'
+require_relative '../utils/ruby/printer.rb'
 
 class WaitForChecksRunner
   prepend Memoization
 
   MAX_TIME = 8.minutes
-  NUM_CHECKS_CONFIG_PATH =
+  EXPECTED_NUM_CHECKS_CONFIG_PATH =
     "#{Dir.home}/code/dotfiles-personal/config/expected-github-checks.yml".freeze
   RETRY_INTERVAL = 10.seconds
 
-  def run
-    start_time = Time.now
+  attr_reader :start_time, :delivered_unexpected_count_notifications
 
+  def initialize
+    @start_time = Time.now
+    @delivered_unexpected_count_notifications = Set.new
+  end
+
+  def run
     Printer.printing_in_place do |printer|
       loop do
         ::WaitForChecksRunner::LoopRunner.new(
           runner: self,
           printer:,
-          start_time:,
         ).run_loop
+
         sleep(RETRY_INTERVAL)
       end
     end
@@ -45,24 +50,31 @@ class WaitForChecksRunner
   memoize \
   def expected_num_passed_checks
     num_checks_config.fetch(repo) do
-      puts("Add #{repo} to #{NUM_CHECKS_CONFIG_PATH} .".red)
+      puts("Add #{repo} to #{EXPECTED_NUM_CHECKS_CONFIG_PATH} .".red)
       exit(1)
     end
   end
 
   memoize \
-  def num_checks_config
-    if File.exist?(NUM_CHECKS_CONFIG_PATH)
-      YAML.load_file(NUM_CHECKS_CONFIG_PATH)
-    else
-      puts("Create a config at #{NUM_CHECKS_CONFIG_PATH} .".red)
-      exit(1)
-    end
+  def branch_name
+    (ARGV[0] || `git rev-parse --abbrev-ref HEAD`).strip
   end
 
   memoize \
   def repo
     File.basename(Dir.pwd)
+  end
+
+  private
+
+  memoize \
+  def num_checks_config
+    if File.exist?(EXPECTED_NUM_CHECKS_CONFIG_PATH)
+      YAML.load_file(EXPECTED_NUM_CHECKS_CONFIG_PATH)
+    else
+      puts("Create a config at #{EXPECTED_NUM_CHECKS_CONFIG_PATH} .".red)
+      exit(1)
+    end
   end
 end
 
@@ -70,75 +82,109 @@ class WaitForChecksRunner::LoopRunner
   extend Forwardable
   prepend Memoization
 
+  # See `gh run list --help` for all possible statuses (I think).
+  CANCELLED = 'CANCELLED'
+  FAILURE = 'FAILURE'
+  IN_PROGRESS = 'IN_PROGRESS'
+  SUCCESS = 'SUCCESS'
+  ALL_STATUSES = [CANCELLED, FAILURE, IN_PROGRESS, SUCCESS].freeze
+
   def_delegators(
     :@runner,
+    :branch_name,
     :expected_num_passed_checks,
     :print_and_say,
     :repo,
+    :start_time,
+    :delivered_unexpected_count_notifications,
   )
 
-  def initialize(runner:, printer:, start_time:)
+  def initialize(runner:, printer:)
     @runner = runner
     @printer = printer
-    @start_time = start_time
   end
 
   def run_loop
+    warn_if_unexpected_num_checks
+
     if fail_exit_reason
       @printer.break_out
       print_and_say("Exiting because #{fail_exit_reason}.")
       exit(1)
     end
 
-    if num_passing_checks >= expected_num_passed_checks
+    if num_passing_checks >= required_num_passed_checks
       @printer.break_out
-      puts("#{num_passing_checks}/#{expected_num_passed_checks} checks passed.")
+      puts("#{num_passing_checks}/#{required_num_passed_checks} checks passed.")
       print_and_say('Checks succeeded.')
       exit(0)
     else
       @printer.print_in_place(<<~LOG.squish)
-        #{num_passing_checks}/#{expected_num_passed_checks} checks passed.
+        #{num_passing_checks}/#{required_num_passed_checks} checks passed.
         Waiting for #{::WaitForChecksRunner::RETRY_INTERVAL} seconds and then retrying.
         (#{seconds_elapsed.round} seconds elapsed.)
       LOG
     end
   end
 
+  private
+
+  def warn_if_unexpected_num_checks
+    if total_num_started_checks > expected_num_passed_checks &&
+        !delivered_unexpected_count_notifications.include?(total_num_started_checks)
+      system(
+        'notify-error',
+        "Unexpected number of checks in #{repo}",
+        <<~MESSAGE.squish,
+          We expected only #{expected_num_passed_checks} check(s),
+          but #{total_num_started_checks} have started.
+        MESSAGE
+      )
+
+      delivered_unexpected_count_notifications << total_num_started_checks
+    end
+  end
+
+  memoize \
+  def required_num_passed_checks
+    [expected_num_passed_checks, total_num_started_checks].max
+  end
+
+  memoize \
+  def total_num_started_checks
+    check_status_counts.values_at(*ALL_STATUSES).sum
+  end
+
   memoize \
   def fail_exit_reason
-    return nil if seconds_elapsed < 10
-
     if seconds_elapsed > ::WaitForChecksRunner::MAX_TIME
-      return 'max time exceeded'
-    end
-
-    if checks_output.match?(/(build|test|Ruby \d+\.\d+\.\d+).*\s+fail/)
+      'max time exceeded'
+    elsif check_status_counts[FAILURE].positive?
       'tests failed'
+    elsif check_status_counts[CANCELLED].positive?
+      'tests cancelled'
     end
   end
 
   memoize \
   def num_passing_checks
-    checks_output.scan(/\spass\s/).size
+    check_status_counts[SUCCESS]
   end
 
   memoize \
-  def checks_output
-    branch_name = ENV.fetch('GH_CHECKS_BRANCH', `git rev-parse --abbrev-ref HEAD`.rstrip)
-    stdout, _stderr, _status = Open3.capture3("gh pr checks #{branch_name}")
-    stdout
+  def check_status_counts
+    `gh pr checks #{branch_name} --json 'state' --jq '.[] | .state'`.
+      split(/\s+/m).
+      tally.
+      tap { _1.default = 0 }.
+      freeze
   end
 
   def seconds_elapsed
-    Time.now - @start_time
+    Time.now - start_time
   end
 end
 
-if ENV.key?('RUN_TEST_SCRIPT')
-  # run this with `RUN_TEST_SCRIPT=1 ruby /Users/david/code/dotfiles/bin/wait-for-gh-checks`
-  # loop_runner = WaitForChecksRunner::LoopRunner.new(runner: nil, start_time: nil)
-  # pp(["loop_runner.checks_output", loop_runner.checks_output])
-  # puts(loop_runner.checks_output)
-elsif !$PROGRAM_NAME.include?('rspec')
+if !$PROGRAM_NAME.include?('rspec')
   WaitForChecksRunner.new.run
 end

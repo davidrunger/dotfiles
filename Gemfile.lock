@@ -16,7 +16,7 @@ GEM
     base64 (0.2.0)
     benchmark-ips (2.13.0)
     bigdecimal (3.1.8)
-    chronic (0.10.2)
+    byebug (11.1.3)
     clipboard (2.0.0)
     coderay (1.1.3)
     command_kit (0.6.0)
@@ -70,6 +70,9 @@ GEM
     pry (0.14.2)
       coderay (~> 1.1)
       method_source (~> 1.0)
+    pry-byebug (3.10.1)
+      byebug (~> 11.0)
+      pry (>= 0.13, < 0.15)
     racc (1.8.0)
     rainbow (3.1.1)
     rb-fsevent (0.11.2)
@@ -124,7 +127,7 @@ GEM
     ruby-progressbar (1.13.0)
     runger_config (5.2.0)
       activesupport (>= 7.1.2)
-    runger_style (2.10.0)
+    runger_style (2.11.0)
       prism (>= 0.24.0)
       rubocop (>= 1.38.0, < 2)
     shellany (0.0.1)
@@ -147,6 +150,7 @@ GEM
     tapp (1.5.1)
       thor
     thor (1.3.1)
+    timecop (0.9.10)
     tzinfo (2.0.6)
       concurrent-ruby (~> 1.0)
     unicode-display_width (2.5.0)
@@ -158,13 +162,13 @@ PLATFORMS
 DEPENDENCIES
   amazing_print
   benchmark-ips
-  chronic
   clipboard
   command_kit
   fcom
   guard
   guard-shell
   memo_wise
+  pry-byebug
   rainbow
   redis
   rspec
@@ -176,6 +180,7 @@ DEPENDENCIES
   simple_cov-formatter-terminal
   slop
   tapp
+  timecop
   yard
 
 BUNDLED WITH

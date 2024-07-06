@@ -3,7 +3,7 @@
 # Goes through changed files in the most recent commit one at a time.
 
 # Example (run from the repo that has the commit):
-#   bin/rails runner /home/david/code/dotfiles/tools/large_diff_viewer.rb
+#   bin/rails runner ~/code/dotfiles/tools/large_diff_viewer.rb
 
 # rubocop:disable Style/TopLevelMethodDefinition
 def clear_scratch
@@ -28,7 +28,7 @@ changed_files.
 
     system('hard-clear', exception: true)
     puts("#{position} / #{changed_files.size}")
-    system({ 'DELTA_PAGER' => 'cat' }, "gs --pretty="" #{file}", exception: true)
+    system({ 'DELTA_PAGER' => 'cat' }, "gs --pretty= #{file}", exception: true)
     gets
     scratch!(file, silent: true)
   end

@@ -7,6 +7,6 @@ set -euo pipefail # exit on any error, don't allow undefined variables, pipes do
 # If the branch doesn't even exist on the remote, then we are essentially "ahead" of it.
 if ! branch-exists-on-remote ; then
   exit 0
+else
+  ahead-of-branch "origin/$(branch)"
 fi
-
-[[ $(git rev-list --right-only --count "origin/$(branch)"...HEAD) -gt 0 ]]

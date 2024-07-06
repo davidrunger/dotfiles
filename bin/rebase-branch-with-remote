@@ -8,21 +8,16 @@
 set -euo pipefail # exit on any error, don't allow undefined variables, pipes don't swallow errors
 
 local_branch="$1"
-target_ref="$2"
+remote_branch="$2"
 original_branch="$(branch)"
 
 git checkout --quiet "$local_branch"
 
 if uncommitted-changes-exist ; then
-  red "Refusing to update '$local_branch' to '$target_ref' because of uncommitted changes."
+  red "Refusing to rebase '$local_branch' with '$remote_branch' because of uncommitted changes."
   exit 1
 fi
 
-if ahead-of-branch "$target_ref" ; then
-  red "Refusing to update '$local_branch' to '$target_ref' because local commit(s) would be lost."
-  exit 1
-fi
-
-git reset --hard --quiet "$target_ref"
+git rebase "$remote_branch"
 
 git checkout --quiet "$original_branch"

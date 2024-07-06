@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+# Fetch the primary/main branch.
+
+set -euo pipefail # exit on any error, don't allow undefined variables, pipes don't swallow errors
+
+gfb "$(main-branch)"

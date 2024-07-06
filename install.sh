@@ -4,7 +4,6 @@ set -euo pipefail # exit on any error, don't allow undefined variables, pipes do
 
 mkdir -p ~/.config/
 
-ln -sf "$HOME/code/dotfiles/kitty/" "$HOME/.config/"
 ln -sf ~/code/dotfiles/aprc.rb ~/.config/aprc
 ln -sf ~/code/dotfiles/asdfrc ~/.asdfrc
 ln -sf ~/code/dotfiles/eslintrc.js ~/.eslintrc.js
@@ -12,6 +11,7 @@ ln -sf ~/code/dotfiles/gemrc.yml ~/.gemrc
 ln -sf ~/code/dotfiles/git/gitconfig ~/.gitconfig
 ln -sf ~/code/dotfiles/global_gitignore ~/.gitignore
 ln -sf ~/code/dotfiles/irbrc.rb ~/.irbrc.rb
+ln -sf ~/code/dotfiles/kitty/ ~/.config/
 ln -sf ~/code/dotfiles/pryrc.rb ~/.pryrc
 ln -sf ~/code/dotfiles/rspec ~/.rspec
 ln -sf ~/code/dotfiles/rubocop.yml ~/.rubocop.yml

@@ -1,0 +1,23 @@
+#!/usr/bin/env bash
+
+# wait for all expected GitHub checks to pass, then merge the PR
+
+set -euo pipefail # exit on any error, don't allow undefined variables, pass errors through pipes
+
+GH_CHECKS_BRANCH=$(branch)
+export GH_CHECKS_BRANCH
+wait-for-gh-checks
+gh pr merge "$GH_CHECKS_BRANCH" --squash
+say "P R merged"
+git fetch --no-tags --quiet origin "$(main-branch):$(main-branch)"
+
+# switch to "safe" branch if still on the local branch that was just merged
+if [[ "$(branch)" == "$GH_CHECKS_BRANCH" ]]; then
+  safe
+else
+  update-main-branches
+fi
+
+gdm
+echo "----"
+git branch -vv

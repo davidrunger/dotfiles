@@ -11,6 +11,8 @@ gh pr merge "$GH_CHECKS_BRANCH" --squash
 say "P R merged"
 git fetch --no-tags --quiet origin "$(main-branch):$(main-branch)"
 
+set -x
+
 # switch to "safe" branch if still on the local branch that was just merged
 if [[ "$(branch)" == "$GH_CHECKS_BRANCH" ]]; then
   safe

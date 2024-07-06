@@ -1,0 +1,141 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+# wait for all expected GitHub checks to pass
+
+require 'active_support'
+require 'active_support/core_ext/numeric/time'
+require 'active_support/core_ext/string/filters'
+require 'forwardable'
+require 'open3'
+require 'yaml'
+
+require_relative "#{Dir.home}/code/dotfiles/utils/ruby/memoization.rb"
+require_relative "#{Dir.home}/code/dotfiles/utils/ruby/printer.rb"
+
+class WaitForChecksRunner
+  prepend Memoization
+
+  MAX_TIME = 8.minutes
+  NUM_CHECKS_CONFIG_PATH = "#{Dir.home}/code/dotfiles-personal/config/expected-github-checks.yml"
+  RETRY_INTERVAL = 10.seconds
+
+  def run
+    start_time = Time.now
+
+    Printer.printing_in_place do |printer|
+      loop do
+        ::WaitForChecksRunner::LoopRunner.new(
+          runner: self,
+          printer:,
+          start_time:,
+        ).run_loop
+        sleep(RETRY_INTERVAL)
+      end
+    end
+  end
+
+  def print_and_say(message)
+    puts(message)
+    system('say', message)
+  end
+
+  memoize \
+  def expected_num_passed_checks
+    YAML.load_file(NUM_CHECKS_CONFIG_PATH).fetch(repo)
+  end
+
+  memoize \
+  def repo
+    Dir.pwd.split('/').last
+  end
+
+  memoize \
+  def dependabot_branch?
+    authors == ['dependabot[bot]']
+  end
+
+  memoize \
+  def authors
+    `git log \
+      origin/$(main-branch)..$(git rev-parse --abbrev-ref --symbolic-full-name @{u}) \
+      --oneline --no-merges --format='%an'`.split("\n").uniq
+  end
+end
+
+class WaitForChecksRunner::LoopRunner
+  extend Forwardable
+  prepend Memoization
+
+  def_delegators(
+    :@runner,
+    :expected_num_passed_checks,
+    :print_and_say,
+    :repo,
+  )
+
+  def initialize(runner:, printer:, start_time:)
+    @runner = runner
+    @printer = printer
+    @start_time = start_time
+  end
+
+  def run_loop
+    if fail_exit_reason
+      @printer.break_out
+      print_and_say("Exiting because #{fail_exit_reason}.")
+      exit(1)
+    end
+
+    if num_passing_checks >= expected_num_passed_checks
+      @printer.break_out
+      puts("#{num_passing_checks}/#{expected_num_passed_checks} checks passed.")
+      print_and_say('Checks succeeded.')
+      exit(0)
+    else
+      @printer.print_in_place(<<~LOG.squish)
+        #{num_passing_checks}/#{expected_num_passed_checks} checks passed.
+        Waiting for #{::WaitForChecksRunner::RETRY_INTERVAL} seconds and then retrying.
+        (#{seconds_elapsed.round} seconds elapsed.)
+      LOG
+    end
+  end
+
+  memoize \
+  def fail_exit_reason
+    return nil if seconds_elapsed < 10
+
+    if seconds_elapsed > ::WaitForChecksRunner::MAX_TIME
+      return 'max time exceeded'
+    end
+
+    if checks_output.match?(/(build|test|Ruby \d+\.\d+\.\d+).*\s+fail/)
+      'tests failed'
+    end
+  end
+
+  memoize \
+  def num_passing_checks
+    checks_output.scan(/\spass\s/).size
+  end
+
+  memoize \
+  def checks_output
+    branch_name = ENV.fetch('GH_CHECKS_BRANCH', `git rev-parse --abbrev-ref HEAD`.rstrip)
+    stdout, _stderr, _status = Open3.capture3("gh pr checks #{branch_name}")
+    stdout
+  end
+
+  def seconds_elapsed
+    Time.now - @start_time
+  end
+end
+
+if ENV.key?('RUN_TEST_SCRIPT')
+  # run this with `RUN_TEST_SCRIPT=1 ruby /Users/david/code/dotfiles/bin/wait-for-gh-checks`
+  # loop_runner = WaitForChecksRunner::LoopRunner.new(runner: nil, start_time: nil)
+  # pp(["loop_runner.checks_output", loop_runner.checks_output])
+  # puts(loop_runner.checks_output)
+elsif !$PROGRAM_NAME.include?('rspec')
+  WaitForChecksRunner.new.run
+end

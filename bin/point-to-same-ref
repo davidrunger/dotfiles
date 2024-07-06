@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+
+# Arguments: two git references (such as branches).
+# Exits with zero if those both point to the same thing, and nonzero otherwise.
+
+set -euo pipefail # exit on any error, don't allow undefined variables, pipes don't swallow errors
+
+[ "$(git rev-parse "$1")" == "$(git rev-parse "$2")" ]

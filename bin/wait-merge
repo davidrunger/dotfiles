@@ -6,6 +6,12 @@ set -euo pipefail # exit on any error, don't allow undefined variables, pass err
 
 GH_CHECKS_BRANCH=$(branch)
 export GH_CHECKS_BRANCH
+
+if ! point-to-same-ref "$GH_CHECKS_BRANCH" "origin/$GH_CHECKS_BRANCH" ; then
+  echo 'The local branch differs from its remote. Refusing to merge.'
+  exit 1
+fi
+
 wait-for-gh-checks
 gh pr merge "$GH_CHECKS_BRANCH" --squash
 say "P R merged"

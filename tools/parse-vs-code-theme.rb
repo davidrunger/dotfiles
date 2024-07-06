@@ -20,6 +20,14 @@ colors = theme_data['colors']
 
 token_colors.reject! { BAD_TOKEN_COLOR_NAMES.include?(_1['name']) }
 
+token_colors.map! do |token_color|
+  if token_color['name'] == 'Methods'
+    token_color.merge({ 'settings' => { 'foreground' => '#ac63ff' } })
+  else
+    token_color
+  end
+end
+
 hash_for_vs_code = {
   'editor.tokenColorCustomizations' => {
     'textMateRules' => token_colors,

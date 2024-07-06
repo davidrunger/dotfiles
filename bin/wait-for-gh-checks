@@ -18,7 +18,8 @@ class WaitForChecksRunner
   prepend Memoization
 
   MAX_TIME = 8.minutes
-  NUM_CHECKS_CONFIG_PATH = "#{Dir.home}/code/dotfiles-personal/config/expected-github-checks.yml"
+  NUM_CHECKS_CONFIG_PATH =
+    "#{Dir.home}/code/dotfiles-personal/config/expected-github-checks.yml".freeze
   RETRY_INTERVAL = 10.seconds
 
   def run
@@ -61,19 +62,7 @@ class WaitForChecksRunner
 
   memoize \
   def repo
-    Dir.pwd.split('/').last
-  end
-
-  memoize \
-  def dependabot_branch?
-    authors == ['dependabot[bot]']
-  end
-
-  memoize \
-  def authors
-    `git log \
-      origin/$(main-branch)..$(git rev-parse --abbrev-ref --symbolic-full-name @{u}) \
-      --oneline --no-merges --format='%an'`.split("\n").uniq
+    File.basename(Dir.pwd)
   end
 end
 

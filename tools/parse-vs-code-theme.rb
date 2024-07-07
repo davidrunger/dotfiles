@@ -28,6 +28,12 @@ token_colors.map! do |token_color|
   end
 end
 
+token_colors << {
+  'name' => 'Ruby instance variables',
+  'scope' => 'variable.other.readwrite.instance.ruby',
+  'settings' => { 'foreground' => '#38b1c7' },
+}
+
 hash_for_vs_code = {
   'editor.tokenColorCustomizations' => {
     'textMateRules' => token_colors,

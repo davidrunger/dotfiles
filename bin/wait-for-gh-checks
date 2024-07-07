@@ -4,10 +4,12 @@
 # wait for all expected GitHub checks to pass
 
 require 'active_support'
+require 'active_support/core_ext/hash/keys'
 require 'active_support/core_ext/numeric/time'
 require 'active_support/core_ext/string/filters'
 require 'forwardable'
 require 'open3'
+require 'time'
 require 'yaml'
 
 require_relative '../utils/ruby/memoization.rb'
@@ -48,9 +50,19 @@ class WaitForChecksRunner
   end
 
   memoize \
-  def expected_num_passed_checks
-    num_checks_config.fetch(repo) do
-      puts("Add #{repo} to #{EXPECTED_NUM_CHECKS_CONFIG_PATH} .".red)
+  def expected_num_checks_config
+    raw_config =
+      num_checks_config.fetch(repo) do
+        puts("Add #{repo} to #{EXPECTED_NUM_CHECKS_CONFIG_PATH} .".red)
+        exit(1)
+      end
+
+    if raw_config.is_a?(Integer)
+      { exactly: raw_config }
+    elsif (minimum_count = minimum_count(raw_config))
+      { at_least: minimum_count }
+    else
+      puts("Invalid config #{raw_config} for repo #{repo}.")
       exit(1)
     end
   end
@@ -66,6 +78,12 @@ class WaitForChecksRunner
   end
 
   private
+
+  def minimum_count(config)
+    if config.is_a?(Hash)
+      config['at_least']
+    end
+  end
 
   memoize \
   def num_checks_config
@@ -92,7 +110,7 @@ class WaitForChecksRunner::LoopRunner
   def_delegators(
     :@runner,
     :branch_name,
-    :expected_num_passed_checks,
+    :expected_num_checks_config,
     :print_and_say,
     :repo,
     :start_time,
@@ -105,7 +123,7 @@ class WaitForChecksRunner::LoopRunner
   end
 
   def run_loop
-    warn_if_unexpected_num_checks
+    warn_if_unexpectedly_large_num_checks
 
     if fail_exit_reason
       @printer.break_out
@@ -113,7 +131,7 @@ class WaitForChecksRunner::LoopRunner
       exit(1)
     end
 
-    if num_passing_checks >= required_num_passed_checks
+    if (num_passing_checks >= required_num_passed_checks) && sufficient_time_passed?
       @printer.break_out
       puts("#{num_passing_checks}/#{required_num_passed_checks} checks passed.")
       print_and_say('Checks succeeded.')
@@ -129,14 +147,34 @@ class WaitForChecksRunner::LoopRunner
 
   private
 
-  def warn_if_unexpected_num_checks
-    if total_num_started_checks > expected_num_passed_checks &&
+  def sufficient_time_passed?
+    if expected_num_checks_config[:exactly]
+      true
+    else
+      earliest_check_started_at.is_a?(Time) &&
+        (Time.now - earliest_check_started_at) > 20
+    end
+  end
+
+  memoize \
+  def earliest_check_started_at
+    `gh pr checks $(branch) --json 'startedAt' --jq '.[] | .startedAt'`.
+      split(/\s+/m).
+      min&.
+      then { Time.iso8601(_1) }
+  end
+
+  def warn_if_unexpectedly_large_num_checks
+    exact_expected_num_checks = expected_num_checks_config[:exactly]
+
+    if exact_expected_num_checks &&
+        total_num_started_checks > exact_expected_num_checks &&
         !delivered_unexpected_count_notifications.include?(total_num_started_checks)
       system(
         'notify-error',
         "Unexpected number of checks in #{repo}",
         <<~MESSAGE.squish,
-          We expected only #{expected_num_passed_checks} check(s),
+          We expected exactly #{exact_expected_num_checks} check(s) to run,
           but #{total_num_started_checks} have started.
         MESSAGE
       )
@@ -147,7 +185,10 @@ class WaitForChecksRunner::LoopRunner
 
   memoize \
   def required_num_passed_checks
-    [expected_num_passed_checks, total_num_started_checks].max
+    [
+      *expected_num_checks_config.values_at(:at_least, :exactly),
+      total_num_started_checks,
+    ].compact.max
   end
 
   memoize \

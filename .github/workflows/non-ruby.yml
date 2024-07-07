@@ -1,4 +1,4 @@
-name: Build
+name: Non-Ruby Checks
 
 on:
   pull_request:

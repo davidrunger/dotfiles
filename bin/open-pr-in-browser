@@ -4,7 +4,7 @@
 # Opens a GitHub PR in the browser (based on input piped from stdout).
 # (Used in `hpr`, not standalone.)
 
-require_relative "#{Dir.home}/code/dotfiles/utils/ruby/memoization.rb"
+require_relative '../utils/ruby/memoization.rb'
 
 class OpenPrInBrowser
   prepend Memoization
@@ -24,7 +24,7 @@ class OpenPrInBrowser
 end
 
 # only execute automatically when receiving piped input; otherwise (e.g. in tests) don't
-receiving_piped_input = !STDIN.tty?
+receiving_piped_input = !STDIN.tty? && !$PROGRAM_NAME.include?('rspec')
 if receiving_piped_input
   OpenPrInBrowser.new(ARGF.read).open_pr
 end

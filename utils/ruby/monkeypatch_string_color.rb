@@ -1,8 +1,12 @@
 # frozen_string_literal: true
 
 if !defined?(Rainbow)
-  require_relative "#{Dir.home}/code/dotfiles/utils/ruby/load_gem.rb"
-  load_gem 'rainbow'
+  begin
+    require 'rainbow'
+  rescue LoadError
+    require_relative "#{Dir.home}/code/dotfiles/utils/ruby/load_gem.rb"
+    load_gem('rainbow')
+  end
 end
 
 class String

@@ -4,20 +4,19 @@
 
 set -euo pipefail # exit on any error, don't allow undefined variables, pass errors through pipes
 
-GH_CHECKS_BRANCH=$(branch)
-export GH_CHECKS_BRANCH
+gh_check_branch=$(branch)
 
-if ! point-to-same-ref "$GH_CHECKS_BRANCH" "origin/$GH_CHECKS_BRANCH" ; then
+if ! point-to-same-ref "$gh_check_branch" "origin/$gh_check_branch" ; then
   red 'The local branch differs from its remote. Refusing to merge.'
   exit 1
 fi
 
-wait-for-gh-checks
-gh pr merge "$GH_CHECKS_BRANCH" --squash
+wait-for-gh-checks "$gh_check_branch"
+gh pr merge "$gh_check_branch" --squash
 say "P R merged"
 
 # switch to "safe" branch if still on the local branch that was just merged
-if [[ "$(branch)" == "$GH_CHECKS_BRANCH" ]]; then
+if [[ "$(branch)" == "$gh_check_branch" ]]; then
   safe
 else
   update-main-branches

@@ -3,9 +3,9 @@
 # Run ShellCheck on relevant changed files.
 
 set -euo pipefail # exit on any error, don't allow undefined variables, pipes don't swallow errors
-
 shebang_files=$(
   changed-not-deleted-files | \
+    rg -v '.md$' | \
     xargs -r rg --files-with-matches '^#!/usr/bin/env (bash|sh)' || \
     true
 )

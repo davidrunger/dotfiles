@@ -2,17 +2,19 @@
 
 # Make sure that we are on a branch that it's okay to commit to directly.
 
-# Commits directly to main branch are allowed for some projects.
-if [[
-  $PWD == "$HOME/code/dotfiles" ||
-  $PWD == "$HOME/code/dotfiles-personal" ||
-  $PWD == "$HOME/code/playground"
-]]
-then
-  exit 0
-fi
+set -euo pipefail # exit on any error, don't allow undefined variables, pipes don't swallow errors
 
-if on-safe-or-main ; then
+warn_and_exit() {
   echo "Change your branch name, silly!"
   exit 1 # failure code
+}
+
+if [ "$(branch)" = "safe" ] ; then
+  warn_and_exit
+elif [[ "$PWD" =~ $COMMIT_TO_MAIN_REGEX ]] ; then # defined in dotfiles-personal
+  exit 0
+elif [ "$(branch)" = "$(main-branch)" ] ; then
+  warn_and_exit
+else
+  exit 0
 fi

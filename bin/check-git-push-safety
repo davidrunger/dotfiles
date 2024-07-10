@@ -39,7 +39,7 @@ if [[ "$files_to_check_for_debugging" != "" ]] ; then
     '\btapp\b'
   )
   readarray -t files_to_search <<< "$files_to_check_for_debugging"
-  if rg -g '!public/' -g '*.rake' -g '*.rb' -g '*.js' -g '*.coffee' -g '*.haml' -g '*.html' -g '*.erb' \
+  if rg -g '!public/' -g '*.rake' -g '*.rb' -g '*.js' -g '*.haml' -g '*.html' -g '*.erb' \
       "$(printf %s "${debugging_code_regex_parts[@]}")" "${files_to_search[@]}" ; then
     echo
     echo "Easy there, cowboy! Cleanup yo code, first."

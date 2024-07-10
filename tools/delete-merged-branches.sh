@@ -12,19 +12,12 @@ for dir in $(my-repos) ; do
   echo
   blue "# $dir"
 
-  if branch-exists 'safe' ; then
-    set -e
-
-    safe
-    gdm
-    gb
-
-    set +e
-  else
-    echo 'Skipping because no "safe" branch is present.'
-  fi
+  set -e
+  safe
+  gdm
+  gb
+  set +e
 
   echo
-
   cd - > /dev/null || exit
 done

@@ -32,6 +32,10 @@ class WaitForChecksRunner
   end
 
   def run
+    # Wait an initial 5 seconds, so that failed checks from a previous run
+    # aren't inaccurately considered as failing checks for the current run.
+    sleep(5)
+
     Printer.printing_in_place do |printer|
       loop do
         ::WaitForChecksRunner::LoopRunner.new(

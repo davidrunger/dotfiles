@@ -12,11 +12,13 @@ ruby_version_file=".ruby-version"
 old_ruby_version="$1"
 new_ruby_version="$2"
 
+set -x
 rbenv global "$new_ruby_version"
 RBENV_VERSION="$new_ruby_version" gem update --system
 RBENV_VERSION="$new_ruby_version" gem install bundler
 
 cd "$HOME/code" || exit
+set +x
 
 for dir in $(my-repos) ; do
   cd "$dir" || exit

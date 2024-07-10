@@ -12,6 +12,8 @@ ruby_version_file=".ruby-version"
 old_ruby_version="$1"
 new_ruby_version="$2"
 
+rbenv global "$new_ruby_version"
+
 cd "$HOME/code" || exit
 
 for dir in $(my-repos) ; do

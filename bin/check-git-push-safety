@@ -28,7 +28,9 @@ if my-repo ; then
   fi
 fi
 
-if [[ "$(changed-not-deleted-files)" != "" ]] ; then
+files_to_check_for_debugging=$(changed-not-deleted-files | rg -v '^Gemfile(\.lock)?$')
+
+if [[ "$files_to_check_for_debugging" != "" ]] ; then
   # don't push if there's still debugging code
   debugging_code_regex_parts=(
     '^((\s*|RSpec\.)(fit|fdescribe|fcontext|fscenario|fspecify))|'
@@ -36,7 +38,7 @@ if [[ "$(changed-not-deleted-files)" != "" ]] ; then
     '\b(binding\.pry|byebug)\b|'
     '\btapp\b'
   )
-  readarray -t files_to_search < <(changed-not-deleted-files)
+  readarray -t files_to_search <<< "$files_to_check_for_debugging"
   if rg -g '!public/' -g '*.rake' -g '*.rb' -g '*.js' -g '*.coffee' -g '*.haml' -g '*.html' -g '*.erb' \
       "$(printf %s "${debugging_code_regex_parts[@]}")" "${files_to_search[@]}" ; then
     echo

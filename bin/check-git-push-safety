@@ -28,7 +28,11 @@ if my-repo ; then
   fi
 fi
 
-files_to_check_for_debugging=$(changed-not-deleted-files | rg -v '^Gemfile(\.lock)?$')
+files_to_check_for_debugging=$(changed-not-deleted-files | \
+  rg -v '^Gemfile(\.lock)?$' | \
+  xargs -r rg --files-without-match '^#! ?/.* (bash|sh|zsh)' || \
+  true
+)
 
 if [[ "$files_to_check_for_debugging" != "" ]] ; then
   # don't push if there's still debugging code

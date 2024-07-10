@@ -18,7 +18,7 @@ for dir in $(my-repos) ; do
   cd "$dir" || exit
   blue "# $dir"
 
-  if test -e $ruby_version_file && rg --quiet -F "$old_ruby_version" $ruby_version_file ; then
+  if test -f $ruby_version_file && rg --quiet -F "$old_ruby_version" $ruby_version_file ; then
     set -ex
 
     gfcob bump-ruby

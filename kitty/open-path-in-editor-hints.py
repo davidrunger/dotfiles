@@ -9,7 +9,7 @@ def mark(text, args, Mark, extra_cli_args, *a):
     # matching text. extra_cli_args are any extra arguments
     # passed on the command line when invoking the kitten.
     # We look for all paths (words containing a "/" that aren't HTTP URLs).
-    regex = r'(?:^|\s)(?!https?)(\S+/\S+)(?:\s|$)'
+    regex = r'(?:^|\s)(?!https?)((?:\S+/[^:]+)(?::\d+){0,2})\b'
     for idx, m in enumerate(re.finditer(regex, text)):
         start, end = m.span(1)
         mark_text = text[start:end].replace('\n', '').replace('\0', '')

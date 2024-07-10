@@ -13,6 +13,8 @@ old_ruby_version="$1"
 new_ruby_version="$2"
 
 rbenv global "$new_ruby_version"
+RBENV_VERSION="$new_ruby_version" gem update --system
+RBENV_VERSION="$new_ruby_version" gem install bundler
 
 cd "$HOME/code" || exit
 

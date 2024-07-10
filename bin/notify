@@ -59,7 +59,12 @@ class Notify < CommandKit::Command
   private
 
   def icon_path
-    "/usr/share/icons/Adwaita/96x96/status/dialog-#{options[:icon]}-symbolic.symbolic.png"
+    case options[:icon]
+    in 'information'
+      '/usr/share/icons/Adwaita/96x96/ui/checkbox-checked-symbolic.symbolic.png'
+    in 'error'
+      '/usr/share/icons/Adwaita/96x96/status/dialog-error-symbolic.symbolic.png'
+    end
   end
 end
 

@@ -6,7 +6,7 @@
 # Tip: after running this and merging the PRs, then run
 #   ./tools/delete-merged-branches.sh to delete the branches.
 
-set -uo pipefail # don't allow undefined variables, pipes don't swallow errors
+set -euo pipefail # don't allow undefined variables, pipes don't swallow errors
 
 ruby_version_file=".ruby-version"
 old_ruby_version="$1"
@@ -23,7 +23,7 @@ for dir in $(my-repos) ; do
   blue "# $dir"
 
   if test -f $ruby_version_file && rg --quiet -F "$old_ruby_version" $ruby_version_file ; then
-    set -ex
+    set -x
 
     gfcob bump-ruby
     sd -F "$old_ruby_version" "$new_ruby_version" .ruby-version

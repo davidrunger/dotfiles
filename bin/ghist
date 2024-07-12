@@ -13,18 +13,11 @@
 # load("#{Dir.home}/code/dotfiles/utils/ruby/debug.rb")
 load("#{Dir.home}/code/dotfiles/utils/ruby/command_line_program.rb")
 
-sloptions =
-  Slop.parse do |o|
-    o.on('-h', '--help', 'view this help info') do
-      puts(o.to_s.dup.sub(%r{#{Dir.home}/code/dotfiles/bin/}, ''))
-      exit
-    end
-  end
+require 'active_support'
+require 'active_support/core_ext/object'
 
 class GitHistory < CommandLineProgram
   def call
-    # puts(%(most_recent_commit_with_file: #{most_recent_commit_with_file}))
-    # puts(%(num_commits: #{num_commits}))
     puts(%(commits_to_show: #{commits_to_show}))
 
     file_name_at_this = file
@@ -47,21 +40,29 @@ class GitHistory < CommandLineProgram
   end
 
   memo_wise \
-  def num_commits
-    arguments[1] || 3
+  def num_commits_to_show
+    Integer(arguments[1]) || 3
+  end
+
+  memo_wise \
+  def num_commits_to_request_from_git
+    num_commits_to_show + commits_to_ignore.size
   end
 
   memo_wise \
   def commits_to_show
-    `#{<<~BASH.squish}`.split("\n")
-      git log
-        -n "#{num_commits}"
-        "#{most_recent_commit_with_file}"
-        --format=%H
-        --follow
-        --
-        "#{file}"
-    BASH
+    commits_from_git =
+      `#{<<~BASH.squish}`.split("\n")
+        git log
+          -n "#{num_commits_to_request_from_git}"
+          "#{most_recent_commit_with_file}"
+          --format=%H
+          --follow
+          --
+          "#{file}"
+      BASH
+
+    (commits_from_git - commits_to_ignore).first(num_commits_to_show)
   end
 
   memo_wise \
@@ -84,6 +85,32 @@ class GitHistory < CommandLineProgram
           values_at('sha', 'previous_name')
       end
   end
+
+  memo_wise \
+  def git_blame_ignore_revs_file
+    `git config blame.ignoreRevsFile`.rstrip.presence
+  end
+
+  memo_wise \
+  def commits_to_ignore
+    if git_blame_ignore_revs_file.blank? || @options[:include_ignored]
+      []
+    else
+      File.read(git_blame_ignore_revs_file).scan(/^[0-9a-f]{40}$/)
+    end
+  end
 end
 
-GitHistory.new(sloptions:).call
+# Run the program if it is invoked directly. Otherwise, allow loading it as a library / for tests.
+if $PROGRAM_NAME == __FILE__
+  sloptions =
+    Slop.parse do |o|
+      o.bool('-i', '--include-ignored', 'show changes listed in git blame ignore revs file')
+      o.on('-h', '--help', 'view this help info') do
+        puts(o.to_s.dup.sub(%r{#{Dir.home}/code/dotfiles/bin/}, ''))
+        exit
+      end
+    end
+
+  GitHistory.new(sloptions:).call
+end

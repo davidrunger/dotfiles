@@ -28,11 +28,35 @@ token_colors.map! do |token_color|
   end
 end
 
-token_colors << {
-  'name' => 'Ruby instance variables',
-  'scope' => 'variable.other.readwrite.instance.ruby',
-  'settings' => { 'foreground' => '#38b1c7' },
-}
+token_colors.push(
+  {
+    'name' => 'Ruby instance variables',
+    'scope' => 'variable.other.readwrite.instance.ruby',
+    'settings' => { 'foreground' => '#38b1c7' },
+  },
+  {
+    'name' => 'HTML tag',
+    'scope' => 'entity.name.tag',
+    'settings' => {
+      'foreground' => '#1adbc2',
+      'fontStyle' => 'bold',
+    },
+  },
+  {
+    'name' => 'HTML attribute',
+    'scope' => 'entity.other.attribute-name',
+    'settings' => {
+      'foreground' => '#947dfa',
+    },
+  },
+  {
+    'name' => 'HTML text',
+    'scope' => 'text.html,text.pug',
+    'settings' => {
+      'foreground' => '#fff49d',
+    },
+  },
+)
 
 hash_for_vs_code = {
   'editor.tokenColorCustomizations' => {

@@ -22,6 +22,7 @@ guard(:shell, all_on_start: true) do
       match = guard_match_result.instance_variable_get(:@match_result) || '[no match]'
       puts("Match for #{match} triggered execution.")
       system('clear')
+      start_time = Time.now
       load('./personal/ruby.rb')
     rescue => error
       pp(error)
@@ -30,6 +31,7 @@ guard(:shell, all_on_start: true) do
       puts('[...]') if error.backtrace.size > NUM_BACKTRACE_LINES_TO_PRINT
       puts
     end
-    puts("Ran at #{Time.now}")
+    finish_time = Time.now
+    puts("Ran at #{finish_time}. Took #{'%0.3f' % (finish_time - start_time).round(3)} seconds.")
   end
 end

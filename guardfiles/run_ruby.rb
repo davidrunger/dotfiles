@@ -23,7 +23,12 @@ guard(:shell, all_on_start: true) do
       puts("Match for #{match} triggered execution.")
       system('clear')
       start_time = Time.now
-      load('./personal/ruby.rb')
+      ruby_path = './personal/ruby.rb'
+      if ENV.key?('ISOLATE_RUBY_RUNS')
+        system('ruby', ruby_path)
+      else
+        load(ruby_path)
+      end
     rescue => error
       pp(error)
       puts

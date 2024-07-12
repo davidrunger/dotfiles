@@ -58,6 +58,7 @@ opts =
     o.bool('-d', '--debug-guard', 'enable guard debug logging')
     o.bool('-l', '--debug-listen', 'enable listen debug logging')
     o.bool('-v', '--headful-chrome', 'run tests with headful chrome browser')
+    o.bool('-i', '--isolate', 'perform each run in a separate process (slower)')
     o.on('-h', '--help', 'view this help info') do
       Gal.print_options(o)
       exit
@@ -177,7 +178,7 @@ class Runner
     command
   end
 
-  # rubocop:disable Metrics/CyclomaticComplexity
+  # rubocop:disable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
   memoize \
   def env_vars
     {
@@ -189,12 +190,13 @@ class Runner
       'TARGET_SPEC_FILES' => @opts.arguments.empty? ? nil : @opts.arguments.join(' '),
       'DISABLE_SPRING' => ENV.fetch('DISABLE_SPRING', @opts.skip_spring? ? '1' : nil),
       'SIMPLECOV_FORCE_DETAILS' => @opts.force_coverage_detail? ? '1' : nil,
+      'ISOLATE_RUBY_RUNS' => @opts.isolate? ? '1' : nil,
       'GUARDFILE_TYPE' => guardfile_type.to_s,
       'SIMPLECOV_TARGET_FILE' => @opts[:coverage_target].presence,
       'JEST_TARGET_PATTERN' => @opts[:target].presence,
     }.compact
   end
-  # rubocop:enable Metrics/CyclomaticComplexity
+  # rubocop:enable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
 
   memoize \
   def guardfile_path

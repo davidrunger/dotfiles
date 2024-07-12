@@ -15,6 +15,7 @@
 require 'active_support/core_ext/object/blank'
 require 'amazing_print'
 require 'fileutils'
+require 'io/console'
 require 'slop'
 
 require_relative "#{Dir.home}/code/dotfiles/utils/ruby/memoization.rb"
@@ -120,11 +121,45 @@ class Runner
   def ensure_local_script
     return if absolute_project_local_script_info.nil?
 
-    path, content = absolute_project_local_script_info.values_at(:path, :content)
-    if !File.exist?(path)
+    if !File.exist?(script_path)
       FileUtils.mkdir_p(working_directory_personal_directory)
-      File.write(path, content || '')
+      write_default_script_content
+    elsif File.read(script_path) != script_content
+      system('bat', script_path)
+
+      puts(<<~MESSAGE)
+        ^ That is the existing file content.
+        Press Enter to proceed, r to reset, or q to quit.
+      MESSAGE
+
+      receive_and_execute_decision_about_existing_script
     end
+  end
+
+  def script_path
+    absolute_project_local_script_info&.dig(:path)
+  end
+
+  def script_content
+    absolute_project_local_script_info&.dig(:content)
+  end
+
+  def receive_and_execute_decision_about_existing_script
+    case $stdin.getch
+    when "\r"
+      # (proceed)
+    when 'r'
+      write_default_script_content
+    when 'q', "\u0003" # Ctrl-C
+      exit(0)
+    else
+      puts('Choice not recognized. Try again.')
+      receive_and_execute_decision_about_existing_script
+    end
+  end
+
+  def write_default_script_content
+    File.write(script_path, script_content || '')
   end
 
   def open_local_script

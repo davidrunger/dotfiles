@@ -4,7 +4,7 @@
 
 require 'active_support/core_ext/string/filters'
 require 'amazing_print'
-require 'guard/shell'
+require_relative "#{Dir.home}/code/dotfiles/utils/ruby/guard_shell_with_guard_monkeypatch.rb"
 
 guard(:shell, all_on_start: true) do
   directories_to_watch = %w[app bin lib personal spec].select { Dir.exist?(_1) }

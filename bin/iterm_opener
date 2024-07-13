@@ -4,8 +4,6 @@
 # When cmd-clicking something in iTerm, this opens the file/link/etc with an appropriate program
 # (because I have told iTerm to do that within the iTerm settings/preferences).
 
-require 'open3'
-
 # Printed output gets suppressed, but we can write debugging messages to a file.
 # rubocop:disable Style/TopLevelMethodDefinition
 def debug(message)

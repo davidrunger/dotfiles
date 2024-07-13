@@ -1,4 +1,3 @@
-import os
 import re
 import subprocess
 from pathlib import Path
@@ -42,13 +41,13 @@ def handle_result(args, data, target_window_id, boss, extra_cli_args, *a):
     if match:
         # open PR with default browser
         pr_number = match.group('pr_number')
-        os.system(f'xdg-open "https://github.com/{github_path(cwd)}/pull/{pr_number}"')
+        subprocess.run(['xdg-open', f"https://github.com/{github_path(cwd)}/pull/{pr_number}"])
     elif re.match(r'^([a-f0-9]{7,40})$', chosen_text):
         # open git sha with default browser
-        os.system(f'xdg-open "https://github.com/{github_path(cwd)}/commit/{chosen_text}"')
+        subprocess.run(['xdg-open', f"https://github.com/{github_path(cwd)}/commit/{chosen_text}"])
     elif re.match(r'^http', chosen_text):
         # open HTTP URL with default browser
-        os.system(f'xdg-open {chosen_text}')
+        subprocess.run(['xdg-open', chosen_text])
     else:
         file_check = subprocess.run(['file', chosen_text], capture_output=True, text=True, cwd=cwd)
         if file_check.returncode == 0 and re.search(r'json|text', file_check.stdout):

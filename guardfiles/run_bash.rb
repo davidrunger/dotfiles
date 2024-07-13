@@ -3,7 +3,7 @@
 # This is used by `gal` when the `bash` `--guardfile` option is used.
 
 require 'fileutils'
-require 'guard/shell'
+require_relative "#{Dir.home}/code/dotfiles/utils/ruby/guard_shell_with_guard_monkeypatch.rb"
 
 FileUtils.chmod('+x', './personal/bash.sh')
 

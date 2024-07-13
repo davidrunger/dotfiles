@@ -2,7 +2,7 @@
 
 # This is used by `gal` when the `ruby` `--guardfile` option is used.
 
-require 'guard/shell'
+require_relative "#{Dir.home}/code/dotfiles/utils/ruby/guard_shell_with_guard_monkeypatch.rb"
 
 NUM_BACKTRACE_LINES_TO_PRINT = 5
 

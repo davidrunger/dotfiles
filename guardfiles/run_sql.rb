@@ -2,9 +2,9 @@
 
 # This is used by `gal` when the `jest` `--guardfile` option is used.
 
-require_relative "#{Dir.home}/code/dotfiles/utils/ruby/sql_utils.rb"
 require 'active_support/core_ext/string/filters'
-require 'guard/shell'
+require_relative "#{Dir.home}/code/dotfiles/utils/ruby/guard_shell_with_guard_monkeypatch.rb"
+require_relative "#{Dir.home}/code/dotfiles/utils/ruby/sql_utils.rb"
 
 class Runner
   include SqlUtils

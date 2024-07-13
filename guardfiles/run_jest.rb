@@ -3,7 +3,7 @@
 # This is used by `gal` when the `jest` `--guardfile` option is used.
 
 require 'active_support/core_ext/string/filters'
-require 'guard/shell'
+require_relative "#{Dir.home}/code/dotfiles/utils/ruby/guard_shell_with_guard_monkeypatch.rb"
 
 guard(:shell, all_on_start: true) do
   # https://web.archive.org/web/20200927034139/https://github.com/guard/listen/wiki/Duplicate-directory-errors

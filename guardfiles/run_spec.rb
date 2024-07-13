@@ -3,8 +3,7 @@
 # This is used by `gal` when the `spec` `--guardfile` option is used.
 
 require 'active_support/core_ext/string/filters'
-require 'guard/shell'
-
+require_relative "#{Dir.home}/code/dotfiles/utils/ruby/guard_shell_with_guard_monkeypatch.rb"
 require_relative "#{Dir.home}/code/dotfiles/utils/ruby/memoization.rb"
 
 class RspecPrefixer

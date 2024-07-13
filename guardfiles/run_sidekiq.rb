@@ -2,8 +2,8 @@
 
 # This is used by `gal` when the `sidekiq` `--guardfile` option is used.
 
-require 'guard/shell'
 require 'sidekiq'
+require_relative "#{Dir.home}/code/dotfiles/utils/ruby/guard_shell_with_guard_monkeypatch.rb"
 
 Sidekiq.configure_client do |config|
   config.redis = { db: 3 }

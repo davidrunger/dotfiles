@@ -14,7 +14,7 @@ readarray -t files_for_rubocop < <(
     true
 )
 
-git_diff_hash_before=$(git diff | sha1sum | choose 0)
+git_diff_hash_before=$(git diff | sha1sum | cut -d ' ' -f 1)
 
 if [ ${#files_for_rubocop[@]} -eq 0 ] ; then
   write-background-notification 'No files need to be linted by RuboCop.'

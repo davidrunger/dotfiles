@@ -20,15 +20,15 @@ class GitHistory < CommandLineProgram
   def call
     puts(%(commits_to_show: #{commits_to_show}))
 
-    file_name_at_this = file
+    file_name_at_this_commit = file
 
     commits_to_show.each do |commit|
       puts
       system('hr')
-      system({ 'DELTA_PAGER' => 'cat' }, "git show '#{commit}' -- '#{file_name_at_this}'")
+      system({ 'DELTA_PAGER' => 'cat' }, "git show '#{commit}' -- '#{file_name_at_this_commit}'")
       system('hr')
 
-      file_name_at_this = renames[commit] || file_name_at_this
+      file_name_at_this_commit = renames[commit] || file_name_at_this_commit
     end
   end
 

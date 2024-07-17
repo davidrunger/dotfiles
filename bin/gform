@@ -9,7 +9,7 @@ update-main-branches
 # We only need to update non-safe/non-main branches; main and safe were updated already above.
 if ! on-safe-or-main ; then
   if use-strict-git-rules ; then
-    if check-git-push-safety ; then
+    if check-git-push-readiness ; then
       echo "Creating a merge commit..."
       git merge --no-edit --quiet "origin/$(main-branch)"
     else

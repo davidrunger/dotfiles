@@ -26,6 +26,12 @@ if my-repo ; then
     blue "Run \`tsc bin/githooks/pre-push\` to correct."
     exit_with_error_unless_checks_not_required
   fi
+
+  if [ -f .git-blame-ignore-revs ] && [ "$(git config blame.ignoreRevsFile)" != ".git-blame-ignore-revs" ] ; then
+    red 'Git is not configured to respect the .git-blame-ignore-revs file.'
+    blue "Run \`git config blame.ignoreRevsFile .git-blame-ignore-revs\` to fix."
+    exit_with_error_unless_checks_not_required
+  fi
 fi
 
 files_to_check_for_debugging=$(changed-not-deleted-files | \

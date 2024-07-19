@@ -89,15 +89,3 @@ sc() {
   $EDITOR $repo_name
   cd -
 }
-
-# receive input from stdout and open it in $EDITOR
-# ex: `git diff | tos`
-tos() {
-  TMPDIR=${TMPDIR:-/tmp}  # default to /tmp if TMPDIR isn't set
-  DATE="`date +%Y%m%d%H%M%S`"
-  EXT=${EXT:-}
-  F=$(mktemp $TMPDIR/tos-$DATE.$EXT)
-  cat >| $F  # use >| instead of > if you set noclobber in bash
-  $EDITOR $F
-  sleep .3  # give editor a little time to open the file
-}

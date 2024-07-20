@@ -20,6 +20,3 @@ app/workers/load_runner.rb
 # we need this to be in `app/javascript/` (not `personal/`) to use the project TypeScript config
 # We can't have a file called `typescript.ts`!
 app/javascript/typescript-scratchpad.ts
-app/javascript/typescript-scratchpad.tsx
-# we need this config for `ts-node` to work correctly (https://stackoverflow.com/a/72507086/4009384)
-node.tsconfig.json

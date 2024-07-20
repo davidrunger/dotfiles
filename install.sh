@@ -30,4 +30,4 @@ touch ~/.pry_history
 
 # brew bundle
 
-# pnpm add --global http-server
+# pnpm add --global http-server typescript tsx

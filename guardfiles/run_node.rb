@@ -22,8 +22,8 @@ guard(:shell, all_on_start: true) do
       start_time = Time.now
       # rubocop:enable Rails/TimeZone, Lint/RedundantCopDisableDirective
       system('clear')
-      system(<<~SH.squish.tap { puts(_1) }, exception: true)
-        ts-node --project ./node.tsconfig.json app/javascript/typescript.ts
+      system(<<~SH.squish, exception: true)
+        tsx app/javascript/typescript-scratchpad.ts
       SH
     rescue => error
       puts(AmazingPrint::Colors.red(error.ai))

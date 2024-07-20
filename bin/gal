@@ -125,7 +125,7 @@ class Runner
     if !File.exist?(script_path)
       FileUtils.mkdir_p(working_directory_personal_directory)
       write_default_script_content
-    elsif File.read(script_path) != script_content
+    elsif File.read(script_path) != script_content.to_s
       system('bat', script_path)
 
       puts(<<~MESSAGE)

@@ -78,7 +78,7 @@ class Runner
       BASH
     },
     node: {
-      path: 'app/javascript/typescript.ts',
+      path: 'app/javascript/typescript-scratchpad.ts',
     },
     rails: {
       path: 'personal/runner.rb',

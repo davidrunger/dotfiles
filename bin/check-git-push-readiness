@@ -85,7 +85,7 @@ for file in .env .env.development.local .env.test.local ; do
 done
 
 # Don't push if there are any TEMP or Z commits.
-if git log --oneline "$(main-branch).." | rg --quiet 'TEMP|Z' ; then
+if git log --oneline "$(main-branch).." | rg --quiet '^TEMP|Z' ; then
   echo "Woah! You still have a temp commit."
   exit_with_error_unless_checks_not_required
 fi

@@ -41,7 +41,12 @@ class GitHistory < CommandLineProgram
 
   memo_wise \
   def num_commits_to_show
-    Integer(arguments[1] || 3)
+    options[:commits]
+  end
+
+  memo_wise \
+  def num_days_to_show
+    options[:days]
   end
 
   memo_wise \
@@ -54,7 +59,7 @@ class GitHistory < CommandLineProgram
     commits_from_git =
       `#{<<~BASH.squish}`.split("\n")
         git log
-          -n "#{num_commits_to_request_from_git}"
+          #{git_log_limiting_option}
           "#{most_recent_commit_with_file}"
           --format=%H
           --follow
@@ -62,7 +67,22 @@ class GitHistory < CommandLineProgram
           "#{file}"
       BASH
 
-    (commits_from_git - commits_to_ignore).first(num_commits_to_show)
+    commits_without_ignored_commits = commits_from_git - commits_to_ignore
+
+    if num_commits_to_show
+      commits_without_ignored_commits.first(num_commits_to_show)
+    else
+      commits_without_ignored_commits
+    end
+  end
+
+  memo_wise \
+  def git_log_limiting_option
+    if num_days_to_show
+      "--since='#{num_days_to_show} days ago'"
+    else
+      "-n #{num_commits_to_request_from_git}"
+    end
   end
 
   memo_wise \
@@ -106,6 +126,8 @@ if $PROGRAM_NAME == __FILE__
   sloptions =
     Slop.parse do |o|
       o.bool('-i', '--include-ignored', 'show changes listed in git blame ignore revs file')
+      o.integer('-c', '--commits', 'number of commits to show')
+      o.integer('-d', '--days', 'number of days of history to show')
       o.on('-h', '--help', 'view this help info') do
         puts(o.to_s.dup.sub(%r{#{Dir.home}/code/dotfiles/bin/}, ''))
         exit

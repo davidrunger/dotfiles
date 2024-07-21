@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+
+# Run [br]ew [up]date and [br]ew [up]grade and save the printed output.
+
+set -euo pipefail # exit on any error, don't allow undefined variables, pipes don't swallow errors
+
+output_log_file=$HOME/code/dotfiles/personal/brew-updates/$(date -u +"%Y-%m-%dT%H:%M:%SZ").txt
+
+mf "$output_log_file"
+
+(brew update && brew upgrade) |& tee "$output_log_file"

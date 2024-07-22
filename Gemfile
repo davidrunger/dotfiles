@@ -24,6 +24,5 @@ gem 'yard'
 
 group :test do
   gem 'rspec'
-  gem 'simple_cov-formatter-terminal'
   gem 'timecop'
 end

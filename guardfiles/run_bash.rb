@@ -8,7 +8,7 @@ require_relative "#{Dir.home}/code/dotfiles/utils/ruby/guard_shell_with_guard_mo
 FileUtils.chmod('+x', './personal/bash.sh')
 
 guard(:shell, all_on_start: true) do
-  directories_to_watch = %w[app bin lib personal spec].select { Dir.exist?(_1) }
+  directories_to_watch = %w[app bin lib personal spec test].select { Dir.exist?(_1) }
 
   # https://web.archive.org/web/20200927034139/https://github.com/guard/listen/wiki/Duplicate-directory-errors
   directories(directories_to_watch)

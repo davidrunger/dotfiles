@@ -1,4 +1,4 @@
-name: Non-Ruby Checks
+name: Shell Checks
 
 on:
   pull_request:

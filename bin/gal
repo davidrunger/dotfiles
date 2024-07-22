@@ -25,6 +25,7 @@ module Gal
     bash
     jest
     node
+    python
     rails
     ruby
     sidekiq
@@ -79,6 +80,9 @@ class Runner
     },
     node: {
       path: 'app/javascript/typescript-scratchpad.ts',
+    },
+    python: {
+      path: 'personal/python.py',
     },
     rails: {
       path: 'personal/runner.rb',

@@ -7,6 +7,27 @@ from pathlib import Path
 # def debug(text):
 #     subprocess.run(f"echo '{text}' >> /home/david/code/dotfiles/personal/random.txt", shell=True)
 
+symlink_extracting_regex = r": symbolic link to (.+)"
+
+
+def is_file_or_symlink_to_file(path, cwd):
+    file_check = subprocess.run(
+        ["file", path],
+        capture_output=True,
+        text=True,
+        cwd=cwd,
+    )
+
+    file_check_stdout = file_check.stdout
+
+    if file_check.returncode == 0 and re.search(r"json|text", file_check_stdout):
+        return True
+    elif match := re.search(symlink_extracting_regex, file_check_stdout):
+        symbolic_link_target = match.group(1)
+        return is_file_or_symlink_to_file(symbolic_link_target, cwd)
+    else:
+        return False
+
 
 def github_path(cwd):
     result = subprocess.run(
@@ -62,13 +83,7 @@ def handle_result(args, data, target_window_id, boss, extra_cli_args, *a):
         subprocess.run(["xdg-open", chosen_text])
     else:
         path_without_suffix_numbers = re.sub(r"(:\d+){1,2}$", "", chosen_text)
-        file_check = subprocess.run(
-            ["file", path_without_suffix_numbers],
-            capture_output=True,
-            text=True,
-            cwd=cwd,
-        )
-        if file_check.returncode == 0 and re.search(r"json|text", file_check.stdout):
+        if is_file_or_symlink_to_file(path_without_suffix_numbers, cwd):
             # open with editor
             subprocess.run([editor, chosen_text], cwd=cwd)
         else:

@@ -49,7 +49,8 @@ def handle_result(args, data, target_window_id, boss, extra_cli_args, *a):
         # open HTTP URL with default browser
         subprocess.run(['xdg-open', chosen_text])
     else:
-        file_check = subprocess.run(['file', chosen_text], capture_output=True, text=True, cwd=cwd)
+        path_without_suffix_numbers = re.sub(r"(:\d+){1,2}$", '', chosen_text)
+        file_check = subprocess.run(['file', path_without_suffix_numbers], capture_output=True, text=True, cwd=cwd)
         if file_check.returncode == 0 and re.search(r'json|text', file_check.stdout):
             # open with editor
             subprocess.run([editor, chosen_text], cwd=cwd)

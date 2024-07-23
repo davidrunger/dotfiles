@@ -64,6 +64,10 @@ else if [ -d "$HOME/.local/share/pnpm" ]
 fi
 # pnpm end
 
+# basher
+export PATH="$HOME/.basher/bin:$PATH"
+eval "$(basher init - zsh)"
+
 # fzf
 if [ -v LINUX ] ; then
   source <(fzf --zsh)

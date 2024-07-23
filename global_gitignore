@@ -20,3 +20,6 @@ app/workers/load_runner.rb
 # we need this to be in `app/javascript/` (not `personal/`) to use the project TypeScript config
 # We can't have a file called `typescript.ts`!
 app/javascript/typescript-scratchpad.ts
+
+# Python binary files
+__pycache__

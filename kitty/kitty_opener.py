@@ -41,14 +41,15 @@ home = str(Path.home())
 editor = f"{home}/code/dotfiles-personal/bin/editor"
 
 
+regex = re.compile(
+    r"(?:\b|\(|\s|^|/)([0-9a-f]{6,40}|#\d+)(?:\b|\))|((?:~|/|\b|\.)[^\s#{}]+/[^\s:]+(?::\d+){0,2}\b/?)"
+)
+
+
 def mark(text, args, Mark, extra_cli_args, *a):
     # This function is responsible for finding all
     # matching text. extra_cli_args are any extra arguments
     # passed on the command line when invoking the kitten.
-    # We look for all paths (words containing a "/" that aren't HTTP URLs).
-    regex = re.compile(
-        r"(?:\b|\(|\s|^|/)([0-9a-f]{6,40}|#\d+)(?:\b|\))|((?:~|/|\b|\.)[^\s#{}]+/[^\s:]+(?::\d+){0,2}\b/?)"
-    )
     for idx, m in enumerate(re.finditer(regex, text)):
         # Iterate over each capturing group in the match
         for group_num in range(1, len(m.groups()) + 1):

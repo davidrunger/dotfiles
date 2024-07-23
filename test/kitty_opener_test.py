@@ -5,6 +5,7 @@ from kitty.kitty_opener import regex as compiled_pattern
 class TestRegex(unittest.TestCase):
     def test_regex(self):
         test_cases = [
+            ["format=html action=logs#index status=200", ["action=logs#index"]],
             ["abc123/#864", ["abc123", "#864"]],
             ["#86/abcd1234", ["#86", "abcd1234"]],
             ["Fix the thing [GROC-23] (#930)", ["#930"]],

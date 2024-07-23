@@ -9,7 +9,7 @@ class TestRegex(unittest.TestCase):
             ["#86/abcd1234", ["#86", "abcd1234"]],
             ["Fix the thing [GROC-23] (#930)", ["#930"]],
             [
-                "Go to https://davidrunger.com and https://davidrunger.com/",
+                "Go to https://davidrunger.com and http://davidrunger.com/",
                 ["https://davidrunger.com", "http://davidrunger.com/"],
             ],
             [

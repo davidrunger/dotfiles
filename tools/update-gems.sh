@@ -13,7 +13,7 @@ for dir in $(my-repos) ; do
   cd "$dir" || exit
   blue "# $dir"
 
-  if ls Gemfile.lock > /dev/null 2>&1 ; then
+  if ls Gemfile.lock &>/dev/null ; then
     set -ex
 
     if ! branch-exists 'bundle-update' ; then
@@ -35,5 +35,5 @@ for dir in $(my-repos) ; do
 
   echo
 
-  cd - > /dev/null 2>&1 || exit
+  cd - &>/dev/null || exit
 done

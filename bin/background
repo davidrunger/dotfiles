@@ -16,6 +16,6 @@ echo "Running $program in the background."
 set +e
 {
   (
-    $program > /dev/null 2>&1
+    $program &>/dev/null
   ) & disown
-} > /dev/null 2>&1
+} &>/dev/null

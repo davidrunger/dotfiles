@@ -40,5 +40,5 @@ for dir in $(my-repos) ; do
 
   echo
 
-  cd - > /dev/null 2>&1 || exit
+  cd - &>/dev/null || exit
 done

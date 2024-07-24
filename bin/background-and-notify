@@ -14,7 +14,7 @@ echo "Running \`$*\` in the background."
 set +e
 {
   (
-    BACKGROUND_AND_NOTIFY_MESSAGE_PATH="$message_path" "$@" > /dev/null 2>&1
+    BACKGROUND_AND_NOTIFY_MESSAGE_PATH="$message_path" "$@" &>/dev/null
     exit_status=$?
     set -e
 
@@ -33,4 +33,4 @@ set +e
       notify-error "\`$*\` failed in $current_directory" "$message"
     fi
   ) & disown
-} > /dev/null 2>&1
+} &>/dev/null

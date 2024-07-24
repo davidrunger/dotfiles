@@ -90,5 +90,11 @@ if git log --oneline "$(main-branch).." | rg --quiet '^(TEMP|Z)' ; then
   exit_with_error_unless_checks_not_required
 fi
 
+# Don't push if the diff still has modifications of a playground file.
+if gf | rg -i playground ; then
+  echo "Hold on! Do you mean to push a playground modification?"
+  exit_with_error_unless_checks_not_required
+fi
+
 # if all of the above checks passed, we're good to push! :)
 exit 0

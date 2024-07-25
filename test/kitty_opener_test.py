@@ -31,6 +31,7 @@ class TestRegex(unittest.TestCase):
             ['{:locations=>{"./spec/bin/open_pr_in_browser_spec.rb"=>[19]}}', ["./spec/bin/open_pr_in_browser_spec.rb"]],
             ["{:locations=>{'./spec/bin/open_pr_in_browser_spec.rb'=>[19]}}", ["./spec/bin/open_pr_in_browser_spec.rb"]],
             ["(https://davidrunger.com/#projects?query=string)", ["https://davidrunger.com/#projects?query=string"]],
+            ["bin/flag-unacked-file-versions:115:in `ack_data", ["bin/flag-unacked-file-versions:115"]],
         ]
 
         for input_text, expected_matches in test_cases:

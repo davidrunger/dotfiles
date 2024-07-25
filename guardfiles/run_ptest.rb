@@ -5,21 +5,21 @@
 require_relative "#{Dir.home}/code/dotfiles/utils/ruby/guard_shell_with_guard_monkeypatch.rb"
 
 guard(:shell, all_on_start: true) do
-  directories_to_watch = %w[app bin lib personal test].select { Dir.exist?(_1) }
+  directories_to_watch = %w[app bin kitty lib personal test].select { Dir.exist?(_1) }
 
   # https://web.archive.org/web/20200927034139/https://github.com/guard/listen/wiki/Duplicate-directory-errors
   directories(directories_to_watch)
 
   watch_regex =
     %r{^(
-      #{directories_to_watch.map { "#{_1}/.*.py" }.join("|\n")}
+      #{directories_to_watch.map { "#{_1}/.*.py$" }.join("|\n")}
     )}x
 
   watch(watch_regex) do |guard_match_result|
     begin
       match = guard_match_result.instance_variable_get(:@match_result) || '[no match]'
-      puts("Match for #{match} triggered execution.")
       system('hard-clear', exception: true)
+      puts("Match for #{match} triggered execution.")
       system("python3 -m unittest discover -s test -p '*_test.py'", exception: true)
     rescue => error
       pp(error)

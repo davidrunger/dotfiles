@@ -34,26 +34,22 @@ if my-repo ; then
   fi
 fi
 
-files_to_check_for_debugging=$(changed-not-deleted-files | \
-  rg -v '^Gemfile(\.lock)?$' | \
-  xargs -r rg --files-without-match '^#! ?/.* (bash|sh|zsh)' || \
-  true
+
+# Don't push if there's debugging code in the diff.
+debugging_code_regex_parts=(
+  '^((\s*|RSpec\.)(fit|fdescribe|fcontext|fscenario|fspecify))|'
+  '(^\s*[^#]*|["'"'"'].*)\b(open_page|save_and_open_page)\b|'
+  '\b(binding\.pry|byebug|debugger)\b|'
+  '\btapp\b'
 )
 
-if [[ "$files_to_check_for_debugging" != "" ]] ; then
-  # don't push if there's still debugging code
-  debugging_code_regex_parts=(
-    '^((\s*|RSpec\.)(fit|fdescribe|fcontext|fscenario|fspecify))|'
-    '(^\s*[^#]*|["'"'"'].*)\b(open_page|save_and_open_page)\b|'
-    '\b(binding\.pry|byebug|debugger)\b|'
-    '\btapp\b'
-  )
-  readarray -t files_to_search <<< "$files_to_check_for_debugging"
-  if rg "$(printf %s "${debugging_code_regex_parts[@]}")" "${files_to_search[@]}" ; then
-    echo
-    echo "Easy there, cowboy! Cleanup yo code, first."
-    exit_with_error_unless_checks_not_required
-  fi
+if git diff "origin/$(main-branch)..HEAD" --unified=0 | \
+    awk '/^\+/ && !/^\+\+\+/ {print substr($0, 2)}' | \
+    sed '/^$/d' | \
+    rg "$(printf %s "${debugging_code_regex_parts[@]}")" ; then
+  echo
+  echo "Easy there, cowboy! You seem to have left some debugging code."
+  exit_with_error_unless_checks_not_required
 fi
 
 # don't push if there are still `!!!` markers in the code

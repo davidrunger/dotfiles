@@ -3,8 +3,6 @@
 
 # Install Ruby and JavaScript packages in the background, and run other commands, as needed.
 
-load("#{Dir.home}/code/dotfiles/utils/ruby/tapp.rb")
-
 require 'active_support/all'
 require 'amazing_print'
 require 'memo_wise'

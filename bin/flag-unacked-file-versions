@@ -1,0 +1,185 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+# Check for and flag diffs in specified paths (files and/or directories).
+
+require 'active_support/all'
+require 'io/console'
+require 'redis'
+
+require_relative "#{Dir.home}/code/dotfiles/utils/ruby/memoization.rb"
+
+class FlagUnackedFileVersions
+  prepend Memoization
+
+  MONITORED_PATHS_FILE_PATH = 'personal/.runger-monitored-paths.txt'
+
+  class RedisAgent
+    def initialize(redis_hash_key)
+      @redis_hash_key = redis_hash_key
+      @redis = Redis.new(db: 2)
+    end
+
+    def get(key)
+      @redis.hget(@redis_hash_key, key)
+    end
+
+    def set(key, value)
+      @redis.hset(@redis_hash_key, key, value)
+    end
+  end
+
+  class AckData
+    prepend Memoization
+
+    def initialize(raw_data)
+      @raw_data = raw_data
+    end
+
+    memoize \
+    def present?
+      @raw_data.present?
+    end
+
+    memoize \
+    def most_recently_acked_content_sha
+      data_parts.first
+    end
+
+    memoize \
+    def most_recently_acked_git_sha
+      data_parts.last
+    end
+
+    private
+
+    def data_parts
+      @raw_data.presence&.split(':') || []
+    end
+  end
+
+  class AckUpdater
+    prepend Memoization
+
+    delegate(
+      :current_content_sha,
+      :redis_agent,
+      to: :@flagger,
+    )
+
+    def initialize(path, flagger:)
+      @path = path
+      @flagger = flagger
+    end
+
+    def perform
+      print_diff_since_last_ack
+
+      if user_acks?
+        save_ack
+      end
+    end
+
+    private
+
+    def print_diff_since_last_ack
+      if ack_data.present?
+        puts("'#{@path}' has changed since your last ack.")
+        system("git diff #{ack_data.most_recently_acked_git_sha}.. '#{@path}'", exception: true)
+      else
+        puts("You have never acked '#{@path}', so we'll print it all.")
+        system({ 'BAT_PAGER' => 'cat' }, "bat $(git ls-files '#{@path}')", exception: true)
+      end
+    end
+
+    def user_acks?
+      puts('Do you acknowledge this content? [y]n')
+
+      case $stdin.getch
+      when 'y', "\r"
+        true
+      when 'n', "\u0003" # Ctrl-C
+        false
+      else
+        puts('Choice not recognized. Try again.')
+        user_acks?
+      end
+    end
+
+    memoize \
+    def ack_data
+      AckData.new(redis_agent.get(@path))
+    end
+
+    def save_ack
+      redis_agent.set(@path, "#{current_content_sha(@path)}:#{current_git_sha}")
+    end
+
+    memoize \
+    def current_git_sha
+      `git log --format=format:%H | head -1`.rstrip
+    end
+  end
+
+  def seek_ack_of_unacked_files
+    on_main_branch do
+      paths_without_up_to_date_ack.each do |path|
+        AckUpdater.new(path, flagger: self).perform
+      end
+    end
+  end
+
+  memoize \
+  def current_content_sha(file_or_directory)
+    file_paths = `git ls-files #{file_or_directory}`.split("\n")
+
+    Digest::SHA256.hexdigest(file_paths.sort.map { Digest::SHA256.file(_1).to_s }.join(':'))
+  end
+
+  memoize \
+  def redis_agent
+    RedisAgent.new('runger_path_monitors')
+  end
+
+  private
+
+  def on_main_branch
+    original_branch = `branch`.rstrip
+    system('git checkout "$(main-branch)" >/dev/null 2>&1', exception: true)
+
+    yield
+  ensure
+    system("git checkout '#{original_branch}' >/dev/null 2>&1", exception: true)
+  end
+
+  memoize \
+  def paths_without_up_to_date_ack
+    monitored_paths.reject { content_acked?(_1) }
+  end
+
+  memoize \
+  def monitored_paths
+    if File.exist?(MONITORED_PATHS_FILE_PATH)
+      File.read(MONITORED_PATHS_FILE_PATH).split("\n")
+    else
+      []
+    end
+  end
+
+  memoize \
+  def content_acked?(path)
+    File.exist?(path) && seen_hash?(path)
+  end
+
+  memoize \
+  def seen_hash?(path)
+    ack_data(path).most_recently_acked_content_sha == current_content_sha(path)
+  end
+
+  memoize \
+  def ack_data(path)
+    AckData.new(redis_agent.get(path))
+  end
+end
+
+FlagUnackedFileVersions.new.seek_ack_of_unacked_files

@@ -53,7 +53,6 @@ alias hwm='hpr && echo && wm'
 alias ls='eza'
 alias md='mkdir -p'
 alias rc="bin/rails console"
-alias rcg='rg --max-columns=1000 --context=2 --ignore-case'
 alias rmrf='rm -rf'
 alias rr='bin/rails routes'
 alias rs="bin/rails server"

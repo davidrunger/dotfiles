@@ -9,14 +9,14 @@ set -euo pipefail # exit on any error, don't allow undefined variables, pipes do
 
 local_branch="$1"
 remote_branch="$2"
-original_branch="$(branch)"
-
-git checkout --quiet "$local_branch"
 
 if uncommitted-changes-exist ; then
   red "Refusing to rebase '$local_branch' with '$remote_branch' because of uncommitted changes."
   exit 1
 fi
+
+original_branch="$(branch)"
+git checkout --quiet "$local_branch"
 
 git rebase "$remote_branch"
 

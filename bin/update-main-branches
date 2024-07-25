@@ -12,5 +12,7 @@ fetch-main-branch
 
 update-main-branches-with-remote
 
+flag-unacked-file-versions
+
 # Switch back to the original branch.
 git checkout --quiet "$original_branch"

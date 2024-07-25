@@ -18,7 +18,7 @@ require 'active_support/core_ext/object'
 
 class GitHistory < CommandLineProgram
   def call
-    puts(%(commits_to_show: #{commits_to_show}))
+    validate_arguments
 
     file_name_at_this_commit = file
 
@@ -33,6 +33,17 @@ class GitHistory < CommandLineProgram
   end
 
   private
+
+  def validate_arguments
+    if (arguments_size = arguments.size) != 1
+      $stderr.puts(<<~ERROR.squish)
+        Only one argument is expected (a file path),
+        but you provided #{arguments_size} (#{arguments}).
+      ERROR
+
+      exit(1)
+    end
+  end
 
   memo_wise \
   def file

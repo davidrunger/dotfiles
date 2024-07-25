@@ -60,7 +60,7 @@ alias rs="bin/rails server"
 alias rv='for file in $(gf); do whose $file; echo; done'
 alias s.='$EDITOR .'
 alias s='$EDITOR'
-alias sdm='safe; gdm'
+alias sdm='safe && gdm'
 alias sha='git log $(main-branch) --format=format:%H | head -n 1 | cut -c 1-8 | cpy'
 alias shaf='git log $(main-branch) --format=format:%H | head -n 1 | cpy'
 alias sk="SIDEKIQ_CONCURRENCY=1 bin/sidekiq"

@@ -25,6 +25,7 @@ module Gal
     bash
     jest
     node
+    ptest
     python
     rails
     ruby
@@ -47,7 +48,9 @@ opts =
     o.symbol(
       '-g',
       '--guardfile',
-      "guardfile flag [#{Gal::GUARDFILE_TYPES.sort.join('|')}]".sub(/\bspec\b/, 'spec(default)'),
+      "guardfile flag [#{Gal::GUARDFILE_TYPES.sort.join('|')}]".
+        sub(/\bspec\b/, 'spec(default)').
+        sub(/\bptest\b/, 'ptest(Python unittest)'),
     )
     o.string('-t', '--target', 'jest target pattern')
     o.string('--coverage-target', 'specify SIMPLECOV_TARGET_FILE')

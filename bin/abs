@@ -8,10 +8,4 @@
 
 set -euo pipefail # exit on any error, don't allow undefined variables, pipes don't swallow errors
 
-if [[ -d "$1" ]] ; then
-  cd "$1"
-  echo "$PWD/"
-else
-  file="$1"
-  eza --absolute "$file" | rg "$HOME.*" --only-matching --color=never
-fi
+realpath "$@"

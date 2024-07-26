@@ -10,7 +10,6 @@ for dir in $(my-repos) ; do
 
   sha_to_diff_against=$(git rev-list "$(main-branch)" --after="7 days ago" --reverse HEAD | sed -n '1p')
 
-
   if [ "$sha_to_diff_against" = "" ] ; then
     red 'No recent commits.'
   else

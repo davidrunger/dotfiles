@@ -12,17 +12,19 @@ unfunction d
 # Remove zsh fwd-i-search / history-incremental-search-forward keyboard shortcut.
 bindkey -r "^S"
 
+if [ "$(uname)" = 'Linux' ] ; then
+  export LINUX=true
+elif [ "$(uname)" = 'Darwin' ] ; then
+  export DARWIN=true
+fi
+
 . ~/code/dotfiles/shell/aliases.zsh
 . ~/code/dotfiles/shell/functions.zsh
 
-if [ "$(uname)" = 'Linux' ] ; then
+if [ -v LINUX ] ; then
   . "$HOME/code/dotfiles/shell/linux.zsh"
-  export LINUX=true
-fi
-
-if [ "$(uname)" = 'Darwin' ] ; then
+elif [ -v DARWIN ] ; then
   . "$HOME/code/dotfiles/shell/mac.zsh"
-  export DARWIN=true
 fi
 
 if [ -e "$HOME/code/dotfiles-personal/zshrc.zsh" ]; then

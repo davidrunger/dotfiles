@@ -32,4 +32,8 @@ touch ~/.pry_history
 
 # brew bundle
 
+# bundle install
+
 # pnpm add --global http-server typescript tsx
+
+# luarocks install "$(fd dotfiles*.rockspec | head -1)" --deps-only --force

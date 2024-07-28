@@ -34,11 +34,9 @@ if [ -d "$HOME/.asdf/" ]; then
   . "$HOME/.asdf/asdf.sh"
 fi
 
-# ruby setup
+# rbenv setup
 if [ -e ~/.rbenv/bin/rbenv ]; then
   eval "$(~/.rbenv/bin/rbenv init - zsh)"
-else
-  eval "$(rbenv init - zsh)"
 fi
 
 # yarn setup

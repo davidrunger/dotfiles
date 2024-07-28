@@ -110,7 +110,3 @@ export DEBUG_PRINT_LIMIT=99999999
 
 # Variables for git-related commands:
 export GIT_SELF_AUTHOR_NAME="David Runger"
-
-# Export here because in `.env` file seems to be too late.
-# Relevant issue: https://github.com/DataDog/dd-trace-rb/issues/3084
-export DD_TRACE_STARTUP_LOGS=false

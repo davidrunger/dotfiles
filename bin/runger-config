@@ -1,0 +1,43 @@
+#!/usr/bin/env lua
+
+local argparse = require("argparse")
+local lyaml = require('lyaml')
+
+local function read_yaml(file)
+  local file = io.open(file, 'r')
+
+  if file then
+    local content = file:read('*all')
+    file:close()
+    return lyaml.load(content)
+  else
+    return {}
+  end
+end
+
+local parser = argparse("runger-config", "Parse Runger repo configuration.")
+parser:argument("configOption", "Configuration option (optional)."):args("?")
+parser:flag("-i --init", "Create a .runger-config.yml file.")
+local args = parser:parse()
+
+if args.configOption then
+  local rungerConfig = read_yaml('.runger-config.yml')
+
+  if rungerConfig[args.configOption] then
+    os.exit(0)
+  else
+    os.exit(1)
+  end
+elseif args.init then
+  local rungerConfigFilename = ".runger-config.yml"
+  local file = io.open(rungerConfigFilename, "w")
+  file:write("# commit-to-main: true\n")
+  file:close()
+  print("Created " .. rungerConfigFilename .. " .")
+
+  local editor = os.getenv("EDITOR")
+
+  if editor then
+    os.execute(editor .. " " .. rungerConfigFilename)
+  end
+end

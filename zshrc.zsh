@@ -82,9 +82,9 @@ export PATH=node_modules/.bin:$PATH
 export PATH=$HOME/Filen/bin:$HOME/code/dotfiles-personal/bin:\
 $HOME/code/dotfiles/bin:$HOME/bin:$HOME/.local/bin/:$PATH
 
-if [[ "$(uname)" == "Linux" ]]; then
+if [ -v LINUX ] ; then
   export PATH=$HOME/code/dotfiles/bin-linux:$PATH
-else if [[ "$(uname)" == "Darwin" ]]
+else if [ -v DARWIN ]
   export PATH=$HOME/code/dotfiles/bin-mac:$PATH
 fi
 

@@ -18,6 +18,11 @@ if [ "$(uname)" = 'Linux' ] ; then
   export LINUX=true
 fi
 
+if [ "$(uname)" = 'Darwin' ] ; then
+  . "$HOME/code/dotfiles/shell/mac.zsh"
+  export DARWIN=true
+fi
+
 . ~/code/dotfiles/shell/aliases.zsh
 . ~/code/dotfiles/shell/functions.zsh
 
@@ -36,9 +41,6 @@ if [ -e ~/.rbenv/bin/rbenv ]; then
 else
   eval "$(rbenv init - zsh)"
 fi
-
-# path setup
-export PATH=$PATH:/opt/homebrew/bin:/opt/homebrew/sbin
 
 # yarn setup
 if command -v yarn &> /dev/null ; then

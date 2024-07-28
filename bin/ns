@@ -6,13 +6,11 @@
 
 set -euo pipefail # exit on any error, don't allow undefined variables, pipes don't swallow errors
 
-setopt null_glob
-system_spec_focus_files=$(rg --files-with-matches '^ +(fit|fscenario) ' -g spec/{features,system}/** || true)
+system_spec_focus_files=$(rg --files-with-matches '^ +(fit|fscenario) ' -g 'spec/{features,system}/**' --no-messages || true)
 if [[ $system_spec_focus_files != "" ]]; then
   sd ' fit ' ' it ' $system_spec_focus_files
   sd ' fscenario ' ' scenario ' $system_spec_focus_files
 fi
-unsetopt null_glob
 
 spec_focus_files=$(rg --files-with-matches '^( +|RSpec\.)(fit|fdescribe|fcontext) ' spec/ || true)
 if [[ $spec_focus_files != "" ]]; then

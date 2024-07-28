@@ -1,0 +1,11 @@
+curl
+dirmngr
+gawk
+gnupg2
+gpg
+libffi-dev
+libssl-dev
+libyaml-dev
+oathtool
+systemd-sysv
+xsel

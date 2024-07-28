@@ -28,6 +28,8 @@ git config core.hookspath bin/githooks
 touch ~/.hushlogin
 touch ~/.pry_history
 
+# install-apt-packages ~/code/dotfiles/packages.txt
+
 # brew bundle
 
 # pnpm add --global http-server typescript tsx

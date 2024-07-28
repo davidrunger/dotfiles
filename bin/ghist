@@ -52,7 +52,11 @@ class GitHistory < CommandLineProgram
 
   memo_wise \
   def num_commits_to_show
-    options[:commits]
+    if options[:days]
+      nil
+    else
+      Integer(options[:commits] || 3)
+    end
   end
 
   memo_wise \

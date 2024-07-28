@@ -99,8 +99,5 @@ export LESSHISTFILE=- # don't store less search history https://web.archive.org/
 # for SimpleCov::Formatter::Terminal
 export SIMPLECOV_WRITE_TARGET_TO_FILE=1
 
-# use homebrew curl rather than system curl
-export PATH="/opt/homebrew/opt/curl/bin:$PATH"
-
 # prevent horrible Mac/Ruby/Rails bug
 export OBJC_DISABLE_INITIALIZE_FORK_SAFETY=YES

@@ -104,6 +104,3 @@ export PATH="/opt/homebrew/opt/curl/bin:$PATH"
 
 # prevent horrible Mac/Ruby/Rails bug
 export OBJC_DISABLE_INITIALIZE_FORK_SAFETY=YES
-
-# Variables for git-related commands:
-export GIT_SELF_AUTHOR_NAME="David Runger"

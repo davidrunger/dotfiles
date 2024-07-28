@@ -4,6 +4,6 @@
 
 set -euo pipefail # exit on any error, don't allow undefined variables, pipes don't swallow errors
 
-sha_of_first_diverging_commit="$(git log "$(main-branch)".. --format=%H --author="$GIT_SELF_AUTHOR_NAME" --reverse | head -1)"
+sha_of_first_diverging_commit="$(git log "$(main-branch)".. --format=%H --author="$(git config user.name)" --reverse | head -1)"
 message_of_first_diverging_commit="$(git show --no-patch --format=%B "$sha_of_first_diverging_commit")"
 sing "$message_of_first_diverging_commit"

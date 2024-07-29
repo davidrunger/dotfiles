@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/usr/bin/env zsh
 
 # Run [br]ew [up]date and [br]ew [up]grade and save the printed output.
 
@@ -8,4 +8,9 @@ output_log_file=$HOME/code/dotfiles/personal/brew-updates/$(date -u +"%Y-%m-%dT%
 
 mf "$output_log_file"
 
-(brew update && brew upgrade) |& tee "$output_log_file"
+set +u
+export ZSH=$HOME/.oh-my-zsh
+source $ZSH/oh-my-zsh.sh
+
+(brew update && brew upgrade && \
+  omz update) |& tee "$output_log_file"

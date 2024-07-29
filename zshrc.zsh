@@ -1,17 +1,3 @@
-setopt +o nomatch # https://unix.stackexchange.com/a/310553/276727
-export ZSH=$HOME/.oh-my-zsh
-ZSH_THEME="bolso"
-plugins=(zsh-autosuggestions)
-export ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=#555555"
-zstyle ':omz:lib:theme-and-appearance' gnu-ls no
-source $ZSH/oh-my-zsh.sh
-
-# Delete oh-my-zsh d function (which lists directories, I think).
-unfunction d
-
-# Remove zsh fwd-i-search / history-incremental-search-forward keyboard shortcut.
-bindkey -r "^S"
-
 if [ "$(uname)" = 'Linux' ] ; then
   export LINUX=true
 elif [ "$(uname)" = 'Darwin' ] ; then
@@ -26,6 +12,21 @@ if [ -v LINUX ] ; then
 elif [ -v DARWIN ] ; then
   . "$HOME/code/dotfiles/shell/mac.zsh"
 fi
+
+# zsh/oh-my-zsh
+# NOTE: must come after sourcing linux.zsh, so that git is available via Homebrew for update check.
+setopt +o nomatch # https://unix.stackexchange.com/a/310553/276727
+export ZSH=$HOME/.oh-my-zsh
+ZSH_THEME="bolso"
+plugins=(zsh-autosuggestions)
+export ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=#555555"
+export DISABLE_AUTO_UPDATE=true
+zstyle ':omz:lib:theme-and-appearance' gnu-ls no
+source $ZSH/oh-my-zsh.sh
+# Delete oh-my-zsh d function (which lists directories, I think).
+unfunction d
+# Remove zsh fwd-i-search / history-incremental-search-forward keyboard shortcut.
+bindkey -r "^S"
 
 if [ -e "$HOME/code/dotfiles-personal/zshrc.zsh" ]; then
   . "$HOME/code/dotfiles-personal/zshrc.zsh"

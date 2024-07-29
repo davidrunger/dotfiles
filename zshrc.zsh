@@ -20,7 +20,7 @@ export ZSH=$HOME/.oh-my-zsh
 ZSH_THEME="bolso"
 plugins=(zsh-autosuggestions)
 export ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=#555555"
-export DISABLE_AUTO_UPDATE=true
+zstyle ':omz:update' mode disabled
 zstyle ':omz:lib:theme-and-appearance' gnu-ls no
 source $ZSH/oh-my-zsh.sh
 # Delete oh-my-zsh d function (which lists directories, I think).

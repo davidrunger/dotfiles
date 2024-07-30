@@ -1,0 +1,18 @@
+#compdef gal
+
+_gal() {
+  _arguments -C \
+    '(-g --guardfile)'{-g,--guardfile}'[Guardfile <guardfile>]: :->guardfile'
+
+  case $state in
+    (guardfile)
+      guardfiles=("${(f)$(ls $HOME/code/dotfiles/guardfiles | sd '^run_' '' | sd '.rb$' '')}")
+      _describe 'guardfiles' guardfiles
+      ;;
+    (*)
+      _files
+      ;;
+  esac
+}
+
+compdef _gal gal

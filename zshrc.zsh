@@ -6,6 +6,7 @@ fi
 
 . ~/code/dotfiles/shell/aliases.zsh
 . ~/code/dotfiles/shell/functions.zsh
+fpath=(~/code/dotfiles/completions $fpath)
 
 if [ -v LINUX ] ; then
   . "$HOME/code/dotfiles/shell/linux.zsh"

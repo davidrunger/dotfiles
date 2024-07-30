@@ -3,6 +3,7 @@
 brew 'awscli'
 brew 'bash'
 brew 'bat'
+brew 'cheat'
 brew 'choose-rust'
 brew 'coreutils'
 brew 'eza'

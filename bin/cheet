@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# Create an executable.
+# Create an executable. (Misspelled so as not to conflict with github.com/cheat/cheat.)
 #
 # Usage:
 #   $ cheat sayhey 'echo "hi there!"'

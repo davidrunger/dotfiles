@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+
+# Print the character codes (in decimal) of stdin.
+#
+# Example:
+#   echo 'hello' | bytes
+#   => prints '104 101 108 108 111  10'
+
+set -euo pipefail # exit on any error, don't allow undefined variables, pipes don't swallow errors
+
+od -An -t u1 -v

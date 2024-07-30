@@ -2,16 +2,27 @@
 
 # [c]o[py] text to clipboard
 #
-# Copies text from stdin to clipboard (and prints the copied text).
+# Copies text from stdin or a file to the system clipboard (and prints the copied text).
 
 set -euo pipefail # exit on any error, don't allow undefined variables, pipes don't swallow errors
 
-TEXT=$(</dev/stdin)
+# NOTE: Preserve and capture any trailing newline (which normally command
+# substitution won't do) by appending a '.' and then removing it.
+text=$(file-arg-content-or-stdin "$@"; echo -n .)
+text="${text%.}"
 
-if [ -v LINUX ]; then
-  echo -n $TEXT | xsel --clipboard --input
-else
-  echo -n $TEXT | pbcopy
+# If the string comes from stdin and has only one newline character which is at
+# the end of the string, then strip the trailing newline (which command
+# substitution will automatically do).
+if [ $# -eq 0 ] && [[ "${text: -1}" == $'\n' ]] && [[ "${text%$'\n'}" != *$'\n'* ]] ; then
+  text=$(echo "$text")
 fi
 
-echo "Text copied to clipboard:\n$TEXT"
+if [ -v LINUX ]; then
+  echo -En "$text" | xsel --clipboard --input
+else
+  echo -En "$text" | pbcopy
+fi
+
+echo 'Text copied to clipboard:'
+echo -En "$text"

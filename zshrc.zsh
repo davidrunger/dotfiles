@@ -100,7 +100,7 @@ export LESS='-Rj6 -X --quit-if-one-screen'
 export LESSHISTFILE=- # don't store less search history https://web.archive.org/web/20141129223918/http://linuxcommand.org/man_pages/less1.html
 
 # for SimpleCov::Formatter::Terminal
-export SIMPLECOV_WRITE_TARGET_TO_FILE=1
+export SIMPLECOV_TERMINAL_HYPERLINK_PATTERN="vscode://file/%f:%l"
 
 # prevent horrible Mac/Ruby/Rails bug
 export OBJC_DISABLE_INITIALIZE_FORK_SAFETY=YES

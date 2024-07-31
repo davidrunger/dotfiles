@@ -1,0 +1,23 @@
+#!/usr/bin/env bash
+
+# This program echoes to stdin the content of a file argument (if provided), or
+# else the stdin content piped into it, or else prints and exits with an error.
+
+set -euo pipefail # exit on any error, don't allow undefined variables, pipes don't swallow errors
+
+content=""
+
+# NOTE: Preserve and capture any trailing newline (which normally command
+# substitution won't do) by appending a '.' and then removing it.
+if [ $# -ge 1 ] ; then
+  content=$(cat "$1"; echo -n .)
+  content="${content%.}"
+elif [[ -p /dev/stdin ]] ; then
+  content=$(cat -; echo -n .)
+  content="${content%.}"
+else
+  echo "Error: received no arguments or stdin." >&2
+  exit 1
+fi
+
+echo -n "$content"

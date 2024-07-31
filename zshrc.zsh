@@ -33,6 +33,9 @@ if [ -e "$HOME/code/dotfiles-personal/zshrc.zsh" ]; then
   . "$HOME/code/dotfiles-personal/zshrc.zsh"
 fi
 
+# snap setup
+export PATH=$PATH:/snap/bin
+
 # asdf setup
 if [ -d "$HOME/.asdf/" ]; then
   . "$HOME/.asdf/asdf.sh"

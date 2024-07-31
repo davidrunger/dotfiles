@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+
+# Print info about the process with the provided PID (process ID).
+#
+# Example:
+#   pid 54389
+#   => (prints information about process 54389)
+
+set -euo pipefail # exit on any error, don't allow undefined variables, pipes don't swallow errors
+
+pid=$1
+
+ps -p "$pid" -o pid,ppid,cmd,%mem,%cpu,etime

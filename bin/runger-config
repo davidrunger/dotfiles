@@ -15,29 +15,41 @@ local function read_yaml(file)
   end
 end
 
+local function writeAndOpenConfigFile(fileName)
+  local file = io.open(fileName, "w")
+  file:write("# commit-to-main: true\n")
+  file:close()
+  print("Created " .. fileName .. " .")
+
+  local editor = os.getenv("EDITOR")
+
+  if editor then
+    os.execute(editor .. " " .. fileName)
+  end
+end
+
 local parser = argparse("runger-config", "Parse Runger repo configuration.")
 parser:argument("configOption", "Configuration option (optional)."):args("?")
 parser:flag("-i --init", "Create a .runger-config.yml file.")
+parser:flag("-p --init-private", "Create a .runger-config.private.yml file.")
 local args = parser:parse()
 
 if args.configOption then
   local rungerConfig = read_yaml('.runger-config.yml')
+  local rungerConfigPrivate = read_yaml('.runger-config.private.yml')
 
-  if rungerConfig[args.configOption] then
+  local configValue = rungerConfig[args.configOption] or rungerConfigPrivate[args.configOption]
+
+  if configValue == true then -- boolean config option
+    os.exit(0)
+  elseif configValue then -- string config option
+    print(configValue)
     os.exit(0)
   else
     os.exit(1)
   end
 elseif args.init then
-  local rungerConfigFilename = ".runger-config.yml"
-  local file = io.open(rungerConfigFilename, "w")
-  file:write("# commit-to-main: true\n")
-  file:close()
-  print("Created " .. rungerConfigFilename .. " .")
-
-  local editor = os.getenv("EDITOR")
-
-  if editor then
-    os.execute(editor .. " " .. rungerConfigFilename)
-  end
+  writeAndOpenConfigFile(".runger-config.yml")
+elseif args.init_private then
+  writeAndOpenConfigFile(".runger-config.private.yml")
 end

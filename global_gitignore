@@ -12,6 +12,7 @@
 .fcom.yml
 
 # Personal stuff and customization
+.runger-config.private.yml
 /personal/
 config/initializers/z.rb
 app/workers/load_runner.rb

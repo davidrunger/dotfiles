@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+
+# Copy files to a remote machine using scp.
+
+set -euo pipefail # exit on any error, don't allow undefined variables, pipes don't swallow errors
+
+for file in "$@" ; do
+  scp "$file" "$(runger-config user-at-server):$(runger-config server-relative-root)$file"
+done

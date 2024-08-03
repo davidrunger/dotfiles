@@ -1,6 +1,9 @@
 #!/usr/bin/env bash
 
 # Copy files to a remote machine using scp.
+#
+# Example:
+#   copy-to-server $(gf) .env.postgres.local .env.s3_db_backup.local
 
 set -euo pipefail # exit on any error, don't allow undefined variables, pipes don't swallow errors
 

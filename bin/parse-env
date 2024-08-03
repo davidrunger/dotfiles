@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+
+# Print the value of one particular ENV value from a specified `.env`-formatted file.
+# Exits with 1 if the specified variable is not found.
+#
+# Example:
+#   parse-env BUCKET_NAME .env.s3_db_backup.local
+#   => prints the value specified for BUCKET_NAME in .env.s3_db_backup.local
+
+set -euo pipefail # exit on any error, don't allow undefined variables, pipes don't swallow errors
+
+variable_name="$1"
+env_file="$2"
+
+variable_value=$(grep "^${variable_name}=" "$env_file" | sed "s/^${variable_name}=//")
+
+echo "$variable_value"

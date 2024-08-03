@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+
+# Curl a specified URL every 5 seconds until it returns a 200 status code.
+#
+# Example:
+#   wait-for-site-up https://davidrunger.com/
+
+set -euo pipefail # exit on any error, don't allow undefined variables, pipes don't swallow errors
+
+url=$1
+
+while [ "$(curl -s -o /dev/null -w "%{http_code}" "$url")" != "200" ] ; do
+  say 'Site down'
+  sleep 5
+done
+
+say 'Site is back up!'

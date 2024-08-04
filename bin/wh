@@ -10,7 +10,7 @@ source $HOME/code/dotfiles/shell/functions.zsh
 which_output=$(which "$@")
 
 if [ -f $which_output ] ; then
-  if [[ $which_output =~ 'dotfiles|Filen' ]] ; then
+  if [[ $which_output =~ 'dotfiles' ]] ; then
     echo "Executable $which_output :"
     hr
     bat $which_output --style=plain

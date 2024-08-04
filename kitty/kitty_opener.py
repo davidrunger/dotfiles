@@ -1,3 +1,4 @@
+import platform
 import re
 import subprocess
 from pathlib import Path
@@ -8,6 +9,11 @@ from pathlib import Path
 #     subprocess.run(f"echo '{text}' >> /home/david/code/dotfiles/personal/random.txt", shell=True)
 
 symlink_extracting_regex = r": symbolic link to (.+)"
+
+if platform.system() == "Linux":
+    git_path = "/home/linuxbrew/.linuxbrew/bin/git"
+else:
+    git_path = "/fill/me/in/with/macos/git/path"
 
 
 def is_file_or_symlink_to_file(path, cwd):
@@ -31,7 +37,10 @@ def is_file_or_symlink_to_file(path, cwd):
 
 def github_path(cwd):
     result = subprocess.run(
-        ["git", "remote", "-v"], capture_output=True, text=True, cwd=cwd
+        [git_path, "remote", "-v"],
+        capture_output=True,
+        text=True,
+        cwd=cwd,
     )
     match = re.search(r"origin.*github\.com:(.*)\.git", result.stdout)
     return match.group(1).strip() if match else "davidrunger/david_runger"
@@ -77,10 +86,10 @@ def handle_result(args, data, target_window_id, boss, extra_cli_args, *a):
         line_match = None
         line_index = None
 
-        with open(controller_path, 'r') as file:
+        with open(controller_path, "r") as file:
             lines = file.readlines()
             for index, line in enumerate(lines):
-                match = re.search(r'^(?P<spaces> +)def {}\n'.format(action), line)
+                match = re.search(r"^(?P<spaces> +)def {}\n".format(action), line)
                 if match:
                     line_match = match
                     line_index = index
@@ -88,9 +97,11 @@ def handle_result(args, data, target_window_id, boss, extra_cli_args, *a):
 
         if line_index is not None and line_match is not None:
             line_number = line_index + 1
-            num_spaces = len(line_match.group('spaces'))
+            num_spaces = len(line_match.group("spaces"))
             column_number = num_spaces + 1
-            path_with_line_and_col_numbers = '{}:{}:{}'.format(controller_path, line_number, column_number)
+            path_with_line_and_col_numbers = "{}:{}:{}".format(
+                controller_path, line_number, column_number
+            )
             subprocess.run([editor, path_with_line_and_col_numbers], cwd=cwd)
     elif pr_number_match := re.match(r"^#(?P<pr_number>\d{1,6})$", chosen_text):
         # open PR with default browser

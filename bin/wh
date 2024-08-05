@@ -8,24 +8,29 @@ source $HOME/code/dotfiles/shell/aliases.zsh
 source $HOME/code/dotfiles/shell/functions.zsh
 
 which_output=$(which "$@")
+which_exit_code=$?
 
-if [ -f $which_output ] ; then
-  if [[ $which_output =~ 'dotfiles' ]] ; then
-    echo "Executable $which_output :"
+if [ "$which_exit_code" -eq 0 ] ; then
+  if [ -f $which_output ] ; then
+    if [[ $which_output =~ "^$HOME/code" ]] ; then
+      echo "Executable $which_output :"
+      hr
+      bat $which_output --style=plain
+    else
+      ls $which_output
+    fi
+  elif [[ $which_output =~ 'aliased to (.*)' ]] ; then
+    alias_content="$match[1]"
+    echo "Alias $@ :"
     hr
-    bat $which_output --style=plain
+    echo $alias_content | bat --language=zsh --file-name="Alias: $@" --style=plain
+  elif [[ $which_output == *'('* ]] ; then
+    echo "Function $@ :"
+    hr
+    echo $which_output | bat --language=zsh --file-name="Function: $@" --style=plain
   else
-    ls $which_output
+    blue "$which_output"
   fi
-elif [[ $which_output =~ 'aliased to (.*)' ]] ; then
-  alias_content="$match[1]"
-  echo "Alias $@ :"
-  hr
-  echo $alias_content | bat --language=zsh --file-name="Alias: $@" --style=plain
-elif [[ $which_output == *'('* ]] ; then
-  echo "Function $@ :"
-  hr
-  echo $which_output | bat --language=zsh --file-name="Function: $@" --style=plain
 else
   red "Could not find executable '$@'."
   exit 1

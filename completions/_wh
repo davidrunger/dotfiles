@@ -1,0 +1,9 @@
+#compdef wh
+
+_wh() {
+  # https://stackoverflow.com/a/949006/4009384
+  available_commands=("${(f)$(compgen -A function -abck)}")
+  _describe 'available_commands' available_commands
+}
+
+compdef _wh wh

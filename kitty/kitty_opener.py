@@ -26,7 +26,7 @@ def is_file_or_symlink_to_file(path, cwd):
 
     file_check_stdout = file_check.stdout
 
-    if file_check.returncode == 0 and re.search(r"json|text", file_check_stdout):
+    if file_check.returncode == 0 and re.search(r"text", file_check_stdout):
         return True
     elif match := re.search(symlink_extracting_regex, file_check_stdout):
         symbolic_link_target = match.group(1)

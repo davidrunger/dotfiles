@@ -22,7 +22,12 @@ text_files() {
 
 git_diff_hash_before=$(git diff | sha1sum | choose 0)
 
-readarray -t files_to_lint_newlines < <(changed-not-deleted-files | text_files)
+# Ignore `shard.lock` files, since they end with two newlines.
+readarray -t files_to_lint_newlines < <(
+  changed-not-deleted-files | \
+  text_files | \
+  rg -v '\bshard.lock$'
+)
 
 if [ ${#files_to_lint_newlines[@]} -eq 0 ] ; then
   write-background-notification 'No files need to be linted for newlines.'

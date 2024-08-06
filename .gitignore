@@ -1,1 +1,5 @@
+# Homebrew lockfile
 Brewfile.lock.json
+
+# Crystal shards
+/lib/

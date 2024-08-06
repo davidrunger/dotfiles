@@ -28,17 +28,58 @@ local function writeAndOpenConfigFile(fileName)
   end
 end
 
+local function combineTables(t1, t2)
+  local combined = {}
+  -- Copy elements from the first table
+  for k, v in pairs(t1) do
+      combined[k] = v
+  end
+  -- Copy elements from the second table
+  for k, v in pairs(t2) do
+      combined[k] = v
+  end
+  return combined
+end
+
+local unifiedRungerConfig = (function()
+  local unifiedRungerConfig
+
+  return function()
+    if unifiedRungerConfig == nil then
+      local publicRungerConfig = read_yaml('.runger-config.yml')
+      local privateRungerConfig = read_yaml('.runger-config.private.yml')
+      unifiedRungerConfig = combineTables(publicRungerConfig, privateRungerConfig)
+    end
+
+    return unifiedRungerConfig
+  end
+end)()
+
+local function printTableSortedByKey(tableToPrint)
+  -- Collect keys into a table
+  local keys = {}
+  for k in pairs(tableToPrint) do
+      table.insert(keys, k)
+  end
+
+  -- Sort the keys
+  table.sort(keys)
+
+  -- Print the sorted key-value pairs
+  for _, k in ipairs(keys) do
+      print(k .. ' : ' .. tostring(tableToPrint[k]))
+  end
+end
+
 local parser = argparse("runger-config", "Parse Runger repo configuration.")
 parser:argument("configOption", "Configuration option (optional)."):args("?")
 parser:flag("-i --init", "Create a .runger-config.yml file.")
 parser:flag("-p --init-private", "Create a .runger-config.private.yml file.")
+parser:flag("-s --show", "Print the current config.")
 local args = parser:parse()
 
 if args.configOption then
-  local rungerConfig = read_yaml('.runger-config.yml')
-  local rungerConfigPrivate = read_yaml('.runger-config.private.yml')
-
-  local configValue = rungerConfig[args.configOption] or rungerConfigPrivate[args.configOption]
+  local configValue = unifiedRungerConfig()[args.configOption]
 
   if configValue == true then -- boolean config option
     os.exit(0)
@@ -48,6 +89,8 @@ if args.configOption then
   else
     os.exit(1)
   end
+elseif args.show then
+  printTableSortedByKey(unifiedRungerConfig())
 elseif args.init then
   writeAndOpenConfigFile(".runger-config.yml")
 elseif args.init_private then

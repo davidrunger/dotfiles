@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+
+# [g]it [c]ommit, allowing the commit to be [e]mpty
+
+set -euo pipefail # exit on any error, don't allow undefined variables, pipes don't swallow errors
+
+verify-on-ok-branch
+git commit --allow-empty

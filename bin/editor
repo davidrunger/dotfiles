@@ -1,0 +1,31 @@
+#!/usr/bin/env bash
+
+# Open a file in VS Code.
+
+set -euo pipefail # exit on any error, don't allow undefined variables, pipes don't swallow errors
+
+if [ -v LINUX ]; then
+  # Iff exactly one argument is provided and it's a directory, then clear the VS Code workspace.
+  # https://github.com/microsoft/vscode/issues/ 22613#issuecomment-2252528826
+  if [ "$#" -eq 1 ] ; then
+    absolute_argument_path=$(realpath "$1")
+
+    if [ -d "$absolute_argument_path" ] ; then
+      inode_number=$(stat -c %i "$absolute_argument_path")
+      workspace_id=$(echo -n "$absolute_argument_path$inode_number" | md5sum | awk '{print $1}')
+      rm -rf "$HOME/.config/Code/User/workspaceStorage/$workspace_id"
+    fi
+  fi
+fi
+
+# NOTE: To work with iterm_opener, the editor executable must be an absolute path.
+# MacOS location
+if [ -e /Users/david/code/dotfiles/bin-mac/code ]; then
+  /Users/david/code/dotfiles/bin-mac/code -g "$@"
+# Linux location
+elif [ -e /usr/bin/code ]; then
+  /usr/bin/code -g "$@"
+else
+  red "Don't know where to find code executable."
+  exit 1
+fi

@@ -11,6 +11,11 @@ if ! point-to-same-ref "$gh_check_branch" "origin/$gh_check_branch" ; then
   exit 1
 fi
 
+if uncommitted-changes-exist ; then
+  red 'There are uncommitted changes. Refusing to merge.'
+  exit 1
+fi
+
 wait-for-gh-checks "$gh_check_branch"
 gh pr merge "$gh_check_branch" --squash
 say "P R merged"

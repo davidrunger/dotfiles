@@ -11,8 +11,7 @@ warn_and_exit() {
 
 if [ "$(branch)" = "safe" ] ; then
   warn_and_exit
-elif [[ "$PWD" =~ $COMMIT_TO_MAIN_REGEX ]] || runger-config commit-to-main ; then
-  # NOTE: COMMIT_TO_MAIN_REGEX is defined in dotfiles-personal
+elif runger-config commit-to-main ; then
   exit 0
 elif [ "$(branch)" = "$(main-branch)" ] ; then
   warn_and_exit

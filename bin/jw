@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+
+# [j]avascript [w]atch
+
+set -euo pipefail # exit on any error, don't allow undefined variables, pipes don't swallow errors
+
+javascript_watch_command=$(runger-config javascript-watch-command || true)
+
+if [ -n "$javascript_watch_command" ] ; then
+  $javascript_watch_command
+else
+  red 'You must set a javascript-watch-command in runger-config.'
+  exit 1
+fi

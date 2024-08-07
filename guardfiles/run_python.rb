@@ -7,6 +7,11 @@ require_relative "#{Dir.home}/code/dotfiles/utils/ruby/guard_shell_with_guard_mo
 guard(:shell, all_on_start: true) do
   directories_to_watch = %w[app bin lib personal spec].select { Dir.exist?(_1) }
 
+  # Don't watch `lib/` (the shards directory) if `shard.yml` exists.
+  if File.exist?('shard.yml')
+    directories_to_watch.reject! { _1 == 'lib' }
+  end
+
   # https://web.archive.org/web/20200927034139/https://github.com/guard/listen/wiki/Duplicate-directory-errors
   directories(directories_to_watch)
 

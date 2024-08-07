@@ -11,18 +11,20 @@ class RungerConfig
     public_runger_config.merge(private_runger_config)
   end
 
-  def read_yaml(file)
-    if File.exists?(file)
-      content = File.read(file)
+  def read_yaml(file_name)
+    if File.exists?(file_name)
+      content = File.read(file_name)
       YAML.parse(content).as_h.transform_keys { |key| key.to_s } || {} of String => YAML::Any
     else
       {} of String => YAML::Any
     end
   end
 
-  def write_and_open_config_file(file_name : String)
-    File.write(file_name, "# commit-to-main: true\n")
-    puts "Created #{file_name} ."
+  def edit_config_file(file_name : String)
+    if !File.exists?(file_name)
+      File.write(file_name, "# commit-to-main: true\n")
+      puts "Created #{file_name} ."
+    end
 
     if (editor = ENV["EDITOR"])
       system("#{editor} #{file_name}")
@@ -44,9 +46,9 @@ class RungerConfig::Cli < Clim
     usage "runger-config [options] [arguments]"
     version "0.0.1"
 
-    option "-i", "--init", type: Bool, desc: "Create a .runger-config.yml file.", required: false
-    option "-p", "--init-private", type: Bool, desc: "Create a .runger-config.private.yml file.", required: false
-    option "-s", "--show", type: Bool, desc: "Print the current config.", required: false
+    option "-e", "--edit", type: Bool, desc: "Edit (and create, if needed) a .runger-config.yml file.", required: false
+    option "-p", "--edit-private", type: Bool, desc: "Edit (and create, if needed) a .runger-config.private.yml file.", required: false
+    option "-s", "--show", type: Bool, desc: "Print the current config (combining both public and private configs).", required: false
 
     argument "config_key", type: String, desc: "The configuration option to check.", required: false
 
@@ -66,10 +68,10 @@ class RungerConfig::Cli < Clim
         end
       elsif opts.show
         runger_config.print_config
-      elsif opts.init
-        runger_config.write_and_open_config_file(".runger-config.yml")
-      elsif opts.init_private
-        runger_config.write_and_open_config_file(".runger-config.private.yml")
+      elsif opts.edit
+        runger_config.edit_config_file(".runger-config.yml")
+      elsif opts.edit_private
+        runger_config.edit_config_file(".runger-config.private.yml")
       end
     end
   end

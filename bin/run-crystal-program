@@ -17,7 +17,7 @@ script_name=$(basename "$0")
 source_file="$crystal_programs_source_code_directory/$script_name.cr"
 binary_file="$crystal_compiled_binaries_directory/$script_name"
 
-# Check if the source file exists
+# Check if the source file exists.
 if [ ! -f "$source_file" ] ; then
   echo "Error: Source file $source_file does not exist." >&2
   exit 1
@@ -27,7 +27,7 @@ fi
 # back into it.
 original_directory=$(pwd)
 
-# Check if the source file has changed or the binary does not exist
+# Check if the source file has changed or the binary does not exist.
 if [ ! -f "$binary_file" ] || [ "$source_file" -nt "$binary_file" ] ; then
   mkdir -p "$crystal_compiled_binaries_directory"
 

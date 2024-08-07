@@ -27,8 +27,11 @@ fi
 # back into it.
 original_directory=$(pwd)
 
-# Check if the source file has changed or the binary does not exist.
-if [ ! -f "$binary_file" ] || [ "$source_file" -nt "$binary_file" ] ; then
+# Check if the binary doesn't exist, the source file has changed, or this
+# compilation script has changed.
+if [ ! -f "$binary_file" ] || \
+    [ "$source_file" -nt "$binary_file" ] || \
+    [ "$(realpath "$0")" -nt "$binary_file" ] ; then
   mkdir -p "$crystal_compiled_binaries_directory"
 
   # Move into dotfiles, so that we can require packgages defined in its

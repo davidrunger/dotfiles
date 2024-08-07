@@ -9,7 +9,7 @@ ln -sf ~/code/dotfiles/asdfrc ~/.asdfrc
 ln -sf ~/code/dotfiles/cheat/ ~/.config/
 ln -sf ~/code/dotfiles/gemrc.yml ~/.gemrc
 ln -sf ~/code/dotfiles/git/gitconfig ~/.gitconfig
-ln -sf ~/code/dotfiles/global_gitignore ~/.gitignore
+ln -sf ~/code/dotfiles/git/global_gitignore ~/.gitignore
 ln -sf ~/code/dotfiles/irbrc.rb ~/.irbrc.rb
 ln -sf ~/code/dotfiles/kitty/ ~/.config/
 ln -sf ~/code/dotfiles/pryrc.rb ~/.pryrc

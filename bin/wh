@@ -1,6 +1,7 @@
 #!/usr/bin/env zsh
 
-# [add some documentation]
+# This is like [wh]ich, but (in certain cases) it also prints the content of the
+# executable script or function, colorized with `bat`.
 
 set -uo pipefail # don't allow undefined variables, pipes don't swallow errors
 

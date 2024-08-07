@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
-# [add some documentation]
+# This script is used via `scrollback_pager vs-code-scrollback-viewer` in
+# `kitty/kitty.conf` to open content from the terminal in VS Code.
 
 set -euo pipefail # exit on any error, don't allow undefined variables, pipes don't swallow errors
 

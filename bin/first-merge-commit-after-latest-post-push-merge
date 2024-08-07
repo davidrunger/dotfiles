@@ -1,7 +1,12 @@
 #!/usr/bin/env bash
 
-# [add some documentation]
+# I think that this script finds the most recent merge commit (with the main
+# branch) subsequent to having pushed the branch up to the remote. It's used in
+# `grim`.
 
 set -euo pipefail # exit on any error, don't allow undefined variables, pipes don't swallow errors
 
-git log "origin/$(branch).." --oneline --author="$(git config user.name)" | rg -F "Merge remote-tracking branch 'origin/trunk'" | cut -d ' ' -f 1 | head -1
+git log "origin/$(branch).." --oneline --author="$(git config user.name)" | \
+  rg -F "Merge remote-tracking branch 'origin/$(main-branch)'" | \
+  cut -d ' ' -f 1 | \
+  head -1

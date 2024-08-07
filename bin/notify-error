@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# [add some documentation]
+# Creates a system notification with an error icon and a display duration of 1 hour.
 
 set -euo pipefail # exit on any error, don't allow undefined variables, pipes don't swallow errors
 

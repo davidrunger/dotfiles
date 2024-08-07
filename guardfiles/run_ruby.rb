@@ -9,6 +9,11 @@ NUM_BACKTRACE_LINES_TO_PRINT = 5
 guard(:shell, all_on_start: true) do
   directories_to_watch = %w[app bin lib personal spec].select { Dir.exist?(_1) }
 
+  # Don't watch `lib/` (the shards directory) if `shard.yml` exists.
+  if File.exist?('shard.yml')
+    directories_to_watch.reject! { _1 == 'lib' }
+  end
+
   # https://web.archive.org/web/20200927034139/https://github.com/guard/listen/wiki/Duplicate-directory-errors
   directories(directories_to_watch)
 

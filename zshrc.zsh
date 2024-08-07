@@ -103,6 +103,8 @@ fi
 
 export PATH
 
+export EDITOR=editor
+
 # Set up (in the background) symlinks for programs written in Crystal
 { ( symlink-crystal-programs >&3 & ) } 3>&1
 

@@ -2,25 +2,25 @@
   editor = code --wait
   excludesfile = ~/.gitignore
   pager = delta
+[delta]
+  light = false
+  navigate = true    # use n and N to move between diff sections
+  side-by-side = true
+[diff]
+  algorithm = histogram
+  colorMoved = default
 [include]
   path = ~/code/dotfiles-personal/git/gitconfig
+[init]
+  defaultBranch = main
 [interactive]
   diffFilter = delta --color-only
   singlekey = true
-[delta]
-  navigate = true    # use n and N to move between diff sections
-  light = false
-  side-by-side = true
-[merge]
-  conflictstyle = diff3
-[diff]
-  colorMoved = default
-  algorithm = histogram
-[push]
-  default = current
 [log]
   date = iso
-[init]
-  defaultBranch = main
+[merge]
+  conflictstyle = diff3
+[push]
+  default = current
 [user]
   name = David Runger

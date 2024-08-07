@@ -1,0 +1,51 @@
+#!/usr/bin/env bash
+
+# This program is intended to be symlinked as an executable file to a path with
+# the same file name -- minus the `.cr` file extension -- as a Crystal program
+# that is defined in `~/code/dotfiles/crystal-programs/`. When invoked, this
+# script will compile that Crystal program, if necessary (i.e. if it has never
+# been compiled before or if the Crystal source code has been changed subsequent
+# to the most recent compilation), and pass along any arguments to that compiled
+# program. The compiled programs will live in `~/bin/crystal-binaries/`.
+
+set -euo pipefail # exit on any error, don't allow undefined variables, pipes don't swallow errors
+
+crystal_programs_source_code_directory="$HOME/code/dotfiles/crystal-programs"
+crystal_compiled_binaries_directory="$HOME/bin/crystal-binaries"
+
+script_name=$(basename "$0")
+source_file="$crystal_programs_source_code_directory/$script_name.cr"
+binary_file="$crystal_compiled_binaries_directory/$script_name"
+
+# Check if the source file exists
+if [ ! -f "$source_file" ] ; then
+  echo "Error: Source file $source_file does not exist." >&2
+  exit 1
+fi
+
+# Save the current directory, since we might cd away from it and then need to cd
+# back into it.
+original_directory=$(pwd)
+
+# Check if the source file has changed or the binary does not exist
+if [ ! -f "$binary_file" ] || [ "$source_file" -nt "$binary_file" ] ; then
+  mkdir -p "$crystal_compiled_binaries_directory"
+
+  # Move into dotfiles, so that we can require packgages defined in its
+  # `shard.yml`.
+  cd "$HOME/code/dotfiles"
+
+  # Compile the binary.
+  echo "Compiling $source_file ..." >&2
+  if ! crystal build "$source_file" -o "$binary_file" ; then
+    echo "There was an error compiling $source_file ." >&2
+    exit 1
+  fi
+fi
+
+# Move back to the original directory, so that we will consult its YAML config
+# files.
+cd "$original_directory"
+
+# Execute the compiled binary, passing along any provided arguments.
+"$binary_file" "$@"

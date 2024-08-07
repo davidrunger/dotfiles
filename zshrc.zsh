@@ -84,19 +84,27 @@ fi
 # Homebrew
 export HOMEBREW_NO_AUTO_UPDATE=1
 
-export PATH=node_modules/.bin:$PATH
-
-export PATH=$HOME/code/dotfiles-personal/bin:\
-$HOME/code/dotfiles/bin:$HOME/bin:$HOME/.local/bin/:$PATH
+path=(
+  $HOME/code/dotfiles-personal/bin
+  $HOME/code/dotfiles/bin
+  $HOME/bin/crystal-symlinks
+  $HOME/.local/bin
+  node_modules/.bin
+  # https://github.com/Homebrew/homebrew-core/issues/ 121043#issuecomment-1397888835
+  $HOMEBREW_PREFIX/opt/postgresql@16/bin
+  $path
+)
 
 if [ -v LINUX ] ; then
-  export PATH=$HOME/code/dotfiles/bin-linux:$PATH
+  path=($HOME/code/dotfiles/bin-linux $path)
 else if [ -v DARWIN ]
-  export PATH=$HOME/code/dotfiles/bin-mac:$PATH
+  path=($HOME/code/dotfiles/bin-mac $path)
 fi
 
-# https://github.com/Homebrew/homebrew-core/issues/ 121043#issuecomment-1397888835
-export PATH=$PATH:$HOMEBREW_PREFIX/opt/postgresql@16/bin
+export PATH
+
+# Set up (in the background) symlinks for programs written in Crystal
+{ ( symlink-crystal-programs >&3 & ) } 3>&1
 
 # less options
 export LESS='-Rj6 -X --quit-if-one-screen'

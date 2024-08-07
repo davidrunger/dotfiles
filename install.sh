@@ -38,3 +38,5 @@ touch ~/.pry_history
 # pnpm add --global http-server typescript tsx
 
 # luarocks install "$(fd dotfiles*.rockspec | head -1)" --deps-only --force
+
+# shards install

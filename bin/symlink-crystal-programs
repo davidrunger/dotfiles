@@ -1,0 +1,22 @@
+#!/usr/bin/env bash
+
+# This script sets up symlinks that will connect executables on the PATH to
+# Crystal programs that are automatically compiled, as needed, by
+# `run-crystal-program`. This script is executed (in the background) from
+# `~/.zshrc`, so it will (re-)run whenever opening a new terminal.
+
+set -euo pipefail # exit on any error, don't allow undefined variables, pipes don't swallow errors
+
+crystal_programs_source_code_directory="$HOME/code/dotfiles/crystal-programs"
+crystal_executable_symlinks_directory="$HOME/bin/crystal-symlinks"
+
+# Delete the symlinks directory, to ensure that there aren't any dangling programs left there.
+rm -rf "$crystal_executable_symlinks_directory"
+
+# Recreate the symlinks directory.
+mkdir -p "$crystal_executable_symlinks_directory"
+
+for crystal_program_source_file in "$crystal_programs_source_code_directory"/*.cr ; do
+  symlink_name=$(basename "$crystal_program_source_file" .cr)
+  ln -sf ~/code/dotfiles/bin/run-crystal-program "$crystal_executable_symlinks_directory/$symlink_name"
+done

@@ -13,10 +13,16 @@ which_exit_code=$?
 
 if [ "$which_exit_code" -eq 0 ] ; then
   if [ -f $which_output ] ; then
-    if [[ $which_output =~ "^$HOME/code" ]] ; then
+    if [[ $which_output =~ "^$HOME/code/" ]] ; then
       echo "Executable $which_output :"
       hr
       bat $which_output --style=plain
+    elif [[ $which_output =~ "^$HOME/bin/crystal-symlinks/" ]] ; then
+      basename=$(basename "$which_output")
+      crystal_source_file="$HOME/code/dotfiles/crystal-programs/$basename.cr"
+      echo "Crystal binary compiled from $crystal_source_file :"
+      hr
+      bat $crystal_source_file --style=plain
     else
       ls $which_output
     fi

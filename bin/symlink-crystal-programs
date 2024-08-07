@@ -16,7 +16,7 @@ rm -rf "$crystal_executable_symlinks_directory"
 # Recreate the symlinks directory.
 mkdir -p "$crystal_executable_symlinks_directory"
 
-for crystal_program_source_file in $crystal_programs_source_code_directory/*.cr ; do
+for crystal_program_source_file in "$crystal_programs_source_code_directory"/*.cr ; do
   symlink_name=$(basename "$crystal_program_source_file" .cr)
   ln -sf ~/code/dotfiles/bin/run-crystal-program "$crystal_executable_symlinks_directory/$symlink_name"
 done

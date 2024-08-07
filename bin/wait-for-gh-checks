@@ -14,13 +14,13 @@ require 'yaml'
 require_relative '../utils/ruby/memoization.rb'
 require_relative '../utils/ruby/monkeypatch_string_color.rb'
 require_relative '../utils/ruby/printer.rb'
+require_relative '../utils/ruby/runger_config.rb'
 
 class WaitForChecksRunner
   prepend Memoization
 
+  EXPECTED_NUM_GITHUB_CHECKS_KEY = 'expected-num-github-checks'
   MAX_TIME = 8.minutes
-  EXPECTED_NUM_CHECKS_CONFIG_PATH =
-    "#{Dir.home}/code/dotfiles-personal/config/expected-github-checks.yml".freeze
   RETRY_INTERVAL = 10.seconds
 
   attr_reader :start_time, :delivered_unexpected_count_notifications
@@ -54,18 +54,14 @@ class WaitForChecksRunner
 
   memoize \
   def expected_num_checks_config
-    raw_config =
-      num_checks_config.fetch(repo) do
-        puts("Add #{repo} to #{EXPECTED_NUM_CHECKS_CONFIG_PATH} .".red)
-        exit(1)
-      end
+    raw_config = expected_num_checks_runger_config
 
     if raw_config.is_a?(Integer)
       { exactly: raw_config }
     elsif (minimum_count = minimum_count(raw_config))
       { at_least: minimum_count }
     else
-      puts("Invalid config #{raw_config} for repo #{repo}.")
+      puts("Invalid config #{raw_config} .")
       exit(1)
     end
   end
@@ -84,16 +80,16 @@ class WaitForChecksRunner
 
   def minimum_count(config)
     if config.is_a?(Hash)
-      config['at_least']
+      config['at-least']
     end
   end
 
   memoize \
-  def num_checks_config
-    if File.exist?(EXPECTED_NUM_CHECKS_CONFIG_PATH)
-      YAML.load_file(EXPECTED_NUM_CHECKS_CONFIG_PATH)
+  def expected_num_checks_runger_config
+    if (expected_num_checks_runger_config = RungerConfig[EXPECTED_NUM_GITHUB_CHECKS_KEY])
+      expected_num_checks_runger_config
     else
-      puts("Create a config at #{EXPECTED_NUM_CHECKS_CONFIG_PATH} .".red)
+      puts("You must add #{EXPECTED_NUM_GITHUB_CHECKS_KEY} to runger-config .".red)
       exit(1)
     end
   end

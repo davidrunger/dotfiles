@@ -12,7 +12,9 @@ fetch-main-branch
 
 update-main-branches-with-remote
 
-flag-unacked-file-versions
+if [ -f personal/.runger-monitored-paths.txt ] ; then
+  flag-unacked-file-versions
+fi
 
 # Switch back to the original branch.
 git checkout --quiet "$original_branch"

@@ -115,3 +115,7 @@ export SIMPLECOV_TERMINAL_HYPERLINK_PATTERN="vscode://file/%f:%l"
 
 # prevent horrible Mac/Ruby/Rails bug
 export OBJC_DISABLE_INITIALIZE_FORK_SAFETY=YES
+
+# History
+export HISTSIZE=123123
+export SAVEHIST="$HISTSIZE"

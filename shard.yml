@@ -5,3 +5,5 @@ dependencies:
   clim:
     github: at-grandpa/clim
     version: 0.17.1
+  redis:
+    github: stefanwille/crystal-redis

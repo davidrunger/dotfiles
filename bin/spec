@@ -4,10 +4,23 @@
 
 set -euo pipefail
 
-if [[ $PWD =~ /dotfiles$ ]] ; then
-  run-rubocop
-  rspec
+runger_config_spec_commands=$(runger-config spec-commands || true)
+
+if [ -n "$runger_config_spec_commands" ] ; then
+  bash <<< "$(printf "set -euo pipefail\n\n%s" "$runger_config_spec_commands")"
+elif [ -f Gemfile ] ; then
+  if rg --quiet "gem ['\"]rubocop['\"]" Gemfile ; then
+    readarray -t files_for_rubocop < <(git ls-tree -r HEAD --name-only)
+    echo 'Running RuboCop against all git-tracked files with --force-exclusion...'
+    bin/rubocop "${files_for_rubocop[@]}" --force-exclusion
+  fi
+
+  if rg --quiet "gem ['\"]rspec['\"]" Gemfile ; then
+    set -x
+    bin/rspec
+  fi
 else
-  echo 'Unknown directory!'
+  red "The project has no Gemfile, so we couldn't determine which tests/linters to run."
+  blue 'Tip: add spec-commands to runger-config to specify which commands to run.'
   exit 1
 fi

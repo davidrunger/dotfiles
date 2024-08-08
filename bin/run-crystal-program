@@ -32,9 +32,10 @@ original_directory=$(pwd)
 if [ ! -f "$binary_file" ] || \
     [ "$source_file" -nt "$binary_file" ] || \
     [ "$(realpath "$0")" -nt "$binary_file" ] ; then
+  # Create the compiled binaries directory.
   mkdir -p "$crystal_compiled_binaries_directory"
 
-  # Move into dotfiles, so that we can require packgages defined in its
+  # Move into dotfiles, so that we can require packages defined in its
   # `shard.yml`.
   cd "$HOME/code/dotfiles"
 

@@ -10,11 +10,10 @@
 
 set -euo pipefail # exit on any error, don't allow undefined variables, pipes don't swallow errors
 
-crystal_programs_source_code_directory="$HOME/code/dotfiles/crystal-programs"
 crystal_compiled_binaries_directory="$HOME/bin/crystal-binaries"
 
 script_name=$(basename "$0")
-source_file="$crystal_programs_source_code_directory/$script_name.cr"
+source_file="$HOME/code/dotfiles/crystal-programs/$script_name.cr"
 binary_file="$crystal_compiled_binaries_directory/$script_name"
 
 # Check if the source file exists.

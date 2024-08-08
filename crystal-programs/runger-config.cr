@@ -6,10 +6,19 @@ require "../utils/crystal/memoize"
 
 class RungerConfig
   memoize unified_runger_config : Hash(String, YAML::Any) do
-    public_runger_config = read_yaml(".runger-config.yml")
-    private_runger_config = read_yaml(".runger-config.private.yml")
-
     public_runger_config.merge(private_runger_config)
+  end
+
+  memoize public_runger_config : Hash(String, YAML::Any) do
+    read_yaml(".runger-config.yml")
+  end
+
+  memoize private_runger_config : Hash(String, YAML::Any) do
+    read_yaml(".runger-config.private.yml")
+  end
+
+  memoize private_runger_config_keys : Set(String) do
+    Set.new(private_runger_config.keys)
   end
 
   def exit_and_maybe_print(config_key : String)
@@ -27,7 +36,7 @@ class RungerConfig
 
   def print_config
     unified_runger_config.keys.sort.each do |key|
-      puts "#{key.colorize(:blue)} #{":".colorize(:green)} #{unified_runger_config[key]}"
+      puts "#{colorized_key(key)} #{":".colorize(:green)} #{unified_runger_config[key]}"
     end
   end
 
@@ -49,6 +58,17 @@ class RungerConfig
     else
       {} of String => YAML::Any
     end
+  end
+
+  private def colorized_key(key)
+    color =
+      if key.in?(private_runger_config_keys)
+        :magenta
+      else
+        :blue
+      end
+
+    key.colorize(color)
   end
 end
 

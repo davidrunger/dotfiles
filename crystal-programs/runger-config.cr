@@ -11,12 +11,22 @@ class RungerConfig
     public_runger_config.merge(private_runger_config)
   end
 
-  def read_yaml(file_name)
-    if File.exists?(file_name)
-      content = File.read(file_name)
-      YAML.parse(content).as_h.transform_keys { |key| key.to_s } || {} of String => YAML::Any
+  def exit_and_maybe_print(config_key : String)
+    config_value = unified_runger_config[config_key]?
+
+    if config_value == true
+      exit(0)
+    elsif config_value
+      puts(config_value)
+      exit(0)
     else
-      {} of String => YAML::Any
+      exit(1)
+    end
+  end
+
+  def print_config
+    unified_runger_config.keys.sort.each do |key|
+      puts "#{key} : #{unified_runger_config[key]}"
     end
   end
 
@@ -31,9 +41,12 @@ class RungerConfig
     end
   end
 
-  def print_config
-    unified_runger_config.keys.sort.each do |key|
-      puts "#{key} : #{unified_runger_config[key]}"
+  private def read_yaml(file_name)
+    if File.exists?(file_name)
+      content = File.read(file_name)
+      YAML.parse(content).as_h.transform_keys { |key| key.to_s } || {} of String => YAML::Any
+    else
+      {} of String => YAML::Any
     end
   end
 end
@@ -56,16 +69,7 @@ class RungerConfig::Cli < Clim
       runger_config = RungerConfig.new
 
       if (config_key = args.config_key)
-        config_value = runger_config.unified_runger_config[config_key]?
-
-        if config_value == true
-          exit(0)
-        elsif config_value
-          puts(config_value)
-          exit(0)
-        else
-          exit(1)
-        end
+        runger_config.exit_and_maybe_print(config_key)
       elsif opts.show
         runger_config.print_config
       elsif opts.edit

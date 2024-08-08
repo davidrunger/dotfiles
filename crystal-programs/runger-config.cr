@@ -1,5 +1,6 @@
 #!/usr/bin/env crystal
 
+require "colorize"
 require "yaml"
 require "../utils/crystal/memoize"
 
@@ -26,7 +27,7 @@ class RungerConfig
 
   def print_config
     unified_runger_config.keys.sort.each do |key|
-      puts "#{key} : #{unified_runger_config[key]}"
+      puts "#{key.colorize(:blue)} #{":".colorize(:green)} #{unified_runger_config[key]}"
     end
   end
 

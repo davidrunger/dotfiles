@@ -23,10 +23,6 @@ if [ ! -f "$source_file" ] ; then
   exit 1
 fi
 
-# Save the current directory, since we might cd away from it and then need to cd
-# back into it.
-original_directory=$(pwd)
-
 # Check if the binary doesn't exist, the source file has changed, or this
 # compilation script has changed.
 if [ ! -f "$binary_file" ] || \
@@ -35,11 +31,8 @@ if [ ! -f "$binary_file" ] || \
   # Create the compiled binaries directory.
   mkdir -p "$crystal_compiled_binaries_directory"
 
-  # Move into dotfiles, so that we can require packages defined in its
-  # `shard.yml`.
-  cd "$HOME/code/dotfiles"
-
   # Add shards directory for dotfiles to the CRYSTAL_PATH.
+  # More details: https://github.com/davidrunger/dotfiles/commit/d73a9df .
   export CRYSTAL_PATH="$HOME/.shards/dotfiles:$CRYSTAL_PATH"
 
   # Compile the binary.
@@ -49,10 +42,6 @@ if [ ! -f "$binary_file" ] || \
     exit 1
   fi
 fi
-
-# Move back to the original directory, so that we will consult its YAML config
-# files.
-cd "$original_directory"
 
 # Execute the compiled binary, passing along any provided arguments.
 "$binary_file" "$@"

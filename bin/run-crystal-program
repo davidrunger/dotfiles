@@ -38,6 +38,9 @@ if [ ! -f "$binary_file" ] || \
   # `shard.yml`.
   cd "$HOME/code/dotfiles"
 
+  # Add shards directory for dotfiles to the CRYSTAL_PATH.
+  export CRYSTAL_PATH="$HOME/.shards/dotfiles:$CRYSTAL_PATH"
+
   # Compile the binary.
   echo "Compiling $source_file ..." >&2
   if ! crystal build --warnings=none "$source_file" -o "$binary_file" ; then

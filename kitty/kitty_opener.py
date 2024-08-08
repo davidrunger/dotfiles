@@ -5,8 +5,8 @@ from pathlib import Path
 
 # NOTE: Debug with this function and run (in dotfiles) `gal -g bash --force` and
 # make the bash script `cat personal/random.txt`.
-# def debug(text):
-#     subprocess.run(f"echo '{text}' >> /home/david/code/dotfiles/personal/random.txt", shell=True)
+def debug(text):
+    subprocess.run(f"echo '{text}' >> /home/david/code/dotfiles/personal/random.txt", shell=True)
 
 symlink_extracting_regex = r": symbolic link to (.+)"
 
@@ -47,7 +47,7 @@ def github_path(cwd):
 
 
 home = str(Path.home())
-editor = f"{home}/code/dotfiles-personal/bin/editor"
+editor = f"{home}/code/dotfiles/bin/editor"
 
 
 regex = re.compile(

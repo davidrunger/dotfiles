@@ -11,7 +11,6 @@ alias down='cd ~/Downloads'
 alias fix='git diff --name-only | uniq | xargs $EDITOR'
 alias fs='format-sql'
 alias fsk='redis-cli -n 1 FLUSHDB && sk' # `-n 1` because of `REDIS_DATABASE_NUMBER=1` in `.env`
-alias fx='open -a Firefox\ Developer\ Edition'
 alias ga='git add'
 alias gac='ga . && gcom'
 alias gba='GIT_PAGER=cat git branch -vv'

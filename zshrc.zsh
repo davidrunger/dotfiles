@@ -88,6 +88,9 @@ export HOMEBREW_NO_AUTO_UPDATE=1
 export SHARDS_INSTALL_PATH="$HOME/.shards/$(basename $PWD)"
 export CRYSTAL_PATH="$SHARDS_INSTALL_PATH:/usr/share/crystal/src"
 
+# Rust
+. "$HOME/.cargo/env"
+
 path=(
   $HOME/code/dotfiles-personal/bin
   $HOME/code/dotfiles/bin

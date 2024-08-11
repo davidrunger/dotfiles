@@ -83,6 +83,7 @@ class RungerConfig::Cli < Clim
     option "-e", "--edit", type: Bool, desc: "Edit (and create, if needed) a .runger-config.yml file.", required: false
     option "-p", "--edit-private", type: Bool, desc: "Edit (and create, if needed) a .runger-config.private.yml file.", required: false
     option "-s", "--show", type: Bool, desc: "Print the current config (combining both public and private configs).", required: false
+    help short: "-h"
 
     argument "config_key", type: String, desc: "The configuration option to check.", required: false
 

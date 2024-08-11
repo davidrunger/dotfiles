@@ -1,4 +1,5 @@
 alias bat='bat --paging=never'
+alias bc='bc -l'
 alias br='bin/rubocop'
 alias bs='bin/rspec'
 alias chr='open -a Google\ Chrome'

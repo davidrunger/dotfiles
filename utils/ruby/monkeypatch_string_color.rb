@@ -17,6 +17,8 @@ class String
   end
 end
 
-# NOTE: Rainbow disables itself if STDOUT/STDERR is not a TTY or a terminal is dumb.
-# Here we override that behavior and always enable it.
-Rainbow.enabled = true
+unless defined?(Rails.env) && Rails.env.test?
+  # NOTE: Rainbow disables itself if STDOUT/STDERR is not a TTY or a terminal is dumb.
+  # Here we override that behavior and always enable it.
+  Rainbow.enabled = true
+end

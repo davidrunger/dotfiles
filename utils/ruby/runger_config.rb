@@ -2,6 +2,7 @@
 
 # This is a Ruby binding to read the configuration managed by `runger-config`.
 
+require 'singleton'
 require_relative 'memoization.rb'
 
 class RungerConfig

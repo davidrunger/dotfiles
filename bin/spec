@@ -7,7 +7,7 @@ set -euo pipefail
 runger_config_spec_commands=$(runger-config spec-commands || true)
 
 if [ -n "$runger_config_spec_commands" ] ; then
-  bash <<< "$(printf "set -euo pipefail\n\n%s" "$runger_config_spec_commands")"
+  bash -c "$(printf "set -euo pipefail\n\n%s" "$runger_config_spec_commands")"
 elif [ -f Gemfile ] ; then
   if rg --quiet "gem ['\"]rubocop['\"]" Gemfile ; then
     readarray -t files_for_rubocop < <(git ls-tree -r HEAD --name-only)

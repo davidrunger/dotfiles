@@ -45,6 +45,9 @@ fi
 if [ -e ~/.rbenv/bin/rbenv ]; then
   eval "$(~/.rbenv/bin/rbenv init - zsh)"
 fi
+# NOTE: YJIT requires Rust to be installed.
+# NOTE: Jemalloc requires `sudo apt-get install libjemalloc-dev`.
+export RUBY_CONFIGURE_OPTS="--enable-yjit --with-jemalloc"
 
 # yarn setup
 if command -v yarn &> /dev/null ; then

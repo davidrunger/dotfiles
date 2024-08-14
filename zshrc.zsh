@@ -4,10 +4,6 @@ elif [ "$(uname)" = 'Darwin' ] ; then
   export DARWIN=true
 fi
 
-. ~/code/dotfiles/shell/aliases.zsh
-. ~/code/dotfiles/shell/functions.zsh
-fpath=(~/code/dotfiles/completions $fpath)
-
 if [ -v LINUX ] ; then
   . "$HOME/code/dotfiles/shell/linux.zsh"
 elif [ -v DARWIN ] ; then
@@ -28,6 +24,12 @@ source $ZSH/oh-my-zsh.sh
 unfunction d
 # Remove zsh fwd-i-search / history-incremental-search-forward keyboard shortcut.
 bindkey -r "^S"
+
+. ~/code/dotfiles/shell/aliases.zsh
+. ~/code/dotfiles/shell/functions.zsh
+
+# Look for zsh completion definitions in dotfiles/completions/ directory.
+fpath=(~/code/dotfiles/completions $fpath)
 
 if [ -e "$HOME/code/dotfiles-personal/zshrc.zsh" ]; then
   . "$HOME/code/dotfiles-personal/zshrc.zsh"

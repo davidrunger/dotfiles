@@ -10,6 +10,10 @@ elif [ -v DARWIN ] ; then
   . "$HOME/code/dotfiles/shell/mac.zsh"
 fi
 
+# Look for zsh completion definitions in dotfiles/completions/ directory.
+# NOTE: This must come before loading oh-my-zsh.
+fpath=(~/code/dotfiles/completions $fpath)
+
 # zsh/oh-my-zsh
 # NOTE: must come after sourcing linux.zsh, so that git is available via Homebrew for update check.
 setopt +o nomatch # https://unix.stackexchange.com/a/310553/276727
@@ -27,9 +31,6 @@ bindkey -r "^S"
 
 . ~/code/dotfiles/shell/aliases.zsh
 . ~/code/dotfiles/shell/functions.zsh
-
-# Look for zsh completion definitions in dotfiles/completions/ directory.
-fpath=(~/code/dotfiles/completions $fpath)
 
 if [ -e "$HOME/code/dotfiles-personal/zshrc.zsh" ]; then
   . "$HOME/code/dotfiles-personal/zshrc.zsh"

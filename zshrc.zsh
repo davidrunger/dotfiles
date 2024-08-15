@@ -101,6 +101,7 @@ path=(
   $HOME/code/dotfiles-personal/bin
   $HOME/code/dotfiles/bin
   $HOME/bin/crystal-symlinks
+  $HOME/bin
   $HOME/.local/bin
   node_modules/.bin
   # https://github.com/Homebrew/homebrew-core/issues/ 121043#issuecomment-1397888835

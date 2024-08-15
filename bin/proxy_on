@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+
+# Turn mitmproxy on (and then run `mitmdump` in a terminal).
+
+set -euo pipefail # exit on any error, don't allow undefined variables, pipes don't swallow errors
+
+touch "$HOME/code/dotfiles/feature-flags/mitmproxy"
+
+blue 'Proxy will be enabled at next login.'

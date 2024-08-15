@@ -3,3 +3,9 @@ Brewfile.lock.json
 
 # Crystal shards
 /lib/
+
+# Feature flags
+/feature-flags/
+
+# mitmproxy config
+/mitmproxy.yml

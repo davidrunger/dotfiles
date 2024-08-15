@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+
+# Turn mitmproxy off.
+
+set -euo pipefail # exit on any error, don't allow undefined variables, pipes don't swallow errors
+
+rm -f "$HOME/code/dotfiles/feature-flags/mitmproxy"
+
+blue 'Proxy will be disabled at next login.'

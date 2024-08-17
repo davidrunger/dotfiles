@@ -12,7 +12,7 @@ fetch-main-branch
 
 update-main-branches-with-remote
 
-if [ -f personal/.runger-monitored-paths.txt ] ; then
+if runger-config --silent monitored-paths ; then
   flag-unacked-file-versions
 fi
 

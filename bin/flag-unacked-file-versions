@@ -8,11 +8,10 @@ require 'io/console'
 require 'redis'
 
 require_relative "#{Dir.home}/code/dotfiles/utils/ruby/memoization.rb"
+require_relative "#{Dir.home}/code/dotfiles/utils/ruby/runger_config.rb"
 
 class FlagUnackedFileVersions
   prepend Memoization
-
-  MONITORED_PATHS_FILE_PATH = 'personal/.runger-monitored-paths.txt'
 
   class RedisAgent
     def initialize(redis_hash_key)
@@ -159,8 +158,8 @@ class FlagUnackedFileVersions
 
   memoize \
   def monitored_paths
-    if File.exist?(MONITORED_PATHS_FILE_PATH)
-      File.read(MONITORED_PATHS_FILE_PATH).split("\n")
+    if (monitored_paths_string = RungerConfig['monitored-paths'])
+      monitored_paths_string.split("\n")
     else
       []
     end

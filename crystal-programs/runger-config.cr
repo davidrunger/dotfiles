@@ -21,13 +21,16 @@ class RungerConfig
     Set.new(private_runger_config.keys)
   end
 
-  def exit_and_maybe_print(config_key : String)
+  def exit_and_maybe_print(config_key : String, silent = false)
     config_value = unified_runger_config[config_key]?
 
     if config_value == true
       exit(0)
     elsif config_value
-      puts(config_value)
+      unless silent
+        puts(config_value)
+      end
+
       exit(0)
     else
       exit(1)
@@ -83,6 +86,7 @@ class RungerConfig::Cli < Clim
     option "-e", "--edit", type: Bool, desc: "Edit (and create, if needed) a .runger-config.yml file.", required: false
     option "-p", "--edit-private", type: Bool, desc: "Edit (and create, if needed) a .runger-config.private.yml file.", required: false
     option "-s", "--show", type: Bool, desc: "Print the current config (combining both public and private configs).", required: false
+    option "--silent", type: Bool, desc: "Don't print value (useful to check if a config key exists)", required: false
     help short: "-h"
 
     argument "config_key", type: String, desc: "The configuration option to check.", required: false
@@ -91,7 +95,7 @@ class RungerConfig::Cli < Clim
       runger_config = RungerConfig.new
 
       if (config_key = args.config_key)
-        runger_config.exit_and_maybe_print(config_key)
+        runger_config.exit_and_maybe_print(config_key, silent: opts.silent)
       elsif opts.show
         runger_config.print_config
       elsif opts.edit

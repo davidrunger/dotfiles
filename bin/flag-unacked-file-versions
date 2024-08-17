@@ -66,13 +66,15 @@ class FlagUnackedFileVersions
       to: :@flagger,
     )
 
-    def initialize(path, flagger:)
+    def initialize(path, flagger:, monitoring_reason:)
       @path = path
       @flagger = flagger
+      @monitoring_reason = monitoring_reason
     end
 
     def perform
       print_diff_since_last_ack
+      print_monitoring_reason
 
       if user_acks?
         save_ack
@@ -89,6 +91,10 @@ class FlagUnackedFileVersions
         puts("You have never acked '#{@path}', so we'll print it all.")
         system({ 'BAT_PAGER' => 'cat' }, "bat $(git ls-files '#{@path}')", exception: true)
       end
+    end
+
+    def print_monitoring_reason
+      puts("Monitoring reason: #{@monitoring_reason}")
     end
 
     def user_acks?
@@ -123,7 +129,11 @@ class FlagUnackedFileVersions
   def seek_ack_of_unacked_files
     on_main_branch do
       paths_without_up_to_date_ack.each do |path|
-        AckUpdater.new(path, flagger: self).perform
+        AckUpdater.new(
+          path,
+          flagger: self,
+          monitoring_reason: monitored_paths_hash[path],
+        ).perform
       end
     end
   end
@@ -158,11 +168,16 @@ class FlagUnackedFileVersions
 
   memoize \
   def monitored_paths
-    if (monitored_paths_string = RungerConfig['monitored-paths'])
-      monitored_paths_string.split("\n")
+    if monitored_paths_hash
+      monitored_paths_hash.keys
     else
       []
     end
+  end
+
+  memoize \
+  def monitored_paths_hash
+    RungerConfig['monitored-paths']
   end
 
   memoize \

@@ -10,4 +10,4 @@ set -euo pipefail # exit on any error, don't allow undefined variables, pipes do
 
 pid=$1
 
-ps -p "$pid" -o pid,ppid,cmd,%mem,%cpu,etime
+ps -p "$pid" -o pid,ppid,%mem,%cpu,etime,cmd

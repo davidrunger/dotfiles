@@ -68,12 +68,11 @@ if git diff --diff-filter=R "origin/$(main-branch)"...  | \
   exit_with_error_unless_checks_not_required
 fi
 
-# don't push if there are still `!!!` markers in .env* files
-for file in .env .env.development.local .env.test.local ; do
-  if [ -f $file ]
-  then
-    if rg --quiet --fixed-strings '!!!' $file ; then
-      rg --with-filename --fixed-strings '!!!' $file
+# don't push if there are still `!!!` markers in .env or .env.*.local files
+for file in .env{,.*.local} ; do
+  if [ -f "$file" ] ; then
+    if rg --quiet --fixed-strings '!!!' "$file" ; then
+      rg --with-filename --fixed-strings '!!!' "$file"
       echo "Easy there, cowboy! You still have some markers in $file ."
       exit_with_error_unless_checks_not_required
     fi

@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+
+# Extract a zip file into a directory of the same name (minus the .zip suffix).
+
+set -euo pipefail # exit on any error, don't allow undefined variables, pipes don't swallow errors
+
+filename=$1
+
+unzip "$filename" -d "$(basename "$filename" .zip)"

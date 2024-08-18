@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/usr/bin/env zsh
 
 # Create an executable. (Misspelled so as not to conflict with github.com/cheat/cheat.)
 #
@@ -6,9 +6,30 @@
 #   $ cheat sayhey 'echo "hi there!"'
 #   $ sayhey #=> prints "hi there!"
 
+command_name="$1"
+
+. "$HOME/.oh-my-zsh/lib/completion.zsh"
+
+if compgen -A function -abck | grep -q -P "^$command_name$" ; then
+  red 'There is already an executable with that name:'
+  wh "$command_name"
+
+  echo "Would you like to continue? Press Enter to continue, or any other key (or Ctrl-C) to abort."
+
+  # Read a single character input from the user
+  read -sk input
+
+  if [[ "$input" == $'\n' ]] ; then
+    echo "Continuing..."
+  else
+    echo "Aborting..."
+    exit 1
+  fi
+fi
+
 directory="./bin"
-file="$directory/$1"
-command="$2"
+file="$directory/$command_name"
+command_content="$2"
 mkdir -p "$directory"
 touch "$file"
 chmod a+x "$file"
@@ -20,7 +41,7 @@ cat <<EOF > "$file"
 
 set -euo pipefail # exit on any error, don't allow undefined variables, pipes don't swallow errors
 
-$command
+$command_content
 EOF
 
 $EDITOR .

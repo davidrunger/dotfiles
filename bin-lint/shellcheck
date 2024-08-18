@@ -6,9 +6,11 @@ set -euo pipefail # exit on any error, don't allow undefined variables, pipes do
 
 shebang_files=$(
   changed-not-deleted-files | \
-    rg -v '.md$' | \
-    xargs -r rg --files-with-matches '^#!/usr/bin/env (bash|sh)' || \
-    true
+    while IFS= read -r file ; do
+      if [ -f "$file" ] && head -n 1 "$file" | grep -q '^#!/usr/bin/env \(bash\|sh\)' ; then
+        echo "$file"
+      fi
+    done
 )
 
 extension_files=$(

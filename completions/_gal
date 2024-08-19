@@ -6,7 +6,7 @@ _gal() {
 
   case $state in
     (guardfile)
-      guardfiles=("${(f)$(ls $HOME/code/dotfiles/guardfiles | sd '^run_' '' | sd '.rb$' '')}")
+      guardfiles=("${(f)$(ls $HOME/code/dotfiles/guardfiles | sd '^run_' '' | sd '\.rb$' '')}")
       _describe 'guardfiles' guardfiles
       ;;
     (*)

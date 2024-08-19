@@ -1,0 +1,8 @@
+#compdef auth
+
+_auth() {
+  available_auth_services=("${(f)$(ls "$NOTES_DIRECTORY/auth-codes" | sd '\.txt$' '')}")
+  _describe 'available_auth_services' available_auth_services
+}
+
+compdef _auth auth

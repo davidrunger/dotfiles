@@ -1,0 +1,8 @@
+#compdef lint
+
+_lint() {
+  available_linters=("${(f)$(ls "$HOME/code/dotfiles/bin-lint")}")
+  _describe 'available_linters' available_linters
+}
+
+compdef _lint lint

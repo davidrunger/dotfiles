@@ -79,7 +79,7 @@ GEM
       ffi (~> 1.0)
     rbs (3.5.2)
       logger
-    redis (5.2.0)
+    redis (5.3.0)
       redis-client (>= 0.22.0)
     redis-client (0.22.2)
       connection_pool

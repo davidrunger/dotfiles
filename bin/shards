@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+
+# This is a wrapper around `shards` to run it with a `SHARDS_INSTALL_PATH` in
+# `~/.shards` (not `./lib/`) for the current directory.
+
+set -euo pipefail # exit on any error, don't allow undefined variables, pipes don't swallow errors
+
+# Export a SHARDS_INSTALL_PATH for the current directory.
+SHARDS_INSTALL_PATH="$HOME/.shards/$(basename "$PWD")"
+export SHARDS_INSTALL_PATH
+
+# Invoke the original shards executable, forwarding all arguments.
+exec /usr/bin/shards "$@"

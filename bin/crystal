@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+
+# This is a wrapper around `crystal` to run it with a `CRYSTAL_PATH` that
+# includes a subdirectory in `~/.shards` corresponding to the current directory.
+# (See our `bin/shards` wrapper, which causes the shards to be installed there,
+# rather than in the default in `./lib/`.)
+
+set -euo pipefail # exit on any error, don't allow undefined variables, pipes don't swallow errors
+
+# Set up SHARDS_INSTALL_PATH.
+# shellcheck source=bin/shards
+. "$HOME/code/dotfiles/bin/shards"
+
+# Export a CRYSTAL_PATH for the current directory.
+CRYSTAL_PATH="$SHARDS_INSTALL_PATH:/usr/share/crystal/src"
+export CRYSTAL_PATH
+
+# Invoke the original crystal executable, forwarding all arguments.
+exec /usr/bin/crystal "$@"

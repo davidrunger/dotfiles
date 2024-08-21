@@ -7,13 +7,18 @@
 
 set -euo pipefail # exit on any error, don't allow undefined variables, pipes don't swallow errors
 
-# Set up SHARDS_INSTALL_PATH.
-# shellcheck source=bin/shards
-. "$HOME/code/dotfiles/bin/shards"
+# Export a CRYSTAL_PATH for the current directory (if no CRYSTAL_PATH is yet
+# defined).
+if [ -z "${CRYSTAL_PATH+x}" ] ; then
+  # Set up SHARDS_INSTALL_PATH.
+  # shellcheck source=bin/shards
+  . "$HOME/code/dotfiles/bin/shards"
 
-# Export a CRYSTAL_PATH for the current directory.
-CRYSTAL_PATH="$SHARDS_INSTALL_PATH:/usr/share/crystal/src"
-export CRYSTAL_PATH
+  if [ -n "${SHARDS_INSTALL_PATH+x}" ] ; then
+    CRYSTAL_PATH="lib:$SHARDS_INSTALL_PATH:/usr/share/crystal/src"
+    export CRYSTAL_PATH
+  fi
+fi
 
 # Invoke the original crystal executable, forwarding all arguments.
 exec /usr/bin/crystal "$@"

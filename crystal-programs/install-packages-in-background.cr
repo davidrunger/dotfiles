@@ -6,7 +6,7 @@ require "colorize"
 require "digest/sha256"
 require "file_utils"
 require "redis"
-require "../utils/crystal/memoize"
+require "../utils/crystal/memoization"
 
 class InstallPackagesInBackground
   REDIS_HASH_KEY = "runger_dependencies"
@@ -21,7 +21,7 @@ class InstallPackagesInBackground
     register_hashes
   end
 
-  memoize redis : Redis do
+  memoize def redis : Redis
     Redis.new(database: 2)
   end
 
@@ -39,7 +39,7 @@ class InstallPackagesInBackground
     end
   end
 
-  private def ruby_dependencies_update_command
+  memoize def ruby_dependencies_update_command : String
     ruby_command_parts = [] of String
 
     if file_changed?("Gemfile.lock")
@@ -53,7 +53,7 @@ class InstallPackagesInBackground
     ruby_command_parts.join(" && ")
   end
 
-  private def javascript_dependencies_update_command
+  memoize def javascript_dependencies_update_command : String
     javascript_command_parts = [] of String
 
     if file_changed?("yarn.lock")
@@ -67,11 +67,11 @@ class InstallPackagesInBackground
     javascript_command_parts.join(" && ")
   end
 
-  private def file_changed?(file_name)
+  memoize def file_changed?(file_name : String) : Bool
     File.exists?(file_name) && !seen_hash?(file_name)
   end
 
-  private def seen_hash?(file_or_directory)
+  memoize def seen_hash?(file_or_directory : String) : Bool
     hash_string = hash_string(file_or_directory)
     is_seen = !redis.hget(REDIS_HASH_KEY, hash_string).nil?
 

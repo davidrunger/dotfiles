@@ -2,7 +2,7 @@
 
 # Opens a GitHub PR in the browser (extracted from input piped to this command).
 
-require "../utils/crystal/memoize"
+require "../utils/crystal/memoization"
 
 class OpenPrInBrowser
   @create_pr_command_output : String
@@ -17,7 +17,7 @@ class OpenPrInBrowser
     end
   end
 
-  memoize pr_link : String do
+  memoize def pr_link : String
     @create_pr_command_output[%r{https://github.com/[^/]+/[^/]+/pull/\d+}]
   end
 end

@@ -2,22 +2,22 @@
 
 require "colorize"
 require "yaml"
-require "../utils/crystal/memoize"
+require "../utils/crystal/memoization"
 
 class RungerConfig
-  memoize unified_runger_config : Hash(String, YAML::Any) do
+  memoize def unified_runger_config : Hash(String, YAML::Any)
     public_runger_config.merge(private_runger_config)
   end
 
-  memoize public_runger_config : Hash(String, YAML::Any) do
+  memoize def public_runger_config : Hash(String, YAML::Any)
     read_yaml(".runger-config.yml")
   end
 
-  memoize private_runger_config : Hash(String, YAML::Any) do
+  memoize def private_runger_config : Hash(String, YAML::Any)
     read_yaml(".runger-config.private.yml")
   end
 
-  memoize private_runger_config_keys : Set(String) do
+  memoize def private_runger_config_keys : Set(String)
     Set.new(private_runger_config.keys)
   end
 

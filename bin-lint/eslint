@@ -6,7 +6,8 @@ set -euo pipefail # exit on any error, don't allow undefined variables, pipes do
 
 readarray -t files_for_eslint < <(
   changed-not-deleted-files | \
-    rg "app/javascript/.*\.(js|ts|vue)$" || \
+    rg "app/javascript/.*\.(js|ts|vue)$" | \
+    rg -v app/javascript/types/serializers/ || \
     true
 )
 
@@ -19,6 +20,7 @@ else
   # NOTE: It will be good to add `--no-warn-ignored` here, once we migrate to
   # eslint flat config. Without that option, we get `lint eslint`
   # warnings/failures on `app/javascript/types/serializers/` in david_runger.
+  # For now, we will instead do `rg -v` above to not lint those files.
   # https://github.com/eslint/eslint/issues/ 15010
   # https://github.com/eslint/eslint/pull/ 17569
   (

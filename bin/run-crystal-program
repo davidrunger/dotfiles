@@ -32,7 +32,7 @@ if [ ! -f "$binary_file" ] || \
 
   # Add shards directory for dotfiles to the CRYSTAL_PATH.
   # More details: https://github.com/davidrunger/dotfiles/commit/d73a9df .
-  export CRYSTAL_PATH="$HOME/.shards/dotfiles:$CRYSTAL_PATH"
+  export CRYSTAL_PATH="$HOME/.shards/dotfiles:/usr/share/crystal/src"
 
   # Compile the binary.
   echo "Compiling $source_file ..." >&2

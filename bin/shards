@@ -5,9 +5,11 @@
 
 set -euo pipefail # exit on any error, don't allow undefined variables, pipes don't swallow errors
 
-# Export a SHARDS_INSTALL_PATH for the current directory.
-SHARDS_INSTALL_PATH="$HOME/.shards/$(basename "$PWD")"
-export SHARDS_INSTALL_PATH
+if [ -z "${INSTALL_SHARDS_LOCALLY+x}" ] ; then
+  # Export a SHARDS_INSTALL_PATH for the current directory.
+  SHARDS_INSTALL_PATH="$HOME/.shards/$(basename "$PWD")"
+  export SHARDS_INSTALL_PATH
+fi
 
 # Check if the script is being sourced or executed. If it's not being sourced,
 # then invoke the original shards executable, forwarding all arguments.

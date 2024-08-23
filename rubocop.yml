@@ -1,5 +1,0 @@
-inherit_gem:
-  runger_style:
-    - rulesets/default.yml
-    - rulesets/performance.yml
-    - rulesets/rspec.yml

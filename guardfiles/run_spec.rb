@@ -63,7 +63,7 @@ guard(:shell, all_on_start: true) do
     end
 
     begin
-      match = guard_match_result.instance_variable_get(:@match_result) || '[no match]'
+      match = guard_match_result.instance_variable_get(:@original_value) || '[no match]'
       puts("Match for #{match} triggered execution.")
       # rubocop:disable Rails/TimeZone, Lint/RedundantCopDisableDirective
       start_time = Time.now

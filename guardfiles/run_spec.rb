@@ -50,7 +50,7 @@ guard(:shell, all_on_start: true) do
   watch(
     %r{
     ^(
-    app/|
+    app/(?!(javascript/types/(responses|serializers)/))|
     lib/|
     spec/(?!fixtures/)|
     tools/|

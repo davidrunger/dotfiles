@@ -1,0 +1,4 @@
+puts('This is a Ruby file')
+
+# View all calls of a stubbed object/method:
+RSpec::Mocks.space.proxy_for(the_object).instance_variable_get(:@messages_received)

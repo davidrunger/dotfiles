@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-if !defined?(CopyUtils) || !(Object <= CopyUtils)
+if !defined?(skip!)
   require_relative 'utils/ruby/monkeypatch_repl.rb'
 end
 

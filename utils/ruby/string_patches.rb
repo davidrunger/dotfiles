@@ -2,6 +2,7 @@
 
 require 'io/console'
 
+require_relative "#{Dir.home}/code/dotfiles/utils/ruby/copy_utils.rb"
 require_relative "#{Dir.home}/code/dotfiles/utils/ruby/monkeypatch_string_color.rb"
 
 class String

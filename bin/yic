@@ -5,8 +5,10 @@
 
 set -euo pipefail # exit on any error, don't allow undefined variables, pipes don't swallow errors
 
-if [ -f pnpm-lock.yaml ] ; then
+if [ -f yarn.lock ] ; then
+  yarn install --check-files
+elif [ -f pnpm-lock.yaml ] ; then
   pnpm install --frozen-lockfile
 else
-  yarn install --check-files
+  pnpm install
 fi

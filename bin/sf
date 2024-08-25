@@ -87,10 +87,12 @@ class SpecFileFinder < CommandLineProgram
   def ignore_revs_from_file(ignore_revs_file)
     ignore_revs = []
 
-    File.open(ignore_revs_file, 'r') do |file|
-      file.each_line do |line|
-        line.strip!
-        ignore_revs << line unless line.empty? || line.start_with?('#')
+    if File.exist?(ignore_revs_file)
+      File.open(ignore_revs_file, 'r') do |file|
+        file.each_line do |line|
+          line.strip!
+          ignore_revs << line unless line.empty? || line.start_with?('#')
+        end
       end
     end
 

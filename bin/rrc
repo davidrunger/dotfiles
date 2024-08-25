@@ -4,8 +4,8 @@
 
 set -uo pipefail # exit on any error, don't allow undefined variables, pipes don't swallow errors
 
-processes_to_kill="/Applications/Google Chrome\.app/Contents/MacOS/Google Chrome|\
-/opt/google/chrome/chrome$"
+processes_to_kill="(/Applications/Google Chrome\.app/Contents/MacOS/Google Chrome|\
+/opt/google/chrome/chrome)\b"
 
 stop_processes() {
   # print the processes to end

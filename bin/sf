@@ -9,7 +9,7 @@
 # Example:
 #   $ sf app/javascript/apps/ActivityBuilder/ActivityBuilder.tsx
 #
-# Written laregly by ChatGPT.
+# Written largely by ChatGPT.
 
 load("#{Dir.home}/code/dotfiles/utils/ruby/command_line_program.rb")
 
@@ -29,20 +29,100 @@ class SpecFileFinder < CommandLineProgram
   alias file_paths arguments
 
   def call
-    frequently_changed_spec_files.first(@options[:top]).each do |file_changed, lines_changed|
-      if File.exist?(file_changed)
-        puts("#{lines_changed} #{file_changed}")
-      else
-        puts("#{lines_changed} #{AmazingPrint::Colors.red(file_changed)}")
+    changed_files_aggregated_by_renames.
+      sort_by { |_path, file_contributions| -file_contributions.values.sum }.
+      first(@options[:top]).
+      each do |path, file_contributions|
+        puts([
+          file_contributions.values.sum,
+          colorized_path(path),
+          renamed_file_contributions_string(path, file_contributions),
+        ].join(' ').squish)
       end
-    end
   end
 
   private
 
-  # rubocop:disable Metrics/CyclomaticComplexity
-  # rubocop:disable Metrics/PerceivedComplexity
-  def frequently_changed_spec_files
+  memoize \
+  def changed_files_aggregated_by_renames
+    line_change_data_by_final_paths = Hash.new { |hash, key| hash[key] = {} }
+
+    lines_changed_by_spec_file.each do |path, lines_changed|
+      final_path = final_renamed_path(path)
+      line_change_data_by_final_paths[final_path].merge!(
+        path => lines_changed,
+      )
+    end
+
+    if @options.exclude_deleted?
+      line_change_data_by_final_paths.filter! do |path, _lines_changed|
+        File.exist?(path)
+      end
+    end
+
+    line_change_data_by_final_paths
+  end
+
+  def colorized_path(path)
+    if File.exist?(path)
+      path.cyan
+    else
+      path.magenta
+    end
+  end
+
+  def renamed_file_contributions_string(path, renamed_file_contributions)
+    if renamed_file_contributions.size <= 1
+      return ''
+    end
+
+    comma_separated_contributions =
+      renamed_file_contributions.
+        sort_by do |contributing_path, _lines_changed|
+          if contributing_path == path
+            0
+          else
+            1
+          end
+        end.
+        map do |contributing_path, lines_changed|
+          path_name =
+            if contributing_path == path
+              'self'
+            else
+              contributing_path
+            end
+
+          "#{path_name}: #{lines_changed}"
+        end.join(', ')
+
+    "(#{comma_separated_contributions})".white
+  end
+
+  memoize \
+  def renames
+    `git log HEAD --format=%H --name-status --follow --diff-filter=R -- .`.
+      split("\n").
+      filter_map do |line|
+        if (match = line.match(/^R\d{3}\s+(?<old_name>\S+)\s+(?<new_name>\S+)/))
+          match.
+            named_captures.
+            values_at('old_name', 'new_name')
+        end
+      end.
+      to_h
+  end
+
+  memoize \
+  def final_renamed_path(path)
+    if (rename = renames[path])
+      final_renamed_path(rename)
+    else
+      path
+    end
+  end
+
+  def lines_changed_by_spec_file
     ignore_revs =
       ignore_revs_from_file('.git-blame-ignore-revs') +
       ignore_revs_from_file('personal/.git-blame-ignore-revs')
@@ -62,7 +142,6 @@ class SpecFileFinder < CommandLineProgram
 
       files_changed.each do |file_changed|
         next if file_paths.include?(file_changed)
-        next if @options.exclude_deleted? && !File.exist?(file_changed)
 
         if matching_test_file?(file_changed)
           line_changes[file_changed] += line_change_count(commit, file_changed)
@@ -70,10 +149,8 @@ class SpecFileFinder < CommandLineProgram
       end
     end
 
-    line_changes.sort_by { |_file, lines_changed| -lines_changed }
+    line_changes
   end
-  # rubocop:enable Metrics/PerceivedComplexity
-  # rubocop:enable Metrics/CyclomaticComplexity
 
   def matching_test_file?(file)
     (

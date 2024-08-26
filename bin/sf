@@ -29,6 +29,8 @@ class SpecFileFinder < CommandLineProgram
   alias file_paths arguments
 
   def call
+    validate_arguments!
+
     changed_files_aggregated_by_renames.
       sort_by { |_path, file_contributions| -file_contributions.values.sum }.
       first(@options[:top]).
@@ -42,6 +44,13 @@ class SpecFileFinder < CommandLineProgram
   end
 
   private
+
+  def validate_arguments!
+    if file_paths.blank?
+      puts('Provide at least one argument.'.red)
+      exit(1)
+    end
+  end
 
   memoize \
   def changed_files_aggregated_by_renames

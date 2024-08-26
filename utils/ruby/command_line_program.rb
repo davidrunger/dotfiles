@@ -6,6 +6,7 @@ require 'amazing_print'
 require 'slop'
 
 require_relative "#{Dir.home}/code/dotfiles/utils/ruby/memoization.rb"
+require_relative "#{Dir.home}/code/dotfiles/utils/ruby/monkeypatch_string_color.rb"
 
 class CommandLineProgram
   prepend Memoization

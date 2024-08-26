@@ -23,7 +23,7 @@ class GitBranchListWhitespaceReducer < CommandLineProgram
 
   private
 
-  memo_wise \
+  memoize \
   def squished_content
     if shortest_space_string <= desired_num_spaces
       @stdin_content
@@ -37,12 +37,12 @@ class GitBranchListWhitespaceReducer < CommandLineProgram
     end
   end
 
-  memo_wise \
+  memoize \
   def shortest_space_string
     lengths_of_spaces.min
   end
 
-  memo_wise \
+  memoize \
   def longest_space_string
     lengths_of_spaces.max
   end

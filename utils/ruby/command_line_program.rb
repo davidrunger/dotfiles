@@ -3,11 +3,12 @@
 require 'active_support'
 require 'active_support/all'
 require 'amazing_print'
-require 'memo_wise'
 require 'slop'
 
+require_relative "#{Dir.home}/code/dotfiles/utils/ruby/memoization.rb"
+
 class CommandLineProgram
-  prepend MemoWise
+  prepend Memoization
 
   OPTION_TYPES_TO_EXPOSE = [
     Slop::IntegerOption,

@@ -45,12 +45,12 @@ class GitHistory < CommandLineProgram
     end
   end
 
-  memo_wise \
+  memoize \
   def file
     arguments[0]
   end
 
-  memo_wise \
+  memoize \
   def num_commits_to_show
     if options[:days]
       nil
@@ -59,17 +59,17 @@ class GitHistory < CommandLineProgram
     end
   end
 
-  memo_wise \
+  memoize \
   def num_days_to_show
     options[:days]
   end
 
-  memo_wise \
+  memoize \
   def num_commits_to_request_from_git
     num_commits_to_show + commits_to_ignore.size
   end
 
-  memo_wise \
+  memoize \
   def commits_to_show
     commits_from_git =
       `#{<<~BASH.squish}`.split("\n")
@@ -91,7 +91,7 @@ class GitHistory < CommandLineProgram
     end
   end
 
-  memo_wise \
+  memoize \
   def git_log_limiting_option
     if num_days_to_show
       "--since='#{num_days_to_show} days ago'"
@@ -100,7 +100,7 @@ class GitHistory < CommandLineProgram
     end
   end
 
-  memo_wise \
+  memoize \
   def most_recent_commit_with_file
     if system(%(test -e "#{file}"))
       'HEAD'
@@ -109,7 +109,7 @@ class GitHistory < CommandLineProgram
     end
   end
 
-  memo_wise \
+  memoize \
   def renames
     `git log HEAD --format=%H --name-status --follow --diff-filter=R -- '#{file}'`.
       split(/\n(?=[0-9a-f]{40})/).
@@ -121,12 +121,12 @@ class GitHistory < CommandLineProgram
       end
   end
 
-  memo_wise \
+  memoize \
   def git_blame_ignore_revs_file
     `git config blame.ignoreRevsFile`.rstrip.presence
   end
 
-  memo_wise \
+  memoize \
   def commits_to_ignore
     if git_blame_ignore_revs_file.blank? || @options[:include_ignored]
       []

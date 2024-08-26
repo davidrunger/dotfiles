@@ -78,7 +78,7 @@ class MultiLevelRipgrep < CommandLineProgram
       "'#{@final_search}' #{subshell_for_files_matching_initial_filters}"
   end
 
-  memo_wise \
+  memoize \
   def subshell_for_files_matching_initial_filters
     file_filter_command = ''
 

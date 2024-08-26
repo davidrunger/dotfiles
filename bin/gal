@@ -133,7 +133,7 @@ class Runner
       FileUtils.mkdir_p(working_directory_personal_directory)
       write_default_script_content
     elsif File.read(script_path) != script_content.to_s
-      system('bat', script_path)
+      system({ 'BAT_PAGER' => 'cat' }, 'bat', script_path)
 
       puts(<<~MESSAGE)
         ^ That is the existing file content.

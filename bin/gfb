@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
 # [g]it [f]etch [b]ranch
+# (I don't often/ever use this directly, but it's used by other scripts.)
 
 set -euo pipefail # exit on any error, don't allow undefined variables, pipes don't swallow errors
 

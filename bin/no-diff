@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# Exits with 0 (success) if there is no diff between the current branch and the main branch.
+# Exits with 0 (success) if there is no diff between the primary branch and the specified branch.
 # (Used in `gdm`, not standalone.)
 
 set -euo pipefail # exit on any error, don't allow undefined variables, pipes don't swallow errors

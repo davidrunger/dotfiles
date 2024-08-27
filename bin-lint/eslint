@@ -7,7 +7,7 @@ set -euo pipefail # exit on any error, don't allow undefined variables, pipes do
 readarray -t files_for_eslint < <(
   changed-not-deleted-files | \
     rg "app/javascript/.*\.(js|ts|vue)$" | \
-    rg -v "app/javascript/types/(responses|serializers)/" || \
+    rg -v "app/javascript/types/(bootstrap|responses|serializers)/" || \
     true
 )
 

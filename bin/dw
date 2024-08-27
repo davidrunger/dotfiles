@@ -1,5 +1,0 @@
-#!/usr/bin/env bash
-
-# [d]iff [w]alk
-
-./bin/rails runner "$HOME/code/dotfiles/tools/large_diff_viewer.rb"

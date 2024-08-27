@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 
 # Extract a zip file into a directory of the same name (minus the .zip suffix).
+# (I don't use this directly, but have it configured as the default action in my
+# file manager for zip files.)
 
 set -euo pipefail # exit on any error, don't allow undefined variables, pipes don't swallow errors
 

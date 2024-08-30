@@ -10,7 +10,6 @@ mf "$output_log_file"
 
 set +u
 export ZSH=$HOME/.oh-my-zsh
-source $ZSH/oh-my-zsh.sh
 
 (brew update && brew upgrade && \
-  omz update) |& tee "$output_log_file"
+  "$ZSH/tools/upgrade.sh") |& tee "$output_log_file"

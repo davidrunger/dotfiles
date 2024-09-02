@@ -2,14 +2,32 @@
 
 # Run [br]ew [up]date and [br]ew [up]grade and save the printed output.
 
-set -euo pipefail # exit on any error, don't allow undefined variables, pipes don't swallow errors
+set -eu # exit on any error, don't allow undefined variables
 
 output_log_file=$HOME/code/dotfiles/personal/brew-updates/$(date -u +"%Y-%m-%dT%H:%M:%SZ").txt
 
 mf "$output_log_file"
 
-set +u
 export ZSH=$HOME/.oh-my-zsh
 
-(brew update && brew upgrade && \
-  "$ZSH/tools/upgrade.sh") |& tee "$output_log_file"
+update_homebrew() {
+  brew update && brew upgrade
+}
+
+print_oh_my_zsh_sha() {
+  git -C "$HOME/.oh-my-zsh" log --format=format:%H | head -n 1
+}
+
+update_oh_my_zsh() {
+  sha_before=$(print_oh_my_zsh_sha)
+  echo "Oh My Zsh SHA before: $sha_before"
+
+  "$ZSH/tools/upgrade.sh"
+
+  sha_after=$(print_oh_my_zsh_sha)
+  echo "Oh My Zsh SHA after: $sha_after"
+
+  "$ZSH/tools/changelog.sh" "$sha_after" "$sha_before"
+}
+
+(update_homebrew && echo && update_oh_my_zsh) |& tee "$output_log_file"

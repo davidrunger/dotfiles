@@ -19,7 +19,10 @@ fpath=(~/code/dotfiles/completions $fpath)
 setopt +o nomatch # https://unix.stackexchange.com/a/310553/276727
 export ZSH=$HOME/.oh-my-zsh
 ZSH_THEME="bolso"
-plugins=(zsh-autosuggestions)
+plugins=(
+  zsh-autosuggestions # git clone https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions
+  zsh-syntax-highlighting # git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting
+)
 export ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=#555555"
 zstyle ':omz:update' mode disabled
 zstyle ':omz:lib:theme-and-appearance' gnu-ls no

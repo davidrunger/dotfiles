@@ -176,7 +176,7 @@ class Runner
 
   memoize \
   def command
-    command = +"guard -G #{guardfile_path} --no-bundler-warning"
+    command = "guard -G #{guardfile_path} --no-bundler-warning"
 
     if @opts.debug_guard?
       command << ' --debug'

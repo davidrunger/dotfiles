@@ -26,6 +26,8 @@ class RungerConfig
 
     if config_value == true
       exit(0)
+    elsif config_value == false
+      exit(1)
     elsif config_value
       unless silent
         puts(config_value)

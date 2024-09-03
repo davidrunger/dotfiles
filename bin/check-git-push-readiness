@@ -17,7 +17,8 @@ fi
 if my-repo && ! runger-config skip-githooks-check ; then
   if [ "$(git config core.hooksPath)" != "bin/githooks" ] ; then
     red "\`git config core.hooksPath\` is not set to \`bin/githooks\`."
-    blue "Run \`git config core.hooksPath bin/githooks\` to correct."
+    blue "Run \`git config core.hooksPath bin/githooks\` to correct,"
+    blue "or set \`skip-githooks-check: true\` in your runger-config."
     exit_with_error_unless_checks_not_required
   fi
 

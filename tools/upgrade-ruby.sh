@@ -29,7 +29,7 @@ for dir in $(my-repos) ; do
 
     gfcob bump-ruby
     sd -F "$old_ruby_version" "$new_ruby_version" .ruby-version
-    bundle update --ruby
+    bundle update --ruby --bundler
     gacm "Bump Ruby from $old_ruby_version to $new_ruby_version"
     hpr
 

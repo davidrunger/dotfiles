@@ -46,6 +46,6 @@ touch ~/.pry_history
 
 # bundle install
 
-# pnpm add --global http-server typescript tsx
+# pnpm add --global http-server prettier typescript tsx
 
 # shards install

@@ -93,6 +93,10 @@ fi
 
 # Homebrew
 export HOMEBREW_NO_AUTO_UPDATE=1
+# This avoids a warning from `brew doctor`.
+if [ -v LINUX ] ; then
+  export XDG_DATA_DIRS="/home/linuxbrew/.linuxbrew/share:$XDG_DATA_DIRS"
+fi
 
 # Rust
 . "$HOME/.cargo/env"

@@ -82,9 +82,9 @@ class FlagUnackedFileVersions
       puts("Do you acknowledge this content? [y]n")
 
       case STDIN.raw &.read_char
-      when 'y', "\r"
+      when 'y', '\r'
         true
-      when 'n', "\u0003" # Ctrl-C
+      when 'n', '\u0003' # Ctrl-C
         false
       else
         puts("Choice not recognized. Try again.")

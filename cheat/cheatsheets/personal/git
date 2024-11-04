@@ -1,9 +1,6 @@
 ---
 tags: [ vcs ]
 ---
-# To see when a file was deleted:
-git log --all -1 -- file_path.txt
-
 # To set your identity:
 git config --global user.name <name>
 git config --global user.email <email>
@@ -215,3 +212,6 @@ git config --global commit.gpgsign true
 
 # To list unstracked files:
 git ls-files --others --exclude-standard
+
+# To see when a file was deleted:
+git log --all -1 -- file_path.txt

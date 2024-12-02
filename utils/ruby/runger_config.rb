@@ -2,17 +2,24 @@
 
 # This is a Ruby binding to read the configuration managed by `runger-config`.
 
-require 'singleton'
+require 'yaml'
 require_relative 'memoization.rb'
 
 class RungerConfig
-  include Singleton
   prepend Memoization
 
   class << self
     def [](key)
-      instance.unified_config[key]
+      new(Dir.pwd).unified_config[key]
     end
+  end
+
+  def initialize(directory)
+    @directory = directory
+  end
+
+  def get(key)
+    unified_config[key]
   end
 
   memoize \
@@ -33,8 +40,10 @@ class RungerConfig
   end
 
   def parsed_yaml(file_name)
-    if File.exist?(file_name)
-      content = File.read(file_name)
+    file_path = File.join(@directory, file_name)
+
+    if File.exist?(file_path)
+      content = File.read(file_path)
       YAML.load(content)
     else
       {}

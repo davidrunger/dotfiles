@@ -173,7 +173,7 @@ class GithubPrAutoMerger < CommandKit::Command
     client.merge_pull_request(
       { repo:, user: 'davidrunger' },
       pr.number,
-      pr.title, # commit message
+      '', # commit message body
       merge_method: 'squash',
     )
 

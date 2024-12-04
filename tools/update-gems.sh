@@ -14,23 +14,25 @@ for dir in $(my-repos) ; do
   blue "# $dir"
 
   if ls Gemfile.lock &>/dev/null ; then
-    set -ex
+    if ! [[ "$dir" =~ ^(byebug|cuprite)$ ]] ; then
+      set -ex
 
-    if ! branch-exists 'bundle-update' ; then
-      bundle update
+      if ! branch-exists 'bundle-update' ; then
+        bundle update
 
-      if ! git diff --quiet ; then
-        gstash
-        gfcob bundle-update
-        gunstash
-        gacm "Update gems
+        if ! git diff --quiet ; then
+          gstash
+          gfcob bundle-update
+          gunstash
+          gacm "Update gems
 
 \`bundle update\`"
-        hpr
+          hpr
+        fi
       fi
-    fi
 
-    { set +ex; } 2>/dev/null
+      { set +ex; } 2>/dev/null
+    fi
   fi
 
   echo

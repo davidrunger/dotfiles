@@ -3,4 +3,4 @@
 # Exits with 0 (success) if HEAD is ahead of the main branch, otherwise exits with 1 (failure).
 # (Used by other scripts, not on its own.)
 
-ahead-of-branch origin/main
+ahead-of-branch "origin/$(main-branch)"

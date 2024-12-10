@@ -7,4 +7,4 @@ set -euo pipefail # exit on any error, don't allow undefined variables, pipes do
 # We need to be in dotfiles for the Gemfile/bundle and for the .env file.
 cd "$HOME/code/dotfiles"
 
-merge-prs --verbose
+merge-prs "$@"

@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+
+# [g]it [clean]
+#
+# Reset all files and delete untracked files.
+
+set -euo pipefail # exit on any error, don't allow undefined variables, pipes don't swallow errors
+
+git checkout .
+git clean -df

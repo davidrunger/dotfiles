@@ -14,7 +14,7 @@ for dir in $(my-repos) ; do
   blue "# $dir"
 
   if ls Gemfile.lock &>/dev/null ; then
-    if ! [[ "$dir" =~ ^(byebug|cuprite)$ ]] ; then
+    if ! [[ "$dir" =~ ^(byebug|cuprite|fixture_builder|pallets|ransack)$ ]] ; then
       set -ex
 
       if ! branch-exists 'bundle-update' ; then

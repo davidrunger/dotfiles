@@ -21,9 +21,9 @@ for dir in $(my-repos) ; do
         bundle update
 
         if ! git diff --quiet ; then
-          gstash
+          gclean
           gfcob bundle-update
-          gunstash
+          bundle update
           gacm "Update gems
 
 \`bundle update\`"

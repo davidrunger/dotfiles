@@ -17,7 +17,7 @@ for dir in $(my-repos) ; do
     if ! [[ "$dir" =~ ^(byebug|cuprite|fixture_builder|pallets|ransack)$ ]] ; then
       set -ex
 
-      if ! branch-exists 'bundle-update' ; then
+      if git diff --quiet && ! branch-exists 'bundle-update' ; then
         bundle update
 
         if ! git diff --quiet ; then

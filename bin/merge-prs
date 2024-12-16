@@ -83,7 +83,7 @@ class GithubPrAutoMerger < CommandKit::Command
   end
 
   def process_pr(repo, pr)
-    return unless valid_pr_for_merge?(repo, pr)
+    wait_for_rebase_check(repo, pr)
 
     if actions_completed?(repo, pr) && merge_pr(repo, pr)
       log_merged_pr(repo, pr)
@@ -95,13 +95,6 @@ class GithubPrAutoMerger < CommandKit::Command
     client.pull_requests(user: 'davidrunger', repo:, author: 'dependabot', state: 'open').tap do
       log_verbose("Done fetching PRs for #{repo}".green)
     end
-  end
-
-  def valid_pr_for_merge?(repo, pr)
-    return false if pr.body.include?('Dependabot is rebasing this PR')
-
-    wait_for_rebase_check(repo, pr)
-    true
   end
 
   def wait_for_rebase_check(repo, pr)

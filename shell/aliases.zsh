@@ -15,7 +15,6 @@ alias fsk='redis-cli -n 1 FLUSHDB && sk' # `-n 1` because of `REDIS_DATABASE_NUM
 alias ga='git add'
 alias gac='ga . && gcom'
 alias gba='GIT_PAGER=cat git branch -vv'
-alias gbd='git branch -D'
 alias gbdf='git branch -D $(active-branches | fzf)'
 alias gcme='git commit --allow-empty --message'
 alias gcomt='GIT_EDITOR=true gcom'

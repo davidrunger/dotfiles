@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+# [g]it [b]ranch [d]elete
+
+set -euo pipefail # exit on any error, don't allow undefined variables, pipes don't swallow errors
+
+git branch -D "$@"

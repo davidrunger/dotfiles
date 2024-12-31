@@ -42,7 +42,7 @@ GEM
       memo_wise (>= 1.7)
       rainbow (>= 3.0)
       slop (~> 4.8)
-    ffi (1.17.0)
+    ffi (1.17.1)
     formatador (1.1.0)
     guard (2.19.0)
       formatador (>= 0.2.4)

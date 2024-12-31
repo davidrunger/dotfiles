@@ -100,7 +100,7 @@ class GithubPrAutoMerger < CommandKit::Command
   def wait_for_rebase_check(repo, pr)
     start_time = Time.now
 
-    while pr.body.include?('Dependabot is rebasing this PR')
+    while pr.body&.include?('Dependabot is rebasing this PR')
       sleep(20)
       break if Time.now - start_time > 900 # 15 minutes
 

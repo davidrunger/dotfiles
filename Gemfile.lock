@@ -138,7 +138,7 @@ GEM
       rbs (>= 3, < 4)
       sorbet-runtime (>= 0.5.10782)
     ruby-progressbar (1.13.0)
-    runger_style (3.0.0)
+    runger_style (4.0.1)
       prism (>= 0.24.0)
       rubocop (>= 1.68.0)
     sawyer (0.9.2)

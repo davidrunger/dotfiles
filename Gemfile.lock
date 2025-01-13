@@ -150,7 +150,7 @@ GEM
     securerandom (0.4.1)
     shellany (0.0.1)
     slop (4.10.1)
-    sorbet-runtime (0.5.11746)
+    sorbet-runtime (0.5.11751)
     tapp (1.5.1)
       thor
     thor (1.3.2)

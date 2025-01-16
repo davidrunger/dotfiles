@@ -13,7 +13,7 @@ for dir in $(my-repos) ; do
   cd "$dir" || exit
   blue "# $dir"
 
-  if ls Gemfile.lock &>/dev/null ; then
+  if [ -f Gemfile.lock ] ; then
     if ! [[ "$dir" =~ ^(byebug|cuprite|fixture_builder|pallets|ransack)$ ]] ; then
       set -ex
 

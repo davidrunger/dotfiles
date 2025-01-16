@@ -9,6 +9,7 @@ set -uo pipefail # don't allow undefined variables, pipes don't swallow errors
 
 cd "$HOME/code" || exit
 
+branch_name="bundle-update"
 ignore_dirs=$(runger-config --show forks | paste -sd '|' -)
 
 for dir in $(my-repos) ; do
@@ -19,12 +20,12 @@ for dir in $(my-repos) ; do
     set -ex
     safe
 
-    if git diff --quiet && ! branch-exists 'bundle-update' ; then
+    if git diff --quiet && ! branch-exists "$branch_name" ; then
       bundle update
 
       if ! git diff --quiet ; then
         gclean
-        gfcob bundle-update
+        gfcob "$branch_name"
         bundle update
         gacm "Update gems
 

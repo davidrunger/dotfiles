@@ -9,32 +9,31 @@ set -uo pipefail # don't allow undefined variables, pipes don't swallow errors
 
 cd "$HOME/code" || exit
 
+ignore_dirs=$(runger-config --show forks | paste -sd '|' -)
+
 for dir in $(my-repos) ; do
   cd "$dir" || exit
   blue "# $dir"
 
-  if [ -f Gemfile.lock ] ; then
-    if ! [[ "$dir" =~ ^(byebug|cuprite|fixture_builder|pallets|ransack)$ ]] ; then
-      set -ex
+  if [ -f Gemfile.lock ] && ! [[ "$dir" =~ ^(${ignore_dirs})$ ]] ; then
+    set -ex
+    safe
 
-      safe
+    if git diff --quiet && ! branch-exists 'bundle-update' ; then
+      bundle update
 
-      if git diff --quiet && ! branch-exists 'bundle-update' ; then
+      if ! git diff --quiet ; then
+        gclean
+        gfcob bundle-update
         bundle update
-
-        if ! git diff --quiet ; then
-          gclean
-          gfcob bundle-update
-          bundle update
-          gacm "Update gems
+        gacm "Update gems
 
 \`bundle update\`"
-          hpr
-        fi
+        hpr
       fi
-
-      { set +ex; } 2>/dev/null
     fi
+
+    { set +ex; } 2>/dev/null
   fi
 
   echo

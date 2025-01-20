@@ -70,3 +70,9 @@ alias zs='source ~/.zshrc'
 if [ -e "$HOME/code/dotfiles-personal/shell/aliases.zsh" ]; then
   . "$HOME/code/dotfiles-personal/shell/aliases.zsh"
 fi
+
+if [ -v LINUX ] ; then
+  . "$HOME/code/dotfiles/shell/aliases-linux.zsh"
+elif [ -v DARWIN ] ; then
+  . "$HOME/code/dotfiles/shell/aliases-mac.zsh"
+fi

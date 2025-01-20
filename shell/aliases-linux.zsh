@@ -1,0 +1,1 @@
+alias fx='firefox-devedition'

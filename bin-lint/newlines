@@ -2,6 +2,10 @@
 
 set -euo pipefail # exit on any error, don't allow undefined variables, pipes don't swallow errors
 
+file_ends_with_exactly_one_newline() {
+  [[ $(tail -c2 "$1" | wc -l) -eq 1 && $(tail -c1 "$1" | wc -l) -eq 1 ]]
+}
+
 is_text_file() {
   local file="$1"
 
@@ -26,17 +30,19 @@ git_diff_hash_before=$(git diff | sha1sum | choose 0)
 readarray -t files_to_lint_newlines < <(
   changed-not-deleted-files | \
   text_files | \
-  rg -v '\bshard.lock$'
+  rg -v '(\bshard\.lock|.+\.yml\.enc|.+\.key|USAGE)$'
 )
 
 if [ ${#files_to_lint_newlines[@]} -eq 0 ] ; then
   write-background-notification 'No files need to be linted for newlines.'
 else
   for file in "${files_to_lint_newlines[@]}" ; do
-    # Ensure at least one trailing newline.
-    sed -i -e '$a'\\ "$file"
-    # Collapse multiple trailing newlines into one.
-    sed -i -e ':a;N;$!ba;s/\n\+$//' "$file"
+    if ! file_ends_with_exactly_one_newline "$file" ; then
+      # Ensure at least one trailing newline.
+      sed -i -e '$a'\\ "$file"
+      # Collapse multiple trailing newlines into one.
+      sed -i -e ':a;N;$!ba;s/\n\+$//' "$file"
+    fi
   done
 
   git_diff_hash_after=$(git diff | sha1sum | choose 0)

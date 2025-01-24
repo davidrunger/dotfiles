@@ -18,7 +18,7 @@ javascript.cpp
 puts("Hit 'Enter' once the failures are in your clipboard")
 gets
 
-failures = `pbpaste`.rstrip.split("\n")
+failures = `pst`.rstrip.split("\n")
 
 failures.each do |failure|
   split_regex = %r{rspec \./| # }

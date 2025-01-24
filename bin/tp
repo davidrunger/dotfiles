@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+
+# [t]ouch a file, using mkdir -[p] to create any necessary directories in the path
+
+set -euo pipefail # exit on any error, don't allow undefined variables, pipes don't swallow errors
+
+file_path=$1
+directory=$(dirname "$file_path")
+
+mkdir -p "$directory"
+touch "$file_path"

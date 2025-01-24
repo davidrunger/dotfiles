@@ -5,8 +5,6 @@
 set -euo pipefail # exit on any error, don't allow undefined variables, pipes don't swallow errors
 
 file_path=$1
-directory=$(dirname "$file_path")
 
-mkdir -p "$directory"
-touch "$file_path"
+tp "$file_path"
 $EDITOR "$file_path"

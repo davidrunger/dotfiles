@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+
+# [tally] the number of things in an input (read from stdin, a file, or clipboard).
+
+set -euo pipefail # exit on any error, don't allow undefined variables, pipes don't swallow errors
+
+input=""
+
+# File name provided.
+if [ $# -ne 0 ] ; then
+  input="$(cat "$1")"
+# Receiving piped stdin.
+elif [[ -p /dev/stdin ]] ; then
+  input="$(cat -)"
+# Pull from clipboard.
+else
+  input="$(pst)"
+fi
+
+echo "$input" | sort | uniq -c | sort -nr

@@ -1,8 +1,0 @@
-#!/usr/bin/env bash
-
-# [t]ally occurrences of distinct lines in a [f]ile
-
-set -euo pipefail # exit on any error, don't allow undefined variables, pipes don't swallow errors
-
-# Get input from file argument (if provided) or otherwise from stdin.
-sort < "${1:-/dev/stdin}" | uniq -c | sort -nr

@@ -1,7 +1,0 @@
-#!/usr/bin/env bash
-
-# [t]ally occurrences of distinct lines in [c]lipboard
-
-set -euo pipefail # exit on any error, don't allow undefined variables, pipes don't swallow errors
-
-pst | sort | uniq -c | sort -nr

@@ -4,8 +4,8 @@
 
 set -euo pipefail # exit on any error, don't allow undefined variables, pipes don't swallow errors
 
-if gitleaks detect --log-opts="origin/$(main-branch)..." &> /dev/null ; then
+if gitleaks git --log-opts="origin/$(main-branch)..." &> /dev/null ; then
   echo 'Gitleaks did not detect any committed secrets.'
 else
-  gitleaks detect --log-opts="origin/$(main-branch)..." --verbose
+  gitleaks git --log-opts="origin/$(main-branch)..." --verbose
 fi

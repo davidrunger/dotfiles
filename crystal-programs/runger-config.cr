@@ -151,12 +151,12 @@ class RungerConfig::Cli < Clim
           runger_config.exit_and_maybe_print(config_key, silent: opts.silent)
         end
       else
-        if opts.show
-          runger_config.print_config
-        elsif opts.edit
+        if opts.edit
           runger_config.open_public_config_file
         elsif opts.edit_private
           runger_config.open_private_config_file
+        else # either opts.show or simply no option or argument
+          runger_config.print_config
         end
       end
     end

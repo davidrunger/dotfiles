@@ -45,7 +45,15 @@ class RungerConfig
     end
   end
 
-  def edit_config_file(file_name : String)
+  def open_public_config_file
+    open_config_file(".runger-config.yml")
+  end
+
+  def open_private_config_file
+    open_config_file(".runger-config.private.yml")
+  end
+
+  def open_config_file(file_name : String)
     if !File.exists?(file_name)
       File.write(file_name, "# commit-to-main: true\n")
       puts "Created #{file_name} ."
@@ -97,13 +105,25 @@ class RungerConfig::Cli < Clim
       runger_config = RungerConfig.new
 
       if (config_key = args.config_key)
-        runger_config.exit_and_maybe_print(config_key, silent: opts.silent)
-      elsif opts.show
-        runger_config.print_config
-      elsif opts.edit
-        runger_config.edit_config_file(".runger-config.yml")
-      elsif opts.edit_private
-        runger_config.edit_config_file(".runger-config.private.yml")
+        if opts.show
+          runger_config.exit_and_maybe_print(config_key, silent: opts.silent)
+        elsif opts.edit
+          if runger_config.private_runger_config.has_key?(config_key)
+            runger_config.open_private_config_file
+          else
+            runger_config.open_public_config_file
+          end
+        elsif opts.edit_private
+          runger_config.open_private_config_file
+        end
+      else
+        if opts.show
+          runger_config.print_config
+        elsif opts.edit
+          runger_config.open_public_config_file
+        elsif opts.edit_private
+          runger_config.open_private_config_file
+        end
       end
     end
   end

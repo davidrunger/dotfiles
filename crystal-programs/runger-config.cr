@@ -45,23 +45,44 @@ class RungerConfig
     end
   end
 
-  def open_public_config_file
-    open_config_file(".runger-config.yml")
+  def open_public_config_file(config_key = nil)
+    open_config_file(".runger-config.yml", config_key: config_key)
   end
 
-  def open_private_config_file
-    open_config_file(".runger-config.private.yml")
+  def open_private_config_file(config_key = nil)
+    open_config_file(".runger-config.private.yml", config_key: config_key)
   end
 
-  def open_config_file(file_name : String)
+  def open_config_file(file_name : String, config_key : String | Nil = nil)
     if !File.exists?(file_name)
       File.write(file_name, "# commit-to-main: true\n")
       puts "Created #{file_name} ."
     end
 
     if (editor = ENV["EDITOR"])
-      system("#{editor} #{file_name}")
+      if config_key
+        line_number = number_of_line_matching_regex(file_name, /\A#{config_key}: /)
+      end
+
+      file_path_argument =
+        if line_number
+          "#{file_name}:#{line_number}"
+        else
+          file_name
+        end
+
+      system("#{editor} #{file_path_argument}")
     end
+  end
+
+  private def number_of_line_matching_regex(file_name : String, regex : Regex) : Int32?
+    File.open(file_name) do |file|
+      file.each_line.with_index(1) do |line, line_number|
+        return line_number if line =~ regex
+      end
+    end
+
+    nil
   end
 
   private def read_yaml(file_name)
@@ -109,12 +130,12 @@ class RungerConfig::Cli < Clim
           runger_config.exit_and_maybe_print(config_key, silent: opts.silent)
         elsif opts.edit
           if runger_config.private_runger_config.has_key?(config_key)
-            runger_config.open_private_config_file
+            runger_config.open_private_config_file(config_key)
           else
-            runger_config.open_public_config_file
+            runger_config.open_public_config_file(config_key)
           end
         elsif opts.edit_private
-          runger_config.open_private_config_file
+          runger_config.open_private_config_file(config_key)
         end
       else
         if opts.show

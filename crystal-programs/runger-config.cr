@@ -147,6 +147,8 @@ class RungerConfig::Cli < Clim
           end
         elsif opts.edit_private
           runger_config.open_private_config_file(config_key)
+        else
+          runger_config.exit_and_maybe_print(config_key, silent: opts.silent)
         end
       else
         if opts.show

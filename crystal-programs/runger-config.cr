@@ -61,7 +61,13 @@ class RungerConfig
 
     if (editor = ENV["EDITOR"])
       if config_key
-        line_number = number_of_line_matching_regex(file_name, /\A#{config_key}: /)
+        line_number =
+          if (matching_line = number_of_line_matching_regex(file_name, /\A#{config_key}:/))
+            matching_line
+          else
+            prepend_line(file_name, "#{config_key}: ")
+            1
+          end
       end
 
       file_path_argument =
@@ -73,6 +79,11 @@ class RungerConfig
 
       system("#{editor} #{file_path_argument}")
     end
+  end
+
+  private def prepend_line(file_path : String, new_content : String)
+    existing_content = File.read(file_path)
+    File.write(file_path, "#{new_content}\n#{existing_content}")
   end
 
   private def number_of_line_matching_regex(file_name : String, regex : Regex) : Int32?

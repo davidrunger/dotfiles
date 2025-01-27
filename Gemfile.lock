@@ -37,7 +37,7 @@ GEM
       logger
     faraday-net_http (3.4.0)
       net-http (>= 0.5.0)
-    fcom (0.14.0)
+    fcom (0.14.1)
       activesupport (>= 6)
       memo_wise (>= 1.7)
       rainbow (>= 3.0)
@@ -232,7 +232,7 @@ CHECKSUMS
   drb (2.2.1) sha256=e9d472bf785f558b96b25358bae115646da0dbfd45107ad858b0bc0d935cb340
   faraday (2.12.2) sha256=157339c25c7b8bcb739f5cf1207cb0cefe8fa1c65027266bcbc34c90c84b9ad6
   faraday-net_http (3.4.0) sha256=a1f1e4cd6a2cf21599c8221595e27582d9936819977bbd4089a601f24c64e54a
-  fcom (0.14.0) sha256=b015f8b2d09f438a6120e6d802d3cfe9a18e28797c1c9e6b271da9a46ce9e993
+  fcom (0.14.1) sha256=e0dac14a04bb518ba627de408087b8b02349ddb241dd2a812b967105ff42ce52
   ffi (1.17.1) sha256=26f6b0dbd1101e6ffc09d3ca640b2a21840cc52731ad8a7ded9fb89e5fb0fc39
   ffi (1.17.1-aarch64-linux-gnu) sha256=c5d22cb545a3a691d46060f1343c461d1a8d38c3fd71b96b4cbbe6906bf1fd38
   ffi (1.17.1-aarch64-linux-musl) sha256=88b9d6ae905d21142df27c94bb300042c1aae41b67291885f600eaad16326b1d

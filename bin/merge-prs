@@ -74,9 +74,12 @@ class GithubPrAutoMerger < CommandKit::Command
   def merge_dependabot_prs(repo)
     open_prs = fetch_dependabot_prs(repo)
 
-    open_prs&.each do |pr|
+    open_prs&.each_with_index do |pr, index|
       process_pr(repo, pr)
-      sleep(10) # Wait between PRs in the same repo
+
+      unless index == open_prs.size - 1
+        sleep(10) # Wait between PRs in the same repo
+      end
     rescue => error
       log_pr_merge_error(repo, pr, error)
     end

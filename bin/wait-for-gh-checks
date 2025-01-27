@@ -101,10 +101,11 @@ class WaitForChecksRunner::LoopRunner
 
   # See `gh run list --help` for all possible statuses (I think).
   CANCELLED = 'CANCELLED'
+  ERROR = 'ERROR'
   FAILURE = 'FAILURE'
   IN_PROGRESS = 'IN_PROGRESS'
+  SKIPPED = 'SKIPPED'
   SUCCESS = 'SUCCESS'
-  ALL_STATUSES = [CANCELLED, FAILURE, IN_PROGRESS, SUCCESS].freeze
 
   def_delegators(
     :@runner,
@@ -192,7 +193,7 @@ class WaitForChecksRunner::LoopRunner
 
   memoize \
   def total_num_started_checks
-    check_status_counts.values_at(*ALL_STATUSES).sum
+    check_status_counts.reject { _1 == SKIPPED }.sum(&:last)
   end
 
   memoize \
@@ -201,6 +202,8 @@ class WaitForChecksRunner::LoopRunner
       'max time exceeded'
     elsif check_status_counts[FAILURE].positive?
       'tests failed'
+    elsif check_status_counts[ERROR].positive?
+      'tests errored'
     elsif check_status_counts[CANCELLED].positive?
       'tests cancelled'
     end

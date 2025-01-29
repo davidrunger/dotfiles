@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+# [g]it [a]dd
+
+set -euo pipefail # exit on any error, don't allow undefined variables, pipes don't swallow errors
+
+git add "$@"

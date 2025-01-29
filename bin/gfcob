@@ -4,6 +4,30 @@
 
 set -euo pipefail # exit on any error, don't allow undefined variables, pipes don't swallow errors
 
+unstaged_changes=0
+staged_changes=0
+
+if unstaged-changes-exist ; then
+  unstaged_changes=1
+  gstash
+fi
+
+if staged-changes-exist ; then
+  staged_changes=1
+  gunstage
+  gstash
+fi
+
 update-main-branches
 git checkout -b "$1" "origin/$(main-branch)"
+
+if [ $staged_changes = 1 ] ; then
+  gunstash
+  ga .
+fi
+
+if [ $unstaged_changes = 1 ] ; then
+  gunstash
+fi
+
 install-packages-in-background

@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+# Do a hard reset of the main branch to the main remote branch.
+
+set -euo pipefail # exit on any error, don't allow undefined variables, pipes don't swallow errors
+
+rebase-branch-with-remote "$(main-branch)" "origin/$(main-branch)"

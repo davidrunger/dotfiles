@@ -13,7 +13,7 @@ for dir in $(my-repos) ; do
   blue "# $dir"
 
   set -e
-  safe
+  main
   gdm
   gb
   set +e

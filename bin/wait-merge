@@ -20,9 +20,9 @@ wait-for-gh-checks "$gh_check_branch"
 gh pr merge "$gh_check_branch" --squash
 say "P R merged"
 
-# switch to "safe" branch if still on the local branch that was just merged
+# switch to main branch if still on the local branch that was just merged
 if [[ "$(branch)" == "$gh_check_branch" ]]; then
-  safe
+  main
 else
   update-main-branches
 fi

@@ -18,7 +18,7 @@ for dir in $(my-repos) ; do
 
   if [ -f Gemfile.lock ] && ! [[ "$dir" =~ ^(${ignore_dirs})$ ]] ; then
     set -ex
-    safe
+    main
 
     if git diff --quiet && ! branch-exists "$branch_name" ; then
       bundle update

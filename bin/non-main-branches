@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
-# Prints branches that are not the main branch, the current branch, or `safe`.
+# Prints branches that are not the main branch or the current branch.
 
 set -euo pipefail # exit on any error, don't allow undefined variables, pipes don't swallow errors
 
-git for-each-ref --format="%(refname:short)" refs/heads | rg -v "^($(main-branch)|$(branch)|safe)$"
+git for-each-ref --format="%(refname:short)" refs/heads | rg -v "^($(main-branch)|$(branch))$"

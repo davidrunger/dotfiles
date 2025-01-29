@@ -6,8 +6,8 @@ set -euo pipefail # exit on any error, don't allow undefined variables, pipes do
 
 update-main-branches
 
-# We only need to update non-safe/non-main branches; main and safe were updated already above.
-if ! on-safe-or-main ; then
+# We only need to update non-main branches; main was updated already above.
+if ! on-main ; then
   if use-strict-git-rules ; then
     if check-git-push-readiness ; then
       echo "Creating a merge commit..."

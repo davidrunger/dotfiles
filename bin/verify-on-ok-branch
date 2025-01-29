@@ -6,12 +6,10 @@ set -euo pipefail # exit on any error, don't allow undefined variables, pipes do
 
 warn_and_exit() {
   echo "Change your branch name, silly!"
-  exit 1 # failure code
+  exit 1
 }
 
-if [ "$(branch)" = "safe" ] ; then
-  warn_and_exit
-elif runger-config commit-to-main ; then
+if runger-config commit-to-main ; then
   exit 0
 elif [ "$(branch)" = "$(main-branch)" ] ; then
   warn_and_exit

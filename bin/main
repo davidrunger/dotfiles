@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+
+# Switch to `main` branch and update it.
+
+set -euo pipefail # exit on any error, don't allow undefined variables, pipes don't swallow errors
+
+git checkout --quiet "$(main-branch)"
+gform

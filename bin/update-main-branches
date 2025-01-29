@@ -10,7 +10,7 @@ original_branch=$(branch)
 # Fetch the latest version of the main branch from origin.
 fetch-main-branch
 
-update-main-branches-with-remote
+update-main-branch-with-remote
 
 if runger-config --silent monitored-paths ; then
   flag-unacked-file-versions

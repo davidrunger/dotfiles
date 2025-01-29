@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 
-# Points a specified local branch to a specified remote branch.
+# Rebases the specified branch with a specified remote branch.
 #
-# Example (resets the local `safe` branch to the remote `main` branch):
-#   reset-branch-to-ref safe origin/main
+# Example (update local `main` with remote `origin/main`):
+#   rebase-branch-with-remote "$(main-branch)" "origin/$(main-branch)"
 
 set -euo pipefail # exit on any error, don't allow undefined variables, pipes don't swallow errors
 

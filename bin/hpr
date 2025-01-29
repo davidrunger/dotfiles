@@ -6,7 +6,7 @@
 
 set -euo pipefail # exit on any error, don't allow undefined variables, pass errors through pipes
 
-if on-safe-or-main ; then
+if on-main ; then
   red "You can't open a PR from $(branch)!"
   exit 1
 fi

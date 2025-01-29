@@ -20,7 +20,7 @@ build_ctags() {
 # git checkout branch (from (almost) all of them) w/ fzf
 gca() {
   git checkout $(git for-each-ref --format="%(refname:short)" refs/heads | \
-    rg -v "^(($(main-branch)|$(branch)|safe)$)" | fzf) && \
+    rg -v "^(($(main-branch)|$(branch))$)" | fzf) && \
     gst
 }
 

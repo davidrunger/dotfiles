@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+# [g]it [unstage]
+
+set -euo pipefail # exit on any error, don't allow undefined variables, pipes don't swallow errors
+
+git reset HEAD

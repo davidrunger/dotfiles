@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+# Returns 0 if [unstaged-changes-exist] and 1 otherwise.
+
+set -euo pipefail # exit on any error, don't allow undefined variables, pipes don't swallow errors
+
+! git diff --quiet

@@ -5,6 +5,10 @@ require "yaml"
 require "../utils/crystal/memoization"
 
 class RungerConfig
+  def initialize(directory : String | Nil)
+    @directory = directory || "."
+  end
+
   memoize def unified_runger_config : Hash(String, YAML::Any)
     public_runger_config.merge(private_runger_config)
   end
@@ -54,40 +58,42 @@ class RungerConfig
   end
 
   def open_config_file(file_name : String, config_key : String | Nil = nil)
-    if !File.exists?(file_name)
-      File.write(file_name, "# commit-to-main: true\n")
-      puts "Created #{file_name} ."
+    file_path = directory_relative_file_path(file_name)
+
+    if !File.exists?(file_path)
+      File.write(file_path, "# commit-to-main: true\n")
+      puts "Created #{file_path} ."
     end
 
     if (editor = ENV["EDITOR"])
       if config_key
         line_number =
-          if (matching_line = number_of_line_matching_regex(file_name, /\A#{config_key}:/))
+          if (matching_line = number_of_line_matching_regex(file_path, /\A#{config_key}:/))
             matching_line
           else
-            prepend_line(file_name, "#{config_key}: ")
+            prepend_line(file_path, "#{config_key}: ")
             1
           end
       end
 
       file_path_argument =
         if line_number
-          "#{file_name}:#{line_number}"
+          "#{file_path}:#{line_number}"
         else
-          file_name
+          file_path
         end
 
       system("#{editor} #{file_path_argument}")
     end
   end
 
-  private def prepend_line(file_path : String, new_content : String)
+  private def prepend_line(file_path : Path, new_content : String)
     existing_content = File.read(file_path)
     File.write(file_path, "#{new_content}\n#{existing_content}")
   end
 
-  private def number_of_line_matching_regex(file_name : String, regex : Regex) : Int32?
-    File.open(file_name) do |file|
+  private def number_of_line_matching_regex(file_path : Path, regex : Regex) : Int32?
+    File.open(file_path) do |file|
       file.each_line.with_index(1) do |line, line_number|
         return line_number if line =~ regex
       end
@@ -97,12 +103,18 @@ class RungerConfig
   end
 
   private def read_yaml(file_name)
-    if File.exists?(file_name)
-      content = File.read(file_name)
+    file_path = directory_relative_file_path(file_name)
+
+    if File.exists?(file_path)
+      content = File.read(file_path)
       YAML.parse(content).as_h.transform_keys { |key| key.to_s } || {} of String => YAML::Any
     else
       {} of String => YAML::Any
     end
+  end
+
+  private def directory_relative_file_path(file_name : String) : Path
+    Path.new(@directory, file_name)
   end
 
   private def colorized_key(key)
@@ -128,13 +140,14 @@ class RungerConfig::Cli < Clim
     option "-e", "--edit", type: Bool, desc: "Edit (and create, if needed) a .runger-config.yml file.", required: false
     option "-p", "--edit-private", type: Bool, desc: "Edit (and create, if needed) a .runger-config.private.yml file.", required: false
     option "-s", "--show", type: Bool, desc: "Print the current config (combining both public and private configs).", required: false
+    option "-d DIRECTORY", "--directory DIRECTORY", type: String, desc: "Directory for which to read/edit the config.", required: false
     option "--silent", type: Bool, desc: "Don't print value (useful to check if a config key exists)", required: false
     help short: "-h"
 
     argument "config_key", type: String, desc: "The configuration option to check.", required: false
 
     run do |opts, args|
-      runger_config = RungerConfig.new
+      runger_config = RungerConfig.new(directory: opts.directory)
 
       if (config_key = args.config_key)
         if opts.show

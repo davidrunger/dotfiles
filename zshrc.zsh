@@ -127,7 +127,7 @@ export EDITOR=editor
 { ( symlink-crystal-programs >&3 & ) } 3>&1
 
 # less options
-export LESS='-Rj6 -X --quit-if-one-screen'
+export LESS='--quit-if-one-screen -Rj6 -X'
 export LESSHISTFILE=- # don't store less search history https://web.archive.org/web/20141129223918/http://linuxcommand.org/man_pages/less1.html
 
 # for SimpleCov::Formatter::Terminal

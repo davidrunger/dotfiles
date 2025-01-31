@@ -44,11 +44,6 @@ fi
 # snap setup
 export PATH=$PATH:/snap/bin
 
-# asdf setup
-if [ -d "$HOME/.asdf/" ]; then
-  export PATH="$HOME/.asdf/shims:$PATH"
-fi
-
 # rbenv setup
 if [ -e ~/.rbenv/bin/rbenv ]; then
   eval "$(~/.rbenv/bin/rbenv init - zsh)"
@@ -113,6 +108,11 @@ path=(
   $HOMEBREW_PREFIX/opt/postgresql@16/bin
   $path
 )
+
+# asdf setup (needs to be below path setup)
+if [ -d "$HOME/.asdf/" ]; then
+  export PATH="$HOME/.asdf/shims:$PATH"
+fi
 
 if [ -v LINUX ] ; then
   path=($HOME/code/dotfiles/bin-linux $path)

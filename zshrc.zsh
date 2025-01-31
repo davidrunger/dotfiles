@@ -13,6 +13,7 @@ fi
 # Look for zsh completion definitions in dotfiles/completions/ directory.
 # NOTE: This must come before loading oh-my-zsh.
 fpath=(~/code/dotfiles/completions $fpath)
+fpath=(~/.asdf/completions $fpath)
 
 # zsh/oh-my-zsh
 # NOTE: must come after sourcing linux.zsh, so that git is available via Homebrew for update check.
@@ -45,7 +46,7 @@ export PATH=$PATH:/snap/bin
 
 # asdf setup
 if [ -d "$HOME/.asdf/" ]; then
-  . "$HOME/.asdf/asdf.sh"
+  export PATH="$HOME/.asdf/shims:$PATH"
 fi
 
 # rbenv setup

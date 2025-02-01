@@ -24,6 +24,12 @@ jobs:
           path: lib
           key: ${{ runner.os }}-shards-${{ hashFiles('**/shard.lock') }}
 
+      - name: Cache ameba
+        uses: actions/cache@v4
+        with:
+          path: bin/ameba
+          key: ${{ runner.os }}-ameba-${{ hashFiles('bin/ameba.cr', '**/shard.lock') }}
+
       - name: Install shards
         run: shards check || shards install
 

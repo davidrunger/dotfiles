@@ -138,7 +138,7 @@ class FlagUnackedFileVersions
     RedisAgent.new("runger_path_monitors")
   end
 
-  private def on_main_branch
+  private def on_main_branch(&)
     original_branch = `branch`.strip
     system("git checkout \"$(main-branch)\" >/dev/null 2>&1") || raise "Error occurred!"
 

@@ -12,10 +12,23 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - name: Download source
+        uses: actions/checkout@v4
+
       - name: Install Crystal
         uses: crystal-lang/install-crystal@v1
+
+      - name: Cache shards
+        uses: actions/cache@v4
+        with:
+          path: lib
+          key: ${{ runner.os }}-shards-${{ hashFiles('**/shard.lock') }}
+
+      - name: Install shards
+        run: shards check || shards install
+
       - name: Run tests
-        run: crystal spec
+        run: crystal spec --order=random
+
       - name: Run Ameba
         run: bin/ameba

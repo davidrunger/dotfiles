@@ -44,7 +44,7 @@ class RungerConfig
   end
 
   def print_config
-    unified_runger_config.keys.sort.each do |key|
+    unified_runger_config.keys.sort!.each do |key|
       puts "#{colorized_key(key)} #{":".colorize(:green)} #{unified_runger_config[key]}"
     end
   end
@@ -107,7 +107,7 @@ class RungerConfig
 
     if File.exists?(file_path)
       content = File.read(file_path)
-      YAML.parse(content).as_h.transform_keys { |key| key.to_s } || {} of String => YAML::Any
+      YAML.parse(content).as_h.transform_keys(&.to_s) || {} of String => YAML::Any
     else
       {} of String => YAML::Any
     end

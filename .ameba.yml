@@ -1,0 +1,3 @@
+# I think parens suggest that it's intentional assignment, rather than a botched condition check.
+Style/ParenthesesAroundCondition:
+  Enabled: false

@@ -9,3 +9,6 @@ Brewfile.lock.json
 
 # mitmproxy config
 /mitmproxy.yml
+
+# Ameba (Crystal linter)
+bin/ameba

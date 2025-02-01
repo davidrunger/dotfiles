@@ -30,7 +30,7 @@ class RungerConfig
   private def parsed_yaml(file_name : String) : Hash(String, YAML::Any)
     if File.exists?(file_name)
       content = File.read(file_name)
-      YAML.parse(content).as_h.transform_keys { |key| key.to_s }
+      YAML.parse(content).as_h.transform_keys(&.to_s)
     else
       {} of String => YAML::Any
     end

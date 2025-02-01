@@ -90,20 +90,20 @@ class InstallPackagesInBackground
     file_paths = `git ls-files #{file_or_directory}`.split("\n", remove_empty: true)
 
     Digest::SHA256.hexdigest(
-      file_paths.
-        sort.
-        map { |path| Digest::SHA256.hexdigest(File.read(path)) }.
-        join(""),
+      file_paths
+        .sort
+        .map { |path| Digest::SHA256.hexdigest(File.read(path)) }
+        .join(""),
     )
   end
 
   private def execute_command_in_background(command : String, command_name : String)
-    unless command.empty?
+    if command.empty?
+      puts "No #{command_name} updates required.".colorize(:green)
+    else
       executable_path = executable_path_for_command(command, command_name.downcase)
       Process.new(command: executable_path)
       puts "Running `#{command}` in background.".colorize(:yellow)
-    else
-      puts "No #{command_name} updates required.".colorize(:green)
     end
   end
 
@@ -124,14 +124,11 @@ class InstallPackagesInBackground
       } &>/dev/null
       ZSH
 
-    File.write(
-      executable_path,
-      <<-SCRIPT,
+    File.write(executable_path, <<-SCRIPT)
       #!/usr/bin/env zsh
 
       #{zsh_command}
       SCRIPT
-    )
 
     File.chmod(executable_path, 0o755)
 

@@ -112,7 +112,13 @@ class FlagUnackedFileVersions
 
     on_main_branch do
       paths_without_up_to_date_ack.each do |path|
-        AckUpdater.new(path, flagger: self, monitoring_reason: monitored_paths_hash[path].not_nil!.to_s).perform
+        monitoring_reason = monitored_paths_hash[path]
+
+        if monitoring_reason
+          AckUpdater.new(path, flagger: self, monitoring_reason: monitoring_reason.to_s).perform
+        else
+          puts("No monitoring reason was given for #{path}.")
+        end
       end
     end
   end
@@ -121,10 +127,10 @@ class FlagUnackedFileVersions
     file_paths = `git ls-files #{file_or_directory}`.split("\n", remove_empty: true)
 
     Digest::SHA256.hexdigest(
-      file_paths.
-        sort.
-        map { |path| Digest::SHA256.hexdigest(File.read(path)) }.
-        join(""),
+      file_paths
+        .sort
+        .map { |path| Digest::SHA256.hexdigest(File.read(path)) }
+        .join(""),
     )
   end
 
@@ -132,7 +138,7 @@ class FlagUnackedFileVersions
     RedisAgent.new("runger_path_monitors")
   end
 
-  private def on_main_branch
+  private def on_main_branch(&)
     original_branch = `branch`.strip
     system("git checkout \"$(main-branch)\" >/dev/null 2>&1") || raise "Error occurred!"
 
@@ -150,7 +156,7 @@ class FlagUnackedFileVersions
   end
 
   memoize def monitored_paths_hash : Hash(String, YAML::Any)
-    RungerConfig[MONITORED_PATHS_KEY].as_h.transform_keys { |key| key.to_s }
+    RungerConfig[MONITORED_PATHS_KEY].as_h.transform_keys(&.to_s)
   end
 
   memoize def content_acked?(path : String) : Bool

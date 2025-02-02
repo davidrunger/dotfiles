@@ -7,7 +7,7 @@ processes_to_ignore="e?grep|Slack|Postman|GitHub|rubocop|open-pr-in-browser|Help
 |esbuild.*linux.*ping|wait-for-gh-checks|fusermount3|inode_switch_wbs|ruby/gems"
 processes_to_quit='ruby'
 processes_to_term='spring'
-processes_to_int='puma|sidekiq'
+processes_to_int='puma|sidekiq|rspec'
 
 stop_processes() {
   # only try to stop spring with `spring stop` if in a directory with a Gemfile that contains

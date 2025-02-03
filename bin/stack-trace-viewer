@@ -1,0 +1,68 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+# Prints the surrounding code for each line of code in a Ruby stack trace.
+#
+# Example (after copying the stack trace into the clipboard):
+#     pst | stack-trace-viewer
+#
+# Example (after saving the stack trace in a file):
+#     stack-trace-viewer personal/random.txt
+#
+# rubocop:disable Layout/LineLength
+# Stack traces should have a format like this:
+#     /home/david/.rbenv/versions/3.4.1/lib/ruby/gems/3.4.0/gems/rspec-mocks-3.13.2/lib/rspec/mocks/message_expectation.rb:762:in 'block in RSpec::Mocks::Implementation#call'
+#     /home/david/code/david_runger/config/initializers/error_subscriber.rb:35:in 'Kernel#public_send'
+#     <internal:kernel>:168:in 'Kernel#loop'
+#     bin/rspec:17:in 'Kernel#load'
+# rubocop:enable Layout/LineLength
+
+CONTEXT_SIZE = 10
+
+# rubocop:disable Style/TopLevelMethodDefinition
+def print_context_for_line(line, stack_trace_order_number)
+  # Extract file path and line number from stack trace line
+  if line.include?('<internal:')
+    puts "\nWarning: Cannot show context for internal Ruby method: #{line.strip}\n"
+    return
+  end
+
+  match = line.match(/^(.+):(\d+):in/)
+  return unless match
+
+  file_path = match[1]
+  line_number = Integer(match[2])
+
+  # Check if file exists
+  unless File.exist?(file_path)
+    puts "\nWarning: File not found: #{file_path}\n"
+    return
+  end
+
+  # Calculate context range
+  start_line = [line_number - CONTEXT_SIZE, 1].max
+  end_line = line_number + CONTEXT_SIZE
+
+  # Use bat to display the file with syntax highlighting
+  puts "\nLine #{stack_trace_order_number}: #{file_path}:#{line_number}:"
+  system(
+    'bat',
+    '--style=numbers,grid',
+    '--highlight-line',
+    line_number.to_s,
+    '--line-range',
+    "#{start_line}:#{end_line}",
+    file_path,
+  )
+end
+# rubocop:enable Style/TopLevelMethodDefinition
+
+# Read stack trace from stdin or file
+stack_trace = ARGV[0] ? File.read(ARGV[0]) : STDIN.read
+
+# Process each line of the stack trace
+stack_trace.each_line.with_index do |line, index|
+  next if line.strip.empty?
+
+  print_context_for_line(line, index + 1)
+end

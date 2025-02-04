@@ -27,7 +27,7 @@ def print_context_for_line(line, stack_trace_order_number)
     return
   end
 
-  match = line.match(/^\s*(\S+):(\d+):in/)
+  match = line.match(/^[\s#]*(\S+):(\d+):in/)
   return unless match
 
   file_path = match[1]

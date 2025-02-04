@@ -13,6 +13,6 @@ remote_branch="$2"
 original_branch="$(branch)"
 git checkout --quiet "$local_branch"
 
-git rebase "$remote_branch"
+git rebase --autostash "$remote_branch"
 
 git checkout --quiet "$original_branch"

@@ -24,7 +24,7 @@ say "P R merged"
 if [[ "$(branch)" == "$gh_check_branch" ]]; then
   main
 else
-  update-main-branches
+  update-main-branch
 fi
 
 gdm

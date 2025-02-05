@@ -17,54 +17,91 @@
 #     bin/rspec:17:in 'Kernel#load'
 # rubocop:enable Layout/LineLength
 
-CONTEXT_SIZE = 10
+require 'command_kit'
 
-# rubocop:disable Style/TopLevelMethodDefinition
-def print_context_for_line(line, stack_trace_order_number)
-  # Extract file path and line number from stack trace line
-  if line.include?('<internal:')
-    puts "\nWarning: Cannot show context for internal Ruby method: #{line.strip}\n"
-    return
-  end
+require_relative "#{Dir.home}/code/dotfiles/utils/ruby/memoization.rb"
 
-  match = line.match(/^[\s#]*(\S+):(\d+):in/)
-  return unless match
+class StackTraceViewer < CommandKit::Command
+  prepend Memoization
 
-  file_path = match[1]
-  line_number = Integer(match[2])
+  usage '[OPTIONS] [FILE]'
 
-  # Check if file exists
-  unless File.exist?(file_path)
-    puts "\nWarning: File not found: #{file_path}\n"
-    return
-  end
-
-  # Calculate context range
-  start_line = [line_number - CONTEXT_SIZE, 1].max
-  end_line = line_number + CONTEXT_SIZE
-
-  # Use bat to display the file with syntax highlighting
-  puts "\nLine #{stack_trace_order_number}: #{file_path}:#{line_number}:"
-  system(
-    'bat',
-    '--style=numbers,grid',
-    '--highlight-line',
-    line_number.to_s,
-    '--line-range',
-    "#{start_line}:#{end_line}",
-    file_path,
+  option(
+    :context,
+    short: '-C',
+    desc: 'Number of surrounding context lines to print.',
+    value: {
+      type: Integer,
+      default: 8,
+    },
   )
+
+  argument(
+    :file,
+    required: false,
+    desc: 'File containing stack trace.',
+  )
+
+  def run(file)
+    @file = file
+
+    stack_trace_lines.reverse.each_with_index do |line, index|
+      next if line.strip.empty?
+
+      print_context_for_line(line, stack_trace_lines.size - index)
+    end
+  end
+
+  private
+
+  memoize \
+  def stack_trace_lines
+    stack_trace = @file ? File.read(@file) : STDIN.read
+
+    stack_trace.lines
+  end
+
+  memoize \
+  def context_size
+    options[:context]
+  end
+
+  def print_context_for_line(line, stack_trace_order_number)
+    if line.include?('<internal:')
+      puts "\nWarning: Cannot show context for internal Ruby method: #{line.strip}\n"
+      return
+    end
+
+    match = line.match(/^[\s#]*(\S+):(\d+):in/)
+
+    if !match
+      return
+    end
+
+    file_path = match[1]
+    line_number = Integer(match[2])
+
+    unless File.exist?(file_path)
+      puts "\nLine #{stack_trace_order_number}: Warning: File not found: #{file_path}\n"
+      return
+    end
+
+    # Calculate context range
+    start_line = [line_number - context_size, 1].max
+    end_line = line_number + context_size
+
+    # Use bat to display the file.
+    puts "\nLine #{stack_trace_order_number}: #{file_path}:#{line_number}:"
+    system(
+      'bat',
+      '--style=numbers,grid',
+      '--highlight-line',
+      line_number.to_s,
+      '--line-range',
+      "#{start_line}:#{end_line}",
+      file_path,
+    )
+  end
 end
-# rubocop:enable Style/TopLevelMethodDefinition
 
-# Read stack trace from stdin or file
-stack_trace = ARGV[0] ? File.read(ARGV[0]) : STDIN.read
-
-# Process each line of the stack trace
-stack_trace_lines = stack_trace.lines
-
-stack_trace_lines.reverse.each_with_index do |line, index|
-  next if line.strip.empty?
-
-  print_context_for_line(line, stack_trace_lines.size - index)
-end
+StackTraceViewer.start

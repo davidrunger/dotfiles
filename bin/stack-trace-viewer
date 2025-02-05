@@ -36,6 +36,16 @@ class StackTraceViewer < CommandKit::Command
     },
   )
 
+  option(
+    :exclude,
+    short: '-e',
+    desc: 'Comma-separated list of string(s) in stack traces not to print.',
+    value: {
+      type: Array,
+      default: [],
+    },
+  )
+
   argument(
     :file,
     required: false,
@@ -66,9 +76,26 @@ class StackTraceViewer < CommandKit::Command
     options[:context]
   end
 
+  memoize \
+  def excluded_strings
+    options[:exclude]
+  end
+
+  # rubocop:disable Metrics/MethodLength
   def print_context_for_line(line, stack_trace_order_number)
     if line.include?('<internal:')
-      puts "\nWarning: Cannot show context for internal Ruby method: #{line.strip}\n"
+      puts(
+        "\nLine #{stack_trace_order_number}: Warning: " \
+        "Cannot show context for internal Ruby method: #{line.strip}.",
+      )
+      return
+    end
+
+    if (matching_exclude_string = excluded_strings.detect { line.include?(it) })
+      puts(
+        "\nLine #{stack_trace_order_number}: Info: " \
+      "Skipping line because it includes '#{matching_exclude_string}'.",
+      )
       return
     end
 
@@ -82,7 +109,7 @@ class StackTraceViewer < CommandKit::Command
     line_number = Integer(match[2])
 
     unless File.exist?(file_path)
-      puts "\nLine #{stack_trace_order_number}: Warning: File not found: #{file_path}\n"
+      puts "\nLine #{stack_trace_order_number}: Warning: File not found: #{file_path}"
       return
     end
 
@@ -102,6 +129,7 @@ class StackTraceViewer < CommandKit::Command
       file_path,
     )
   end
+  # rubocop:enable Metrics/MethodLength
 end
 
 StackTraceViewer.start

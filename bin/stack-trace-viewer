@@ -61,8 +61,10 @@ end
 stack_trace = ARGV[0] ? File.read(ARGV[0]) : STDIN.read
 
 # Process each line of the stack trace
-stack_trace.each_line.with_index do |line, index|
+stack_trace_lines = stack_trace.lines
+
+stack_trace_lines.reverse.each_with_index do |line, index|
   next if line.strip.empty?
 
-  print_context_for_line(line, index + 1)
+  print_context_for_line(line, stack_trace_lines.size - index)
 end

@@ -76,10 +76,10 @@ GEM
     listen (3.9.0)
       rb-fsevent (~> 0.10, >= 0.10.3)
       rb-inotify (~> 0.9, >= 0.9.10)
-    living_document (1.1.1)
+    living_document (2.1.0)
       activesupport (>= 6)
-      listen (>= 3.2)
       memo_wise (>= 1.7)
+      rb-inotify (>= 0.11.1)
       timecop (>= 0.9.10)
     logger (1.6.5)
     lumberjack (1.2.10)
@@ -258,7 +258,7 @@ CHECKSUMS
   json (2.9.1) sha256=d2bdef4644052fad91c1785d48263756fe32fcac08b96a20bb15840e96550d11
   language_server-protocol (3.17.0.4) sha256=c484626478664fd13482d8180947c50a8590484b1258b99b7aedb3b69df89669
   listen (3.9.0) sha256=db9e4424e0e5834480385197c139cb6b0ae0ef28cc13310cfd1ca78377d59c67
-  living_document (1.1.1) sha256=d4ca62af0d11ef102d353b5f66cc9581cdfe814ddf2d9ed1411dd9a1decff454
+  living_document (2.1.0) sha256=296f515d00cbbfb82e46c1f0fe168fdd7b23b23e500315488456b86e09c6330f
   logger (1.6.5) sha256=c3cfe56d01656490ddd103d38b8993d73d86296adebc5f58cefc9ec03741e56b
   lumberjack (1.2.10) sha256=bbfe951629341095028ecbf1ad496b58bec3f8bcad6fe35a203a377839c42b6c
   memo_wise (1.10.0) sha256=ae40ff8e7799697ff5d59d739b8766f76be22eba69c7c8468edb42ab83c94c3f

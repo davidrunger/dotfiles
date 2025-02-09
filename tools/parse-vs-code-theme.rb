@@ -23,6 +23,9 @@ token_colors.reject! { BAD_TOKEN_COLOR_NAMES.include?(_1['name']) }
 token_colors.map! do |token_color|
   if token_color['name'] == 'Methods'
     token_color.merge({ 'settings' => { 'foreground' => '#ac63ff' } })
+  elsif token_color['name']&.match?(/\Acomments?\z/i)
+    settings = token_color['settings']
+    token_color.merge({ 'settings' => settings.except('fontStyle') })
   else
     token_color
   end

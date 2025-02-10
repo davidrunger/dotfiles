@@ -6,6 +6,7 @@ set -euo pipefail # exit on any error, don't allow undefined variables, pipes do
 
 branch=$1
 
+update-main-branch
 gfb "$branch"
 gco "$branch"
 gsup

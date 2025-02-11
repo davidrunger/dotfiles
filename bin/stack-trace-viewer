@@ -52,7 +52,7 @@ class StackTraceViewer < CommandKit::Command
     desc: 'File containing stack trace.',
   )
 
-  def run(file)
+  def run(file = nil)
     @file = file
 
     stack_trace_lines.reverse.each_with_index do |line, index|

@@ -4,7 +4,7 @@
 
 processes_to_ignore="e?grep|Slack|Postman|GitHub|rubocop|open-pr-in-browser|Helper|\bbrew\b\
 |solargraph|ionodecache|ruby-lsp|fuzzy-ruby-server|node-ipc|node.mojom|code.*extensions\
-|esbuild.*linux.*ping|wait-for-gh-checks|fusermount3|inode_switch_wbs|ruby/gems"
+|esbuild.*linux.*ping|wait-for-gh-checks|merge-prs|fusermount3|inode_switch_wbs|ruby/gems"
 processes_to_quit='ruby'
 processes_to_term='spring'
 processes_to_int='puma|sidekiq|rspec'

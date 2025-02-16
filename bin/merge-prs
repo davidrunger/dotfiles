@@ -112,7 +112,6 @@ class GithubPrAutoMerger < CommandKit::Command
     end
   end
 
-  # rubocop:disable Metrics/CyclomaticComplexity
   # rubocop:disable Metrics/MethodLength
   # rubocop:disable Metrics/PerceivedComplexity
   def actions_completed?(repo, pr)
@@ -161,7 +160,6 @@ class GithubPrAutoMerger < CommandKit::Command
   end
   # rubocop:enable Metrics/PerceivedComplexity
   # rubocop:enable Metrics/MethodLength
-  # rubocop:enable Metrics/CyclomaticComplexity
 
   def merge_pr(repo, pr)
     log_verbose("Merging PR ##{pr.number} in #{repo}".green)

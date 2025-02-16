@@ -14,7 +14,7 @@ module SqlUtils
     FORMATTING_NEEDED_PATTERNS.any? { sql.include?(_1) }
   end
 
-  # rubocop:disable Metrics/CyclomaticComplexity, Metrics/MethodLength, Metrics/PerceivedComplexity
+  # rubocop:disable Metrics/MethodLength, Metrics/PerceivedComplexity
   def format_sql_if_necessary
     sql = File.read('personal/sql.sql')
     original_sql = sql.dup
@@ -74,5 +74,5 @@ module SqlUtils
       File.write('personal/sql.sql', formatted_query)
     end
   end
-  # rubocop:enable Metrics/CyclomaticComplexity, Metrics/MethodLength, Metrics/PerceivedComplexity
+  # rubocop:enable Metrics/MethodLength, Metrics/PerceivedComplexity
 end

@@ -185,7 +185,7 @@ class Runner
     command
   end
 
-  # rubocop:disable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
+  # rubocop:disable Metrics/PerceivedComplexity
   memoize \
   def env_vars
     {
@@ -203,7 +203,7 @@ class Runner
       'JEST_TARGET_PATTERN' => @opts[:target].presence,
     }.compact
   end
-  # rubocop:enable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
+  # rubocop:enable Metrics/PerceivedComplexity
 
   memoize \
   def guardfile_path

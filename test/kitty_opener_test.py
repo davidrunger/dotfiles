@@ -26,13 +26,37 @@ class TestRegex(unittest.TestCase):
                 [],
             ],
             ["~/code/david_runger safe ✔ 03:45:56", ["~/code/david_runger"]],
-            ["File: /home/david/code/david_runger/ruby.rb", ["/home/david/code/david_runger/ruby.rb"]],
+            [
+                "File: /home/david/code/david_runger/ruby.rb",
+                ["/home/david/code/david_runger/ruby.rb"],
+            ],
             ["./personal/typescript.ts", ["./personal/typescript.ts"]],
-            ['{:locations=>{"./spec/bin/open_pr_in_browser_spec.rb"=>[19]}}', ["./spec/bin/open_pr_in_browser_spec.rb"]],
-            ["{:locations=>{'./spec/bin/open_pr_in_browser_spec.rb'=>[19]}}", ["./spec/bin/open_pr_in_browser_spec.rb"]],
-            ["(https://davidrunger.com/#projects?query=string)", ["https://davidrunger.com/#projects?query=string"]],
-            ["bin/flag-unacked-file-versions:115:in `ack_data", ["bin/flag-unacked-file-versions:115"]],
-            ["RunFeatureTests : rspec ./spec/features/quizzes_spec.rb:9 # Quizzes app / when", ["./spec/features/quizzes_spec.rb:9"]],
+            [
+                '{:locations=>{"./spec/bin/open_pr_in_browser_spec.rb"=>[19]}}',
+                ["./spec/bin/open_pr_in_browser_spec.rb"],
+            ],
+            [
+                "{:locations=>{'./spec/bin/open_pr_in_browser_spec.rb'=>[19]}}",
+                ["./spec/bin/open_pr_in_browser_spec.rb"],
+            ],
+            [
+                "(https://davidrunger.com/#projects?query=string)",
+                ["https://davidrunger.com/#projects?query=string"],
+            ],
+            [
+                "bin/flag-unacked-file-versions:115:in `ack_data",
+                ["bin/flag-unacked-file-versions:115"],
+            ],
+            [
+                "RunFeatureTests : rspec ./spec/features/quizzes_spec.rb:9 # Quizzes app / when",
+                ["./spec/features/quizzes_spec.rb:9"],
+            ],
+            [
+                "![image](https://github.com/user-attachments/assets/c9dd2b93-9bd9-4c59-b6eb-9b3533285c7b)",
+                [
+                    "https://github.com/user-attachments/assets/c9dd2b93-9bd9-4c59-b6eb-9b3533285c7b"
+                ],
+            ],
         ]
 
         for input_text, expected_matches in test_cases:

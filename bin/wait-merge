@@ -17,7 +17,14 @@ if uncommitted-changes-exist ; then
 fi
 
 wait-for-gh-checks "$gh_check_branch"
-gh pr merge "$gh_check_branch" --squash
+
+if [[ "$gh_check_branch" =~ ^dependabot/ ]] ; then
+  # Omit the verbose PR description as the commit body for Dependabot PRs.
+  gh pr merge "$gh_check_branch" --squash --body ''
+else
+  gh pr merge "$gh_check_branch" --squash
+fi
+
 say "P R merged"
 
 # switch to main branch if still on the local branch that was just merged

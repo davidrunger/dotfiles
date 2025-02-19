@@ -140,3 +140,7 @@ export OBJC_DISABLE_INITIALIZE_FORK_SAFETY=YES
 # History
 export HISTSIZE=123123
 export SAVEHIST="$HISTSIZE"
+
+# Atuin (https://github.com/atuinsh/atuin)
+. "$HOME/.atuin/bin/env"
+eval "$(atuin init zsh --disable-up-arrow)"

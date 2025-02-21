@@ -10,8 +10,8 @@ class GitHubCache {
 
   constructor() {
     this.redis = new Redis('redis://localhost:6379');
-    // Cache for 1 week.
-    this.cacheTTL = 60 * 60 * 24 * 7;
+    // Cache for 30 days.
+    this.cacheTTL = 60 * 60 * 24 * 30;
   }
 
   private getKey(endpoint: string): string {

@@ -101,9 +101,6 @@ class Runner
     },
     sidekiq: {
       path: 'personal/runner.rb',
-      content: <<~RUBY,
-        # frozen_string_literal: true
-      RUBY
     },
     sql: {
       path: 'personal/sql.sql',

@@ -148,8 +148,10 @@ class WaitForChecksRunner::LoopRunner
   private
 
   def sufficient_time_passed?
-    expected_num_checks_config[:exactly] || (earliest_check_started_at.is_a?(Time) &&
-      (Time.now - earliest_check_started_at) > 20)
+    expected_num_checks_config[:exactly] || (
+      earliest_check_started_at.is_a?(Time) &&
+      (Time.now - earliest_check_started_at) > 20
+    )
   end
 
   memoize \

@@ -84,7 +84,7 @@ GEM
       timecop (>= 0.9.10)
     logger (1.6.6)
     lumberjack (1.2.10)
-    memo_wise (1.10.0)
+    memo_wise (1.11.0)
     method_source (1.1.0)
     minitest (5.25.4)
     nenv (0.3.0)
@@ -266,7 +266,7 @@ CHECKSUMS
   living_document (2.1.0) sha256=296f515d00cbbfb82e46c1f0fe168fdd7b23b23e500315488456b86e09c6330f
   logger (1.6.6) sha256=dd618d24e637715472732e7eed02e33cfbdf56deaad225edd0f1f89d38024017
   lumberjack (1.2.10) sha256=bbfe951629341095028ecbf1ad496b58bec3f8bcad6fe35a203a377839c42b6c
-  memo_wise (1.10.0) sha256=ae40ff8e7799697ff5d59d739b8766f76be22eba69c7c8468edb42ab83c94c3f
+  memo_wise (1.11.0) sha256=06ef23a1edb6b8ee4f37d950bba04836b437b4d1036e45d24c2fd2f25b5490c3
   method_source (1.1.0) sha256=181301c9c45b731b4769bc81e8860e72f9161ad7d66dd99103c9ab84f560f5c5
   minitest (5.25.4) sha256=9cf2cae25ac4dfc90c988ebc3b917f53c054978b673273da1bd20bcb0778f947
   nenv (0.3.0) sha256=d9de6d8fb7072228463bf61843159419c969edb34b3cef51832b516ae7972765

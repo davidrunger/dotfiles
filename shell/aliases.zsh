@@ -45,7 +45,7 @@ alias gsf='git show $(active-branches | fzf)'
 alias gsl='git show -s --format=%s'
 alias hwm='hpr && echo && wm'
 alias hwm='hpr && echo && wm'
-alias ls='eza'
+alias ls='eza --binary'
 alias md='mkdir -p'
 alias mdm='main && gdm && echo "----" && gb'
 alias rc="bin/rails console"

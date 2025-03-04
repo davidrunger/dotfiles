@@ -9,7 +9,7 @@ runger_config_spec_commands=$(runger-config spec-commands || true)
 if [ -n "$runger_config_spec_commands" ] ; then
   bash -c "$(printf "set -euo pipefail\n\n%s" "$runger_config_spec_commands")"
 elif [ -f Gemfile ] ; then
-  if rg --quiet "gem ['\"]rubocop['\"]" Gemfile ; then
+  if rg --quiet "gem ['\"](rubocop|runger_style)['\"]" Gemfile ; then
     readarray -t files_for_rubocop < <(git ls-tree -r HEAD --name-only)
     echo 'Running RuboCop against all git-tracked files with --force-exclusion...'
     bin/rubocop "${files_for_rubocop[@]}" --force-exclusion

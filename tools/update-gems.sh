@@ -24,12 +24,12 @@ for dir in $(my-repos) ; do
       bundle update
 
       if ! git diff --quiet ; then
-        gclean
-        gfcob "$branch_name"
-        bundle update
         gacm "Update gems
 
 \`bundle update\`"
+        gfcob "$branch_name"
+        gcp main
+        git branch --force main origin/main
         hpr
       fi
     fi

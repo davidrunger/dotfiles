@@ -24,7 +24,8 @@ for dir in $(my-repos) ; do
       bundle update
 
       if ! git diff --quiet ; then
-        gacm "Update gems
+        git add .
+        git commit --message "Update gems
 
 \`bundle update\`"
         gfcob "$branch_name"

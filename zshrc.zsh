@@ -59,15 +59,9 @@ if command -v yarn &> /dev/null ; then
   export PATH=$PATH:$(yarn global bin)
 fi
 
-# pnpm setup
+# pnpm setup on MacOS
 if [ -d "$HOME/Library/pnpm" ]; then
   export PNPM_HOME="$HOME/Library/pnpm"
-  case ":$PATH:" in
-    *":$PNPM_HOME:"*) ;;
-    *) export PATH="$PNPM_HOME:$PATH" ;;
-  esac
-else if [ -d "$HOME/.local/share/pnpm" ]
-  export PNPM_HOME="$HOME/.local/share/pnpm"
   case ":$PATH:" in
     *":$PNPM_HOME:"*) ;;
     *) export PATH="$PNPM_HOME:$PATH" ;;

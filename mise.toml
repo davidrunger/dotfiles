@@ -1,0 +1,5 @@
+[settings]
+activate_aggressive = true
+
+[tools]
+node = "22.14.0"

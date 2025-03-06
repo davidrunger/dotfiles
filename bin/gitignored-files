@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+# List all gitignored files.
+
+set -euo pipefail # exit on any error, don't allow undefined variables, pipes don't swallow errors
+
+git ls-files --others --ignored --exclude-standard

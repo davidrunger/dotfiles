@@ -7,13 +7,13 @@ mkdir -p ~/.mitmproxy/
 mkdir -p ~/code/dotfiles/feature-flags/
 
 ln -sf ~/code/dotfiles/aprc.rb ~/.config/aprc
-ln -sf ~/code/dotfiles/asdfrc ~/.asdfrc
 ln -sf ~/code/dotfiles/cheat/ ~/.config/
 ln -sf ~/code/dotfiles/gemrc.yml ~/.gemrc
 ln -sf ~/code/dotfiles/git/gitconfig ~/.gitconfig
 ln -sf ~/code/dotfiles/git/global_gitignore ~/.gitignore
 ln -sf ~/code/dotfiles/irbrc.rb ~/.irbrc.rb
 ln -sf ~/code/dotfiles/kitty/ ~/.config/
+ln -sf ~/code/dotfiles/mise.toml ~/.config/mise/config.toml
 ln -sf ~/code/dotfiles/mitmproxy.yml ~/.mitmproxy/config.yaml
 ln -sf ~/code/dotfiles/pryrc.rb ~/.pryrc
 ln -sf ~/code/dotfiles/rspec ~/.rspec

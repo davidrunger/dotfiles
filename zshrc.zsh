@@ -13,7 +13,6 @@ fi
 # Look for zsh completion definitions in dotfiles/completions/ directory.
 # NOTE: This must come before loading oh-my-zsh.
 fpath=(~/code/dotfiles/completions $fpath)
-fpath=(~/.asdf/completions $fpath)
 
 # zsh/oh-my-zsh
 # NOTE: must come after sourcing linux.zsh, so that git is available via Homebrew for update check.
@@ -109,11 +108,6 @@ path=(
   $path
 )
 
-# asdf setup (needs to be below path setup)
-if [ -d "$HOME/.asdf/" ]; then
-  export PATH="$HOME/.asdf/shims:$PATH"
-fi
-
 if [ -v LINUX ] ; then
   path=($HOME/code/dotfiles/bin-linux $path)
 else if [ -v DARWIN ]
@@ -144,3 +138,6 @@ export SAVEHIST="$HISTSIZE"
 # Atuin (https://github.com/atuinsh/atuin)
 . "$HOME/.atuin/bin/env"
 eval "$(atuin init zsh --disable-up-arrow)"
+
+# Mise
+eval "$(mise activate zsh)"

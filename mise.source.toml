@@ -1,5 +1,9 @@
 [settings]
 activate_aggressive = true
+disable_tools = ["ruby"]
+
+[settings.status]
+missing_tools = "always"
 
 [tools]
 node = "22.14.0"

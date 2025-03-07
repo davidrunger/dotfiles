@@ -38,6 +38,7 @@ class GitHubStarAnalyzer {
   private token: string;
   private headers: Record<string, string>;
   private cache: GitHubCache;
+  private allMyStarredReposSet: Set<string>;
 
   constructor(token: string) {
     this.token = token;
@@ -46,6 +47,7 @@ class GitHubStarAnalyzer {
       Accept: 'application/vnd.github.v3+json',
     };
     this.cache = new GitHubCache();
+    this.allMyStarredReposSet = new Set();
   }
 
   private async checkRateLimit(response: Response): Promise<void> {
@@ -233,7 +235,15 @@ class GitHubStarAnalyzer {
   }
 
   githubLink(repo: string): string {
-    return `https://github.com/${repo}`;
+    let bullet = '';
+
+    if (this.allMyStarredReposSet.has(repo)) {
+      bullet = '* ';
+    } else {
+      bullet = '- ';
+    }
+
+    return `${bullet}https://github.com/${repo}`;
   }
 
   async analyzeStarPatterns(
@@ -243,7 +253,7 @@ class GitHubStarAnalyzer {
     maxStarredReposPerStargazer: number,
   ): Promise<void> {
     const allMyStarredReposArray = await this.getAllStarredRepos(username);
-    const allMyStarredReposSet = new Set(allMyStarredReposArray);
+    this.allMyStarredReposSet = new Set(allMyStarredReposArray);
     const myReposToAnalyze = allMyStarredReposArray.slice(
       0,
       numberOfMyReposToLookAt,
@@ -294,7 +304,8 @@ class GitHubStarAnalyzer {
         // Don't include my already starred repos.
         const potentialRecs = new Set(
           [...stars].filter(
-            (x) => process.env.INCLUDE_MY_REPOS || !allMyStarredReposSet.has(x),
+            (x) =>
+              process.env.INCLUDE_MY_REPOS || !this.allMyStarredReposSet.has(x),
           ),
         );
         if (potentialRecs.size > 0) {
@@ -318,7 +329,10 @@ class GitHubStarAnalyzer {
       const stars = stargazerRepos[stargazer];
       for (const repo of stars) {
         // Don't include my already starred repos.
-        if (process.env.INCLUDE_MY_REPOS || !allMyStarredReposSet.has(repo)) {
+        if (
+          process.env.INCLUDE_MY_REPOS ||
+          !this.allMyStarredReposSet.has(repo)
+        ) {
           recommendationsByPopularity[repo] =
             (recommendationsByPopularity[repo] || 0) + 1;
         }

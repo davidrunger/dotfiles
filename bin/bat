@@ -1,0 +1,36 @@
+#!/usr/bin/env bash
+
+# Run `bat` with some additional niceties like no paging and line number highlighting.
+
+set -euo pipefail # exit on any error, don't allow undefined variables, pipes don't swallow errors
+
+# Attempt to locate the real bat binary.
+real_bat="$(command -v bat)"
+
+# Get the absolute path of this script.
+script_bat="$(realpath "$0")"
+
+# If the located bat is this script, remove this script's directory from PATH and try again.
+if [ "$real_bat" = "$script_bat" ]; then
+  script_dir="$(dirname "$script_bat")"
+  PATH=$(echo "$PATH" | tr ':' '\n' | grep -v "^${script_dir}$" | paste -sd ':' -)
+  export PATH
+  real_bat="$(command -v bat)"
+fi
+
+if [ -z "$real_bat" ]; then
+  echo "Error: real bat binary not found" >&2
+  exit 1
+fi
+
+common_bat_args='--paging=never'
+
+# Check if the first argument matches file:line pattern.
+if [[ "$1" =~ ^([^:]+):([0-9]+)$ ]]; then
+  file="${BASH_REMATCH[1]}"
+  line="${BASH_REMATCH[2]}"
+  shift
+  exec "$real_bat" $common_bat_args --highlight-line="$line" "$file" "$@"
+else
+  exec "$real_bat" $common_bat_args "$@"
+fi

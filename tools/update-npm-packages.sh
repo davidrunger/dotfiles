@@ -44,7 +44,7 @@ for dir in $(my-repos) ; do
       if [ -f pnpm-lock.yaml ]; then
         update_and_create_pr "pnpm update && pnpm dedupe"
       elif [ -f yarn.lock ]; then
-        update_and_create_pr "yarn upgrade && pnpx yarn-deduplicate yarn.lock"
+        update_and_create_pr "yarn upgrade --latest && pnpx yarn-deduplicate yarn.lock"
       fi
     fi
 

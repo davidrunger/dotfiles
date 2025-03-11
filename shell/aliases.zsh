@@ -1,4 +1,3 @@
-alias bat='bat --paging=never'
 alias bc='bc -l'
 alias br='bin/rubocop'
 alias bs='bin/rspec'

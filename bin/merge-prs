@@ -14,13 +14,34 @@ require 'octokit'
 require 'command_kit'
 require 'active_support'
 require 'active_support/all'
-require 'logger'
 require_relative "#{Dir.home}/code/dotfiles/utils/ruby/monkeypatch_string_color.rb"
 require_relative "#{Dir.home}/code/dotfiles/utils/ruby/runger_config.rb"
 require_relative "#{Dir.home}/code/dotfiles/utils/ruby/memoization.rb"
 
 # rubocop:disable Naming/MethodParameterName
+# ^ We want to name some parameters `pr`.
+
+module Helpers
+  prepend Memoization
+
+  private
+
+  def log_verbose(message)
+    puts(message) if verbose?
+  end
+
+  memoize \
+  def verbose?
+    !!@verbose
+  end
+
+  def repo_hash
+    { repo: @repo, user: 'davidrunger' }
+  end
+end
+
 class GithubPrAutoMerger < CommandKit::Command
+  include Helpers
   prepend Memoization
 
   option(
@@ -34,170 +55,183 @@ class GithubPrAutoMerger < CommandKit::Command
   def run
     Signal.trap('SIGINT') { exit_gracefully }
 
-    client # make sure client can be initialized without error
+    github_client # make sure client can be initialized without error
 
     repos.each do |repo|
       merge_dependabot_prs(repo)
     rescue StandardError => e
-      puts "Error processing repo #{repo}: #{e.message}".red
+      puts("Error processing repo #{repo}: #{e.message}".red)
     end
   end
 
   private
 
-  memoize def verbose?
-    !!@verbose
+  memoize \
+  def repos
+    RungerConfig.new("#{Dir.home}/code/dotfiles").
+      get('auto-merge-repos').
+      split("\n")
   end
 
-  memoize def logger
-    Logger.new("/tmp/auto-merge-prs-#{Time.now.utc.iso8601}.txt")
-  end
+  memoize \
+  def github_client
+    access_token =
+      ENV.fetch('GITHUB_ACCESS_TOKEN') do
+        raise('GITHUB_ACCESS_TOKEN environment variable is not set.')
+      end
 
-  memoize def repos
-    RungerConfig.new("#{Dir.home}/code/dotfiles").get('auto-merge-repos').split("\n")
-  end
-
-  memoize def client
-    token = ENV.fetch('GITHUB_ACCESS_TOKEN', nil)
-
-    if token.nil?
-      raise('GITHUB_ACCESS_TOKEN environment variable is not set')
-    end
-
-    Octokit::Client.new(access_token: token, auto_paginate: true).tap do |client|
+    Octokit::Client.new(access_token:, auto_paginate: true).tap do |client|
       client.user.login # Test authentication
     end
   rescue Octokit::Unauthorized
-    raise('Invalid GitHub access token')
+    raise('Invalid GitHub access token.')
   end
 
   def merge_dependabot_prs(repo)
-    open_prs = fetch_dependabot_prs(repo)
-
-    open_prs&.each_with_index do |pr, index|
-      process_pr(repo, pr)
-
-      unless index == open_prs.size - 1
-        sleep(10) # Wait between PRs in the same repo
-      end
-    rescue => error
-      log_pr_merge_error(repo, pr, error)
-    end
-  end
-
-  def process_pr(repo, pr)
-    if dependabot_rebasing?(repo, pr)
-      log_verbose("Dependabot is rebasing PR ##{pr.number} in #{repo}. Skipping.".yellow)
-    elsif actions_completed?(repo, pr) && merge_pr(repo, pr)
-      log_merged_pr(repo, pr)
-    end
-  end
-
-  def fetch_dependabot_prs(repo)
-    log_verbose("Fetching PRs for #{repo}".green)
-    client.pull_requests(user: 'davidrunger', repo:, author: 'dependabot', state: 'open').tap do
-      log_verbose("Done fetching PRs for #{repo}".green)
-    end
-  end
-
-  def dependabot_rebasing?(repo, pr)
-    # Refresh PR to get latest body.
-    pr = client.pull_request(repo_hash(repo), pr.number)
-
-    pr.body&.include?('Dependabot is rebasing this PR')
-  end
-
-  # rubocop:disable Metrics/MethodLength
-  # rubocop:disable Metrics/PerceivedComplexity
-  def actions_completed?(repo, pr)
-    max_wait_time = 600 # 10 minutes
-    start_time = Time.now
-
-    loop do
-      statuses =
-        client.
-          combined_status(repo_hash(repo), pr.head.sha).
-          statuses.
-          map(&:state)
-
-      conclusions =
-        client.
-          check_runs_for_ref(repo_hash(repo), pr.head.sha).
-          check_runs.
-          map(&:conclusion)
-
-      unskipped_statuses_and_conclusions =
-        (statuses + conclusions).compact.reject { _1.in?(%w[skipped]) }
-
-      # No actions yet
-      if unskipped_statuses_and_conclusions.empty?
-        sleep(10)
-        break if Time.now - start_time > max_wait_time
-
-        puts "No GitHub Actions found for PR ##{pr.number} in #{repo}".yellow
-        return false
-      end
-
-      # Check action states
-      if unskipped_statuses_and_conclusions.all?('success')
-        return true
-      elsif unskipped_statuses_and_conclusions.include?('failure')
-        puts "Failing GitHub Actions for PR ##{pr.number} in #{repo}".red
-        return false
-      end
-
-      # Wait if actions are in progress
-      sleep(10)
-      break if Time.now - start_time > max_wait_time
-    end
-
-    false
-  end
-  # rubocop:enable Metrics/PerceivedComplexity
-  # rubocop:enable Metrics/MethodLength
-
-  def merge_pr(repo, pr)
-    log_verbose("Merging PR ##{pr.number} in #{repo}".green)
-
-    client.merge_pull_request(
-      repo_hash(repo),
-      pr.number,
-      '', # commit message body
-      merge_method: 'squash',
-    )
-
-    true
-  rescue Octokit::MethodNotAllowed => error
-    puts(error.inspect.red)
-
-    false
-  end
-
-  def log_merged_pr(repo, pr)
-    log_message = "Merged PR ##{pr.number} in #{repo} - #{pr.title}"
-    logger.info(log_message)
-    puts log_message.green
-  end
-
-  def log_pr_merge_error(repo, pr, error)
-    error_message = "Failed to merge PR ##{pr.number} in #{repo}: #{error.message}"
-    logger.error(error_message)
-    puts error_message.red
-  end
-
-  def log_verbose(message)
-    puts message if verbose?
-  end
-
-  def repo_hash(repo)
-    { repo:, user: 'davidrunger' }
+    PullRequestMerger.new(repo, github_client, verbose?).merge_dependabot_prs
   end
 
   def exit_gracefully
-    puts "\nInterrupted. Exiting gracefully...".yellow
+    puts("\nInterrupted. Exiting gracefully...".yellow)
     exit(0)
   end
+
+  # Internal class to handle pull request processing
+  class PullRequestMerger
+    include Helpers
+    prepend Memoization
+
+    def initialize(repo, client, verbose)
+      @repo = repo
+      @client = client
+      @verbose = verbose
+    end
+
+    def merge_dependabot_prs
+      dependabot_prs&.each_with_index do |pr, index|
+        merge_if_ready(pr)
+
+        unless index == dependabot_prs.size - 1
+          # Wait between PRs in the same repo to give dependabot time to start rebasing, if needed.
+          sleep(10)
+        end
+      rescue => error
+        log_pr_merge_error(pr, error)
+      end
+    end
+
+    memoize \
+    def dependabot_prs
+      log_verbose("Fetching PRs for #{@repo}")
+
+      @client.pull_requests(repo_hash, author: 'dependabot', state: 'open').tap do
+        log_verbose("Done fetching PRs for #{@repo}".green)
+      end
+    end
+
+    def merge_if_ready(pr)
+      if dependabot_rebasing?(pr)
+        log_verbose("Dependabot is rebasing PR ##{pr.number} in #{@repo}. Skipping.".yellow)
+      elsif checks_completed_successfully?(pr) && merge_pr(pr)
+        log_merged_pr(pr)
+      end
+    end
+
+    def log_pr_merge_error(pr, error)
+      error_message = "Failed to merge PR ##{pr.number} in #{@repo}: #{error.message}"
+      puts(error_message.red)
+    end
+
+    private
+
+    def dependabot_rebasing?(pr)
+      # Refresh PR to get latest body.
+      pr = @client.pull_request(repo_hash, pr.number)
+
+      pr.body&.include?('Dependabot is rebasing this PR')
+    end
+
+    def checks_completed_successfully?(pr)
+      GitHubActionChecker.new(@repo, @client, pr).checks_completed_successfully?
+    end
+
+    def merge_pr(pr)
+      log_verbose("Merging PR ##{pr.number} in #{@repo}")
+
+      @client.merge_pull_request(
+        repo_hash,
+        pr.number,
+        '', # commit message body
+        merge_method: 'squash',
+      )
+
+      true
+    rescue Octokit::MethodNotAllowed => error
+      puts(error.inspect.red)
+
+      false
+    end
+
+    def log_merged_pr(pr)
+      puts("Merged PR ##{pr.number} in #{@repo} - #{pr.title}".green)
+    end
+  end
+
+  # Internal class to check GitHub Actions status
+  class GitHubActionChecker
+    include Helpers
+
+    MAX_WAIT_TIME = 600 # 10 minutes
+
+    def initialize(repo, client, pr)
+      @repo = repo
+      @client = client
+      @pr = pr
+      @start_time = Time.now
+    end
+
+    def checks_completed_successfully?
+      loop do
+        statuses = latest_statuses
+        conclusions = latest_conclusions
+
+        unskipped_statuses_and_conclusions =
+          (statuses + conclusions).compact.reject { _1.in?(%w[skipped]) }
+
+        # There are no actions yet.
+        if unskipped_statuses_and_conclusions.empty?
+          puts("No GitHub Actions found for PR ##{@pr.number} in #{@repo}".yellow)
+          return false
+        end
+
+        # Check action states.
+        if unskipped_statuses_and_conclusions.all?('success')
+          return true
+        elsif unskipped_statuses_and_conclusions.include?('failure')
+          puts("Failing GitHub Actions for PR ##{@pr.number} in #{@repo}".red)
+          return false
+        end
+
+        # Action(s) are in progress. Wait.
+        sleep(10)
+        break if Time.now - @start_time > MAX_WAIT_TIME
+      end
+
+      false
+    end
+
+    private
+
+    def latest_statuses
+      @client.combined_status(repo_hash, @pr.head.sha).statuses.map(&:state)
+    end
+
+    def latest_conclusions
+      @client.check_runs_for_ref(repo_hash, @pr.head.sha).check_runs.map(&:conclusion)
+    end
+  end
 end
+
 # rubocop:enable Naming/MethodParameterName
 
 GithubPrAutoMerger.start

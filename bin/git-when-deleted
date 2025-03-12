@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+# Show in [git] [when] a file was [deleted].
+
+set -euo pipefail # exit on any error, don't allow undefined variables, pipes don't swallow errors
+
+git log --all -1 -- "$@"

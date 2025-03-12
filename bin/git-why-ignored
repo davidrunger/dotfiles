@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+# Show in [git] [why] a file is [ignored].
+
+set -euo pipefail # exit on any error, don't allow undefined variables, pipes don't swallow errors
+
+git check-ignore -v "$@"

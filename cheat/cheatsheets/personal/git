@@ -215,3 +215,6 @@ git ls-files --others --exclude-standard
 
 # To see when a file was deleted:
 git log --all -1 -- file_path.txt
+
+# See why a file is gitignored:
+git check-ignore -v file_path.txt

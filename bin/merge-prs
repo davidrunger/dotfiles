@@ -86,9 +86,9 @@ class GithubPrAutoMerger < CommandKit::Command
   end
 
   def process_pr(repo, pr)
-    wait_for_rebase_check(repo, pr)
-
-    if actions_completed?(repo, pr) && merge_pr(repo, pr)
+    if dependabot_rebasing?(repo, pr)
+      log_verbose("Dependabot is rebasing PR ##{pr.number} in #{repo}. Skipping.".yellow)
+    elsif actions_completed?(repo, pr) && merge_pr(repo, pr)
       log_merged_pr(repo, pr)
     end
   end
@@ -100,16 +100,11 @@ class GithubPrAutoMerger < CommandKit::Command
     end
   end
 
-  def wait_for_rebase_check(repo, pr)
-    start_time = Time.now
+  def dependabot_rebasing?(repo, pr)
+    # Refresh PR to get latest body.
+    pr = client.pull_request(repo_hash(repo), pr.number)
 
-    while pr.body&.include?('Dependabot is rebasing this PR')
-      sleep(20)
-      break if Time.now - start_time > 900 # 15 minutes
-
-      # Refresh PR to get latest body
-      pr = client.pull_request(repo, pr.number)
-    end
+    pr.body&.include?('Dependabot is rebasing this PR')
   end
 
   # rubocop:disable Metrics/MethodLength
@@ -121,13 +116,13 @@ class GithubPrAutoMerger < CommandKit::Command
     loop do
       statuses =
         client.
-          combined_status({ repo:, user: 'davidrunger' }, pr.head.sha).
+          combined_status(repo_hash(repo), pr.head.sha).
           statuses.
           map(&:state)
 
       conclusions =
         client.
-          check_runs_for_ref({ repo:, user: 'davidrunger' }, pr.head.sha).
+          check_runs_for_ref(repo_hash(repo), pr.head.sha).
           check_runs.
           map(&:conclusion)
 
@@ -165,7 +160,7 @@ class GithubPrAutoMerger < CommandKit::Command
     log_verbose("Merging PR ##{pr.number} in #{repo}".green)
 
     client.merge_pull_request(
-      { repo:, user: 'davidrunger' },
+      repo_hash(repo),
       pr.number,
       '', # commit message body
       merge_method: 'squash',
@@ -192,6 +187,10 @@ class GithubPrAutoMerger < CommandKit::Command
 
   def log_verbose(message)
     puts message if verbose?
+  end
+
+  def repo_hash(repo)
+    { repo:, user: 'davidrunger' }
   end
 
   def exit_gracefully

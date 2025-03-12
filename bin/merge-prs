@@ -125,7 +125,7 @@ class GithubPrAutoMerger < CommandKit::Command
       log_verbose("Fetching PRs for #{@repo}")
 
       @client.pull_requests(repo_hash, author: 'dependabot', state: 'open').tap do
-        log_verbose("Done fetching PRs for #{@repo}".green)
+        log_verbose("Done fetching PRs for #{@repo}".cyan)
       end
     end
 

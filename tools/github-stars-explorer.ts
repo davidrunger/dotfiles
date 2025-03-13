@@ -254,10 +254,16 @@ class GitHubStarAnalyzer {
   ): Promise<void> {
     const allMyStarredReposArray = await this.getAllStarredRepos(username);
     this.allMyStarredReposSet = new Set(allMyStarredReposArray);
-    const myReposToAnalyze = allMyStarredReposArray.slice(
-      0,
-      numberOfMyReposToLookAt,
-    );
+    let myReposToAnalyze;
+
+    if (process.env.REPOS_TO_EXPLORE) {
+      myReposToAnalyze = process.env.REPOS_TO_EXPLORE.split(',');
+    } else {
+      myReposToAnalyze = allMyStarredReposArray.slice(
+        0,
+        numberOfMyReposToLookAt,
+      );
+    }
 
     console.log(`Found ${allMyStarredReposArray.length} total starred repos.`);
     console.log(
@@ -372,6 +378,15 @@ async function main() {
   }
 
   const analyzer = new GitHubStarAnalyzer(token);
+
+  if (
+    process.env.NUMBER_OF_MY_REPOS_TO_LOOK_AT &&
+    process.env.REPOS_TO_EXPLORE
+  ) {
+    console.warn(
+      'Warning: NUMBER_OF_MY_REPOS_TO_LOOK_AT is ignored when REPOS_TO_EXPLORE is present.',
+    );
+  }
 
   const numberOfMyReposToLookAt = parseInt(
     process.env.NUMBER_OF_MY_REPOS_TO_LOOK_AT || '2',

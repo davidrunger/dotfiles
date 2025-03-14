@@ -1,3 +1,4 @@
+import { readFileSync } from 'fs';
 import ky from 'ky';
 
 interface LanguageEdge {
@@ -63,6 +64,10 @@ function formatLanguageBreakdown(
 async function fetchAllStarredRepos(
   username: string,
 ): Promise<{ repo: Repository; starredAt: string }[]> {
+  if (process.env.STARS_DATA_FILE_PATH) {
+    return JSON.parse(readFileSync(process.env.STARS_DATA_FILE_PATH, 'utf8'));
+  }
+
   let hasNextPage = true;
   let endCursor: string | null = null;
   const allStarredRepos: { repo: Repository; starredAt: string }[] = [];

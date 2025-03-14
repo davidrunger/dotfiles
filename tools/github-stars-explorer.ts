@@ -4,6 +4,8 @@
 import { Redis } from 'ioredis';
 import ky from 'ky';
 
+const MY_USERNAME = 'davidrunger';
+
 class GitHubCache {
   private redis: Redis;
   private cacheTTL: number;
@@ -198,11 +200,11 @@ class GitHubStarAnalyzer {
     while (users.length <= numberOfStargazers) {
       const endpoint = `/repos/${repo}/stargazers?page=${page}&per_page=100`;
 
-      const cachedData = await this.cache.get(endpoint);
+      const cachedData = await this.cache.get(endpoint) as Array<string>;
       if (cachedData) {
         console.log(`Cache hit for ${repo}'s stargazers page ${page}`);
         if (!cachedData.length) break;
-        users.push(...cachedData);
+        users.push(...cachedData.filter(username => username !== MY_USERNAME));
         page++;
         continue;
       }
@@ -223,7 +225,7 @@ class GitHubStarAnalyzer {
 
         if (!data.length) break;
 
-        users.push(...usernames);
+        users.push(...usernames.filter(username => username !== MY_USERNAME));
         page++;
       } catch (error) {
         console.error(`Error fetching stargazers: ${error}`);

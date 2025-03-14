@@ -1,4 +1,5 @@
 import { readFileSync } from 'fs';
+import chalk from 'chalk';
 import ky from 'ky';
 
 interface LanguageEdge {
@@ -55,7 +56,7 @@ function formatLanguageBreakdown(
     .sort((a, b) => b.size - a.size)
     .map(
       ({ node, size }) =>
-        `${node.name} (${((size / totalSize) * 100).toFixed(1)}%)`,
+        `${chalk.hex(node.color)('██')} ${node.name} (${((size / totalSize) * 100).toFixed(1)}%)`,
     )
     .join(', ');
 }
@@ -193,19 +194,23 @@ async function main() {
     console.log('\n=== STARRED REPOSITORIES (Sorted by Stars) ===\n');
     sortedRepos.forEach((item) => {
       const repo = item.repo;
-      console.log(`Repository: ${repo.nameWithOwner}`);
-      console.log(`Stars: ${repo.stargazerCount}`);
-      console.log(`Starred At: ${new Date(item.starredAt).toLocaleString()}`);
+      console.log(chalk.blue.bold(`${repo.nameWithOwner}`));
+      console.log(chalk.yellow(`Stars: ${repo.stargazerCount}`));
       console.log(
-        `Languages: ${formatLanguageBreakdown(
+        chalk.green(
+          `Starred: ${new Date(item.starredAt).toLocaleString().split(',')[0]}`,
+        ),
+      );
+      console.log(
+        `${chalk.magenta('Languages:')} ${formatLanguageBreakdown(
           repo.languages.edges,
           repo.languages.totalSize,
         )}`,
       );
       console.log(
-        `Description: ${repo.description || 'No description provided'}`,
+        `${chalk.gray('Description:')} ${repo.description || '[none]'}`,
       );
-      console.log('-'.repeat(80));
+      console.log();
     });
   } catch (error) {
     console.error('An error occurred:', error);

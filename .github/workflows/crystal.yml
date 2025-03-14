@@ -3,7 +3,7 @@ name: Crystal Checks
 on:
   pull_request:
     branches:
-      - "*"
+      - '*'
   push:
     branches:
       - main

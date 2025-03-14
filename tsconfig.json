@@ -16,8 +16,5 @@
     "target": "esnext",
     "types": []
   },
-  "include": [
-    "personal/**/*.ts",
-    "tools/**/*.ts",
-  ]
+  "include": ["personal/**/*.ts", "tools/**/*.ts"]
 }

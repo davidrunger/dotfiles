@@ -1,33 +1,33 @@
 // Paste this into e.g. https://caiorss.github.io/bookmarklet-maker/ to convert
 // this to bookmarklet code.
 
-const targetSelector = ".js-button-text";
-const targetText = "Load diff";
+const targetSelector = '.js-button-text';
+const targetText = 'Load diff';
 
 function setButtonClickTimeouts() {
-  console.log("running setButtonClickTimeouts");
+  console.log('running setButtonClickTimeouts');
 
   const loadDiffButtons = [...document.querySelectorAll(targetSelector)].filter(
-    (el) => el.innerText.includes(targetText)
+    (el) => el.innerText.includes(targetText),
   );
 
-  [...loadDiffButtons, "setIntervalPlaceholder"].forEach((el, index) => {
-    console.log("el", el);
+  [...loadDiffButtons, 'setIntervalPlaceholder'].forEach((el, index) => {
+    console.log('el', el);
 
     setTimeout(() => {
       if (el.click) {
-        console.log("el click", el);
+        console.log('el click', el);
 
         el.click();
       } else if (
-        el === "setIntervalPlaceholder" &&
+        el === 'setIntervalPlaceholder' &&
         !window.githubBookmarkletLoadMoreInterval
       ) {
-        console.log("setting up interval");
+        console.log('setting up interval');
 
         window.githubBookmarkletLoadMoreInterval = setInterval(
           setButtonClickTimeouts,
-          1000
+          1000,
         );
       }
     }, index * 300);

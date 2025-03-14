@@ -56,7 +56,7 @@ function formatLanguageBreakdown(
     .sort((a, b) => b.size - a.size)
     .map(
       ({ node, size }) =>
-        `${chalk.hex(node.color)('██')} ${node.name} (${((size / totalSize) * 100).toFixed(1)}%)`,
+        `${chalk.hex(node.color || '#555')('██')} ${node.name} (${((size / totalSize) * 100).toFixed(1)}%)`,
     )
     .join(', ');
 }

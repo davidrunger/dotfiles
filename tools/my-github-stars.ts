@@ -133,12 +133,6 @@ async function fetchAllStarredRepos(username: string): Promise<{repo: Repository
       // Update pagination info for next iteration
       hasNextPage = starredData.pageInfo.hasNextPage;
       endCursor = starredData.pageInfo.endCursor;
-
-      // Add a small delay to avoid rate limiting
-      if (hasNextPage) {
-        await new Promise(resolve => setTimeout(resolve, 1000));
-      }
-
     } catch (error) {
       console.error('Error fetching starred repositories:', error);
       if (error instanceof Error) {

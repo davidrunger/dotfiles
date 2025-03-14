@@ -1,25 +1,25 @@
 // Paste this into e.g. https://caiorss.github.io/bookmarklet-maker/ to convert
 // this to bookmarklet code.
 
-const targetSelector = ".ajax-pagination-btn";
-const targetText = "Load more";
+const targetSelector = '.ajax-pagination-btn';
+const targetText = 'Load more';
 
 function setButtonClickTimeouts() {
   const loadMoreButtons = [...document.querySelectorAll(targetSelector)].filter(
-    (el) => el.innerText.includes(targetText)
+    (el) => el.innerText.includes(targetText),
   );
 
-  [...loadMoreButtons, "setIntervalPlaceholder"].forEach((el, index) => {
+  [...loadMoreButtons, 'setIntervalPlaceholder'].forEach((el, index) => {
     setTimeout(() => {
       if (el.click) {
         el.click();
       } else if (
-        el === "setIntervalPlaceholder" &&
+        el === 'setIntervalPlaceholder' &&
         !window.githubBookmarkletLoadMoreInterval
       ) {
         window.githubBookmarkletLoadMoreInterval = setInterval(
           setButtonClickTimeouts,
-          1000
+          1000,
         );
       }
     }, index * 300);

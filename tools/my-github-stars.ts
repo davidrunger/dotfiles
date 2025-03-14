@@ -175,6 +175,10 @@ async function fetchAllStarredRepos(
   return allStarredRepos;
 }
 
+function terminalLink(text: string, url: string): string {
+  return `\u001b]8;;${url}\u0007${text}\u001b]8;;\u0007`;
+}
+
 // Main function.
 async function main() {
   try {
@@ -194,21 +198,21 @@ async function main() {
     console.log('\n=== STARRED REPOSITORIES (Sorted by Stars) ===\n');
     sortedRepos.forEach((item) => {
       const repo = item.repo;
-      console.log(chalk.blue.bold(`${repo.nameWithOwner}`));
-      console.log(chalk.yellow(`Stars: ${repo.stargazerCount}`));
       console.log(
-        chalk.green(
-          `Starred: ${new Date(item.starredAt).toLocaleString().split(',')[0]}`,
+        terminalLink(
+          chalk.blue.bold(`${repo.nameWithOwner}`),
+          `https://github.com/${repo.nameWithOwner}`,
         ),
+      );
+      console.log(repo.description || '[no description]');
+      console.log(
+        `${chalk.yellow(`Stars: ${repo.stargazerCount}`)} ${chalk.gray(`(${new Date(item.starredAt).toISOString().slice(0, 10)})`)}`,
       );
       console.log(
         `${chalk.magenta('Languages:')} ${formatLanguageBreakdown(
           repo.languages.edges,
           repo.languages.totalSize,
         )}`,
-      );
-      console.log(
-        `${chalk.gray('Description:')} ${repo.description || '[none]'}`,
       );
       console.log();
     });

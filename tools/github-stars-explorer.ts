@@ -289,16 +289,19 @@ class GitHubStarAnalyzer {
       }
     }
 
+    let rank = 1;
+    const totalStargazers = allStargazers.size;
     for (const stargazer of allStargazers) {
       const starredReposOfStargazer = await this.getStarredRepos(
         stargazer,
         maxStarredReposPerStargazer,
       );
       console.log(
-        `Found starredReposOfStargazer for ${stargazer}: ` +
+        `Found starredReposOfStargazer for ${stargazer} (${rank}/${totalStargazers}): ` +
           JSON.stringify(starredReposOfStargazer),
       );
       stargazerRepos[stargazer] = new Set(starredReposOfStargazer);
+      rank++;
     }
 
     const recommendationsByOverlapWithMe: Record<string, number> = {};

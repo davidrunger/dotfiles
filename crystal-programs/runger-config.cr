@@ -2,7 +2,7 @@
 
 require "colorize"
 require "yaml"
-require "../utils/crystal/memoization"
+require "memoization"
 
 class RungerConfig
   def initialize(directory : String | Nil)

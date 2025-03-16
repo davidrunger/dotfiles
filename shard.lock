@@ -8,6 +8,10 @@ shards:
     git: https://github.com/at-grandpa/clim.git
     version: 0.17.1
 
+  memoization:
+    git: https://github.com/davidrunger/memoization.git
+    version: 0.0.1
+
   pool:
     git: https://github.com/ysbaddaden/pool.git
     version: 0.2.4

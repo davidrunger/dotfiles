@@ -6,7 +6,7 @@ require "colorize"
 require "digest/sha256"
 require "file_utils"
 require "redis"
-require "../utils/crystal/memoization"
+require "memoization"
 
 class InstallPackagesInBackground
   REDIS_HASH_KEY = "runger_dependencies"

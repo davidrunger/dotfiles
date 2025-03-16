@@ -2,7 +2,7 @@
 
 # Opens a GitHub PR in the browser (extracted from input piped to this command).
 
-require "../utils/crystal/memoization"
+require "memoization"
 
 class OpenPrInBrowser
   @create_pr_command_output : String

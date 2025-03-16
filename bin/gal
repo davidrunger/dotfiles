@@ -85,6 +85,9 @@ class Runner
         set -euo pipefail # exit on any error, don't allow undefined variables, pipes don't swallow errors
       BASH
     },
+    crystal: {
+      path: 'personal/crystal.cr',
+    },
     node: {
       path: 'app/javascript/typescript-scratchpad.ts',
     },

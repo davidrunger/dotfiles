@@ -20,7 +20,13 @@ guard(:shell, all_on_start: true) do
       match = guard_match_result.instance_variable_get(:@match_result) || '[no match]'
       system('hard-clear', exception: true)
       puts("Match for #{match} triggered execution.")
-      system('crystal spec --fail-fast --order=defined', exception: true)
+      options = %w[--fail-fast]
+      if File.exist?('shard.yml') && File.read('shard.yml').match?(%r{\barctic-fox/spectator\b})
+        options << '--order=defined'
+      else
+        options << '--order=default'
+      end
+      system("crystal spec #{options.join(' ')}", exception: true)
     rescue => error
       pp(error)
     end

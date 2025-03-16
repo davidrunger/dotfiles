@@ -21,26 +21,30 @@ require 'slop'
 require_relative "#{Dir.home}/code/dotfiles/utils/ruby/memoization.rb"
 
 module Gal
-  GUARDFILE_TYPES = %i[
-    bash
-    ctest
-    jest
-    node
-    ptest
-    python
-    rails
-    ruby
-    sidekiq
-    spec
-    sql
-  ].freeze
+  GUARDFILES_DIRECTORY_PATH = "#{Dir.home}/code/dotfiles/guardfiles".freeze
 
-  def self.print_options(options)
-    puts(
-      options.to_s.dup.
-        sub(%r{#{Dir.home}/code/dotfiles/bin/}, '').
-        sub(%r{gal \[options\]}, 'gal [spec file(s) to run] [options]'),
-    )
+  class << self
+    prepend Memoization
+
+    memoize \
+    def guardfile_types
+      `ls #{GUARDFILES_DIRECTORY_PATH}`.
+        split("\n").
+        map do |file_name|
+          file_name.delete_prefix('run_').delete_suffix('.rb')
+        end.
+        sort.
+        map(&:to_sym).
+        freeze
+    end
+
+    def print_options(options)
+      puts(
+        options.to_s.dup.
+          sub(%r{#{Dir.home}/code/dotfiles/bin/}, '').
+          sub(%r{gal \[options\]}, 'gal [spec file(s) to run] [options]'),
+      )
+    end
   end
 end
 
@@ -49,7 +53,7 @@ opts =
     o.symbol(
       '-g',
       '--guardfile',
-      "guardfile flag [#{Gal::GUARDFILE_TYPES.sort.join('|')}]".
+      "guardfile flag [#{Gal.guardfile_types.join('|')}]".
         sub(/\bspec\b/, 'spec(default)').
         sub(/\bptest\b/, 'ptest(Python unittest)'),
     )
@@ -213,12 +217,12 @@ class Runner
 
   memoize \
   def dotfiles_absolute_guardfile_path
-    "#{Dir.home}/code/dotfiles/guardfiles/#{guardfile_filename}.rb"
+    "#{Gal::GUARDFILES_DIRECTORY_PATH}/#{guardfile_filename}.rb"
   end
 
   memoize \
   def guardfile_filename
-    if Gal::GUARDFILE_TYPES.include?(guardfile_type)
+    if Gal.guardfile_types.include?(guardfile_type)
       "run_#{guardfile_type}"
     else
       raise("Unexpected guardfile flag '#{guardfile_type}'.")

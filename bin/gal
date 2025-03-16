@@ -54,8 +54,7 @@ opts =
       '-g',
       '--guardfile',
       "guardfile flag [#{Gal.guardfile_types.join('|')}]".
-        sub(/\bspec\b/, 'spec(default)').
-        sub(/\bptest\b/, 'ptest(Python unittest)'),
+        sub(/\bspec\b/, 'spec(default)'),
     )
     o.string('-t', '--target', 'jest target pattern')
     o.string('--coverage-target', 'specify SIMPLECOV_TARGET_FILE')

@@ -5,7 +5,7 @@
 require "redis"
 require "digest/sha256"
 
-require "../utils/crystal/memoization"
+require "memoization"
 require "../utils/crystal/runger_config"
 
 class FlagUnackedFileVersions

@@ -1,6 +1,5 @@
+require "memoization"
 require "yaml"
-
-require "./memoization"
 
 class RungerConfig
   def self.[](key)

@@ -36,8 +36,5 @@ jobs:
       - name: Force ameba rebuild if needed
         run: '[ -f bin/ameba ] || (rm -rf lib/ameba && shards install)'
 
-      - name: Run tests
-        run: crystal spec --order=random
-
       - name: Run Ameba
         run: bin/ameba

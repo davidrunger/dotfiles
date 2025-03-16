@@ -23,6 +23,7 @@ require_relative "#{Dir.home}/code/dotfiles/utils/ruby/memoization.rb"
 module Gal
   GUARDFILE_TYPES = %i[
     bash
+    ctest
     jest
     node
     ptest

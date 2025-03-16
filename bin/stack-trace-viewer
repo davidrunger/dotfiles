@@ -100,7 +100,7 @@ class StackTraceViewer < CommandKit::Command
       return
     end
 
-    match = line.match(/^\s*(?:#|from)\s*(\S+):(\d+):in/)
+    match = line.match(/^\s*(?:#|from)?\s*(\S+):(\d+):in/)
 
     if !match
       return

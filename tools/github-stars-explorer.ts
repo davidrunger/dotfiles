@@ -1,8 +1,14 @@
-#!/usr/bin/env tsx
 // Example usage (this will take a long time to run but should stay within the GitHub rate limit and should produce useful results):
 // NUMBER_OF_MY_REPOS_TO_LOOK_AT=60 NUMBER_OF_STARGAZERS_PER_REPO=20 MAX_STARRED_REPOS_PER_USER=300 INCLUDE_MY_REPOS=1 tsx --env-file=.env tools/github-stars-explorer.ts
+
 import { Redis } from 'ioredis';
 import ky from 'ky';
+
+import {
+  displayRepositories,
+  enrichRepositories,
+  Repository,
+} from './lib/githubReposEnrichedDisplay';
 
 const MY_USERNAME = 'davidrunger';
 
@@ -58,7 +64,6 @@ class GitHubStarAnalyzer {
     );
     console.log(`Requests remaining: ${remaining}`);
 
-    // Stop making requests once we have fewer than 5 remaining.
     if (remaining < 5) {
       const resetTime = new Date(
         Number(
@@ -101,7 +106,6 @@ class GitHubStarAnalyzer {
           page++;
           continue;
         } else {
-          // Assume that we are at the end of the data if cached data is empty.
           break;
         }
       }
@@ -129,65 +133,6 @@ class GitHubStarAnalyzer {
     }
 
     return maxStarredRepos ? repos.slice(0, maxStarredRepos) : repos;
-  }
-
-  async getStarredReposTotalCount(username: string): Promise<number> {
-    const endpoint = 'https://api.github.com/graphql';
-    const query = `
-      query($login: String!) {
-        user(login: $login) {
-          starredRepositories {
-            totalCount
-          }
-        }
-      }
-    `;
-
-    const variables = { login: username };
-
-    const cacheKey = JSON.stringify([endpoint, query, variables]);
-    const cachedData = await this.cache.get(cacheKey);
-
-    if (cachedData) {
-      return cachedData;
-    } else {
-      try {
-        const response = await ky.post<{
-          errors?: Array<string>;
-          data?: { user: { starredRepositories: { totalCount: number } } };
-        }>(endpoint, {
-          headers: {
-            Authorization: `Bearer ${this.token}`,
-            'Content-Type': 'application/json',
-          },
-          json: { query, variables },
-        });
-
-        await this.checkRateLimit(response);
-
-        const result = await response.json();
-
-        if (result.errors) {
-          console.error('GraphQL errors:', result.errors);
-          throw new Error('Error fetching data from GitHub GraphQL API');
-        }
-
-        if (result.data) {
-          const totalCount = result.data.user.starredRepositories.totalCount;
-          if (Number.isInteger(totalCount)) {
-            await this.cache.set(cacheKey, totalCount);
-            return totalCount;
-          } else {
-            throw new Error('totalCount was not an integer');
-          }
-        } else {
-          throw new Error('No data returned from GitHub GraphQL API');
-        }
-      } catch (error) {
-        console.error('Error:', error);
-        throw error;
-      }
-    }
   }
 
   async getRepoStargazers(
@@ -238,23 +183,68 @@ class GitHubStarAnalyzer {
     return users.slice(0, numberOfStargazers);
   }
 
-  githubLink(repo: string): string {
-    let bullet = '';
+  async getStarredReposTotalCount(username: string): Promise<number> {
+    const endpoint = 'https://api.github.com/graphql';
+    const query = `
+      query($login: String!) {
+        user(login: $login) {
+          starredRepositories {
+            totalCount
+          }
+        }
+      }
+    `;
 
-    if (this.allMyStarredReposSet.has(repo)) {
-      bullet = '* ';
+    const variables = { login: username };
+    const cacheKey = JSON.stringify([endpoint, query, variables]);
+    const cachedData = await this.cache.get(cacheKey);
+
+    if (cachedData) {
+      return cachedData;
     } else {
-      bullet = '- ';
-    }
+      try {
+        const response = await ky.post<{
+          errors?: Array<string>;
+          data?: { user: { starredRepositories: { totalCount: number } } };
+        }>(endpoint, {
+          headers: {
+            Authorization: `Bearer ${this.token}`,
+            'Content-Type': 'application/json',
+          },
+          json: { query, variables },
+        });
 
-    return `${bullet}https://github.com/${repo}`;
+        await this.checkRateLimit(response);
+
+        const result = await response.json();
+        if (result.errors) {
+          console.error('GraphQL errors:', result.errors);
+          throw new Error('Error fetching data from GitHub GraphQL API');
+        }
+
+        if (result.data) {
+          const totalCount = result.data.user.starredRepositories.totalCount;
+          if (Number.isInteger(totalCount)) {
+            await this.cache.set(cacheKey, totalCount);
+            return totalCount;
+          } else {
+            throw new Error('totalCount was not an integer');
+          }
+        } else {
+          throw new Error('No data returned from GitHub GraphQL API');
+        }
+      } catch (error) {
+        console.error('Error:', error);
+        throw error;
+      }
+    }
   }
 
   async analyzeStarPatterns(
     username: string,
     numberOfMyReposToLookAt: number,
     numberOfStargazersPerRepo: number,
-    maxStarredReposPerStargazer: number,
+    maxStarredReposPerUser: number,
   ): Promise<void> {
     const allMyStarredReposArray = await this.getAllStarredRepos(username);
     this.allMyStarredReposSet = new Set(allMyStarredReposArray);
@@ -294,7 +284,7 @@ class GitHubStarAnalyzer {
     for (const stargazer of allStargazers) {
       const starredReposOfStargazer = await this.getStarredRepos(
         stargazer,
-        maxStarredReposPerStargazer,
+        maxStarredReposPerUser,
       );
       console.log(
         `Found starredReposOfStargazer for ${stargazer} (${rank}/${totalStargazers}): ` +
@@ -314,7 +304,6 @@ class GitHubStarAnalyzer {
         stars.has(x),
       ).length;
       if (overlapCount > 0) {
-        // Don't include my already starred repos.
         const potentialRecs = new Set(
           [...stars].filter(
             (x) =>
@@ -325,10 +314,8 @@ class GitHubStarAnalyzer {
           const userTotalStars =
             await this.getStarredReposTotalCount(stargazer);
           console.log(`Total stars for ${stargazer}: ${userTotalStars}.`);
-
           const overlapFraction = overlapCount / userTotalStars;
           console.log(`overlapFraction for ${stargazer}: ${overlapFraction}.`);
-
           for (const rec of potentialRecs) {
             recommendationsByOverlapWithMe[rec] =
               (recommendationsByOverlapWithMe[rec] || 0) + overlapFraction;
@@ -341,7 +328,6 @@ class GitHubStarAnalyzer {
     for (const stargazer in stargazerRepos) {
       const stars = stargazerRepos[stargazer];
       for (const repo of stars) {
-        // Don't include my already starred repos.
         if (
           process.env.INCLUDE_MY_REPOS ||
           !this.allMyStarredReposSet.has(repo)
@@ -352,6 +338,7 @@ class GitHubStarAnalyzer {
       }
     }
 
+    // Sort recommendations.
     const sortedByOverlap = Object.entries(recommendationsByOverlapWithMe).sort(
       ([, a], [, b]) => b - a,
     );
@@ -359,15 +346,63 @@ class GitHubStarAnalyzer {
       ([, a], [, b]) => b - a,
     );
 
-    console.log('\nTop Recommendations by Overlap:');
-    for (const [repo, score] of sortedByOverlap.slice(0, 500)) {
-      console.log(`${this.githubLink(repo)} : ${Number(score.toFixed(3))}`);
-    }
+    // Build arrays of minimal repository objects for enrichment.
+    const overlapRepoNames = sortedByOverlap
+      .slice(0, 500)
+      .map(([repo]) => repo);
+    const popularityRepoNames = sortedByPopularity
+      .slice(0, 500)
+      .map(([repo]) => repo);
 
-    console.log('\nTop Recommendations by Popularity:');
-    for (const [repo, score] of sortedByPopularity.slice(0, 500)) {
-      console.log(`${this.githubLink(repo)} : ${score}`);
-    }
+    const minimalOverlapRepos: Repository[] = overlapRepoNames.map(
+      (fullName) => {
+        const [_owner, name] = fullName.split('/');
+        return {
+          name,
+          nameWithOwner: fullName,
+          description: '',
+          stargazerCount: 0,
+        };
+      },
+    );
+
+    const minimalPopularityRepos: Repository[] = popularityRepoNames.map(
+      (fullName) => {
+        const [_owner, name] = fullName.split('/');
+        return {
+          name,
+          nameWithOwner: fullName,
+          description: '',
+          stargazerCount: 0,
+        };
+      },
+    );
+
+    // Enrich repository details for display (this will now include total star counts).
+    const enrichedOverlapRepos = await enrichRepositories(minimalOverlapRepos, {
+      enrichLanguages: true,
+    });
+    const enrichedPopularityRepos = await enrichRepositories(
+      minimalPopularityRepos,
+      { enrichLanguages: true },
+    );
+
+    // Build extra data mappings.
+    const overlapExtraData: Record<string, { overlapScore?: number }> = {};
+    sortedByOverlap.slice(0, 500).forEach(([repo, score]) => {
+      overlapExtraData[repo] = { overlapScore: score };
+    });
+
+    const popularityExtraData: Record<string, { totalStars?: number }> = {};
+    sortedByPopularity.slice(0, 500).forEach(([repo, score]) => {
+      popularityExtraData[repo] = { totalStars: score };
+    });
+
+    console.log('\n=== Top Recommendations by Overlap ===\n');
+    displayRepositories(enrichedOverlapRepos, overlapExtraData);
+
+    console.log('\n=== Top Recommendations by Popularity ===\n');
+    displayRepositories(enrichedPopularityRepos, popularityExtraData);
 
     await this.cache.quit();
   }

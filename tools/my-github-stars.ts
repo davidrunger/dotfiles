@@ -1,30 +1,16 @@
 import { readFileSync } from 'fs';
-import chalk from 'chalk';
 import ky from 'ky';
 
-interface LanguageEdge {
-  node: {
-    name: string;
-    color: string;
-  };
-  size: number;
-}
-
-interface Repository {
-  name: string;
-  nameWithOwner: string;
-  description: string;
-  stargazerCount: number;
-  languages: {
-    totalSize: number;
-    edges: LanguageEdge[];
-  };
-}
+import {
+  displayRepositories,
+  enrichRepositories,
+  Repository,
+} from './lib/githubReposEnrichedDisplay';
 
 interface StarredRepositoryEdge {
   cursor: string;
   node: Repository;
-  starredAt: string; // This is at this level, not inside node.
+  starredAt: string; // Provided at the edge level.
 }
 
 interface PageInfo {
@@ -45,33 +31,15 @@ interface GraphQLResponse {
   };
 }
 
-// Format the language breakdown as a percentage string.
-function formatLanguageBreakdown(
-  languages: LanguageEdge[],
-  totalSize: number,
-): string {
-  if (languages.length === 0) return 'No language data';
-
-  return languages
-    .sort((a, b) => b.size - a.size)
-    .map(
-      ({ node, size }) =>
-        `${chalk.hex(node.color || '#555')('██')} ${node.name} (${((size / totalSize) * 100).toFixed(1)}%)`,
-    )
-    .join(', ');
-}
-
 // Fetch starred repositories with pagination.
-async function fetchAllStarredRepos(
-  username: string,
-): Promise<{ repo: Repository; starredAt: string }[]> {
+async function fetchAllStarredRepos(username: string): Promise<Repository[]> {
   if (process.env.STARS_DATA_FILE_PATH) {
     return JSON.parse(readFileSync(process.env.STARS_DATA_FILE_PATH, 'utf8'));
   }
 
   let hasNextPage = true;
   let endCursor: string | null = null;
-  const allStarredRepos: { repo: Repository; starredAt: string }[] = [];
+  const allStarredRepos: Repository[] = [];
 
   console.log(
     `Fetching starred repositories for ${username} (with pagination)...`,
@@ -82,12 +50,13 @@ async function fetchAllStarredRepos(
   while (hasNextPage) {
     pageCount++;
     console.log(
-      `Fetching page ${pageCount}${endCursor ? ` (cursor: ${endCursor})` : ''}...`,
+      `Fetching page ${pageCount}${
+        endCursor ? ` (cursor: ${endCursor})` : ''
+      }...`,
     );
 
-    // Build GraphQL query with cursor if we have one
+    // Build GraphQL query with cursor if available.
     const afterClause = endCursor ? `, after: "${endCursor}"` : '';
-
     const query = `
       query {
         user(login: "${username}") {
@@ -122,7 +91,6 @@ async function fetchAllStarredRepos(
     `;
 
     try {
-      // Make the GraphQL request
       const response = await ky
         .post<{ errors?: Array<{ message: string }>; data?: object }>(
           'https://api.github.com/graphql',
@@ -135,7 +103,6 @@ async function fetchAllStarredRepos(
         )
         .json();
 
-      // For debugging
       if (response.errors) {
         console.error(
           'GraphQL errors:',
@@ -147,18 +114,17 @@ async function fetchAllStarredRepos(
       const typedResponse = response as GraphQLResponse;
       const starredData = typedResponse.data.user.starredRepositories;
 
-      // Add this page's repositories to our collection
-      const pageRepos = starredData.edges.map((edge) => ({
-        repo: edge.node,
-        starredAt: edge.starredAt,
-      }));
-      allStarredRepos.push(...pageRepos);
+      // For each edge, merge the starredAt field into the repository.
+      starredData.edges.forEach((edge) => {
+        const repo = edge.node;
+        repo.starredAt = edge.starredAt;
+        allStarredRepos.push(repo);
+      });
 
       console.log(
-        `Retrieved ${pageRepos.length} repositories (total so far: ${allStarredRepos.length})`,
+        `Retrieved ${starredData.edges.length} repositories (total so far: ${allStarredRepos.length})`,
       );
 
-      // Update pagination info for next iteration
       hasNextPage = starredData.pageInfo.hasNextPage;
       endCursor = starredData.pageInfo.endCursor;
     } catch (error) {
@@ -166,8 +132,6 @@ async function fetchAllStarredRepos(
       if (error instanceof Error) {
         console.error(error.message);
       }
-
-      // Break the loop on error
       hasNextPage = false;
     }
   }
@@ -175,47 +139,28 @@ async function fetchAllStarredRepos(
   return allStarredRepos;
 }
 
-function terminalLink(text: string, url: string): string {
-  return `\u001b]8;;${url}\u0007${text}\u001b]8;;\u0007`;
-}
-
-// Main function.
 async function main() {
   try {
-    // Fetch all starred repositories with pagination
-    const starredRepos = await fetchAllStarredRepos('davidrunger');
+    const username = 'davidrunger';
+    let starredRepos = await fetchAllStarredRepos(username);
 
     console.log(
       `\nFound a total of ${starredRepos.length} starred repositories.`,
     );
 
-    // Sort by star count (descending)
+    // Enrich repositories: fetch missing language data, total stars, and starred dates.
+    starredRepos = await enrichRepositories(starredRepos, {
+      enrichLanguages: true,
+      enrichStarredDates: true,
+    });
+
+    // Sort by star count (descending).
     const sortedRepos = starredRepos.sort(
-      (a, b) => b.repo.stargazerCount - a.repo.stargazerCount,
+      (a, b) => b.stargazerCount - a.stargazerCount,
     );
 
-    // Display the results
     console.log('\n=== STARRED REPOSITORIES (Sorted by Stars) ===\n');
-    sortedRepos.forEach((item) => {
-      const repo = item.repo;
-      console.log(
-        terminalLink(
-          chalk.blue.bold(`${repo.nameWithOwner}`),
-          `https://github.com/${repo.nameWithOwner}`,
-        ),
-      );
-      console.log(repo.description || '[no description]');
-      console.log(
-        `${chalk.yellow(`Stars: ${repo.stargazerCount}`)} ${chalk.gray(`(${new Date(item.starredAt).toISOString().slice(0, 10)})`)}`,
-      );
-      console.log(
-        `${chalk.magenta('Languages:')} ${formatLanguageBreakdown(
-          repo.languages.edges,
-          repo.languages.totalSize,
-        )}`,
-      );
-      console.log();
-    });
+    displayRepositories(sortedRepos);
   } catch (error) {
     console.error('An error occurred:', error);
     if (error instanceof Error) {

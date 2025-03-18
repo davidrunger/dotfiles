@@ -10,7 +10,7 @@ import {
   Repository,
 } from './lib/githubReposEnrichedDisplay';
 
-const MY_USERNAME = 'davidrunger';
+const TARGET_USERNAME = process.env.GITHUB_USERNAME || 'davidrunger';
 
 class GitHubCache {
   private redis: Redis;
@@ -150,7 +150,7 @@ class GitHubStarAnalyzer {
         console.log(`Cache hit for ${repo}'s stargazers page ${page}`);
         if (!cachedData.length) break;
         users.push(
-          ...cachedData.filter((username) => username !== MY_USERNAME),
+          ...cachedData.filter((username) => username !== TARGET_USERNAME),
         );
         page++;
         continue;
@@ -172,7 +172,9 @@ class GitHubStarAnalyzer {
 
         if (!data.length) break;
 
-        users.push(...usernames.filter((username) => username !== MY_USERNAME));
+        users.push(
+          ...usernames.filter((username) => username !== TARGET_USERNAME),
+        );
         page++;
       } catch (error) {
         console.error(`Error fetching stargazers: ${error}`);

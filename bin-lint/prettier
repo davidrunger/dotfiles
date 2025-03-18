@@ -5,11 +5,11 @@
 set -euo pipefail # exit on any error, don't allow undefined variables, pipes don't swallow errors
 
 # Every file must have a period somewhere (either a dotfile or file extension).
-# Ruby files aren't linted by Prettier.
+# Crystal files, Ruby files, etc aren't linted by Prettier.
 readarray -t files_for_prettier < <(
   changed-not-deleted-files | \
     rg '\.' | \
-    rg -v '\.(cr|haml|lock|node-version|prettierignore|rb)$' || \
+    rg -v '\.(cr|haml|lock|node-version|prettierignore|rb|sh)$' || \
     true
 )
 

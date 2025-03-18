@@ -6,4 +6,4 @@
 # - branches prefixed with `z-`
 
 git for-each-ref --format="%(refname:short)" refs/heads | \
-  rg -v "^($(main-branch)|$(branch))$|^z-"
+  awk '!($0 == main || $0 == branch || $0 ~ /^z-/)' main="$(main-branch)" branch="$(branch)"

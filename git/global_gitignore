@@ -14,6 +14,7 @@
 # Personal stuff and customization
 .runger-config.private.yml
 /personal/
+/*/personal/
 config/initializers/z.rb
 app/workers/load_runner.rb
 

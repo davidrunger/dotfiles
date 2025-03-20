@@ -11,7 +11,7 @@ set -uo pipefail # don't allow undefined variables, pipes don't swallow errors
 cd "$HOME/code" || exit 1
 
 branch_name="update-npm-packages"
-ignore_dirs=$(runger-config --show forks | paste -sd '|' -)
+ignore_dirs=$(runger-config -d ~/code/dotfiles --show forks | paste -sd '|' -)
 
 update_and_create_pr() {
   local update_command="$1"

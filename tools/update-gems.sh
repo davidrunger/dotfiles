@@ -10,7 +10,7 @@ set -uo pipefail # don't allow undefined variables, pipes don't swallow errors
 cd "$HOME/code" || exit 1
 
 branch_name="bundle-update"
-ignore_dirs=$(runger-config --show forks | paste -sd '|' -)
+ignore_dirs=$(runger-config -d ~/code/dotfiles --show forks | paste -sd '|' -)
 
 for dir in $(my-repos) ; do
   cd "$dir" || exit 1

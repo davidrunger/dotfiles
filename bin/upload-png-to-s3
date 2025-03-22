@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+
+# [upload] a [png] [to] [s3]
+
+set -euo pipefail # exit on any error, don't allow undefined variables, pipes don't swallow errors
+
+png_file_name="$1"
+
+# Exit with 1 if png_file_name includes a slash (i.e. it's a path rather than just a file).
+if [[ "$png_file_name" == */* ]]; then
+    echo "Error: File name should not include a path. Please provide just the file name."
+    exit 1
+fi
+
+# Upload file to S3 with all metadata set in a single command
+aws s3 cp "$png_file_name" "s3://david-runger-public-uploads/$png_file_name" \
+    --metadata-directive REPLACE \
+    --cache-control "max-age=60,public" \
+    --content-disposition "inline" \
+    --content-type "image/png"

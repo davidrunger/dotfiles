@@ -6,4 +6,4 @@
 
 set -euo pipefail # exit on any error, don't allow undefined variables, pipes don't swallow errors
 
-git log --oneline "$@"
+git log --pretty=format:"%C(yellow)%h%C(reset) %s %C(green)(%ar)%C(reset)" "$@"

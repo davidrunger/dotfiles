@@ -16,14 +16,14 @@ set -euo pipefail # exit on any error, don't allow undefined variables, pipes do
 
 # Check if inside a git repository.
 if ! git rev-parse --is-inside-work-tree > /dev/null 2>&1; then
-    echo "Error: Not inside a git repository."
-    exit 1
+  echo "Error: Not inside a git repository."
+  exit 1
 fi
 
 # Ensure at least one argument (the pattern) is provided.
 if [ $# -lt 1 ]; then
-    echo "Usage: $0 <pattern> [path...]"
-    exit 1
+  echo "Usage: $0 <pattern> [path...]"
+  exit 1
 fi
 
 # Store the regex pattern.
@@ -32,13 +32,22 @@ shift
 
 # Set paths: default to current directory if no paths are provided.
 if [ $# -eq 0 ]; then
-    paths=( "." )
+  paths=( "." )
 else
-    paths=( "$@" )
+  paths=( "$@" )
 fi
 
-# Get the list of git-tracked files in the specified paths.
-mapfile -d '' FILES < <(git ls-files -z -- "${paths[@]}")
+# Get the list of git-tracked regular files (excluding submodules and symlinks).
+mapfile -d '' FILES < <(
+  git ls-files -s -z -- "${paths[@]}" | while IFS= read -r -d '' entry; do
+    stage_info="${entry%%$'\t'*}" # Everything before the tab
+    filename="${entry#*$'\t'}" # Everything after the tab
+    mode="${stage_info%% *}" # First field of stage_info (the mode)
+    if [[ "$mode" == 100* ]]; then
+      printf '%s\0' "$filename"
+    fi
+  done
+)
 
-# Delete lines matching the pattern from the tracked files.
+# Delete lines matching the pattern from the tracked regular files.
 perl -i -ne 'BEGIN { $pattern = shift @ARGV } print unless /$pattern/' -- "$pattern" "${FILES[@]}"

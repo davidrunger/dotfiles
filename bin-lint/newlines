@@ -6,10 +6,10 @@ file_ends_with_exactly_one_newline() {
   [[ $(tail -c2 "$1" | wc -l) -eq 1 && $(tail -c1 "$1" | wc -l) -eq 1 ]]
 }
 
-is_text_file() {
+is_file_with_text() {
   local file="$1"
 
-  if file "$file" | grep -q 'text' ; then
+  if file "$file" | grep -Pq '\b(text|SVG)\b' ; then
     return 0
   else
     return 1
@@ -18,7 +18,7 @@ is_text_file() {
 
 text_files() {
   while read -r file ; do
-    if is_text_file "$file" ; then
+    if is_file_with_text "$file" ; then
       echo "$file"
     fi
   done

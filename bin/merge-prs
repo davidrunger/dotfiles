@@ -208,7 +208,7 @@ class GithubPrAutoMerger < CommandKit::Command
         if unskipped_statuses_and_conclusions.all?('success')
           return true
         elsif unskipped_statuses_and_conclusions.include?('failure')
-          puts("Failing GitHub Actions for PR ##{@pr.number} in #{@repo}".red)
+          puts("Failing GitHub Actions for PR ##{@pr.number} in #{@repo} - #{@pr.title}".red)
           return false
         end
 

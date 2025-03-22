@@ -142,3 +142,6 @@ eval "$(atuin init zsh --disable-up-arrow)"
 
 # Mise
 eval "$(mise activate zsh)"
+
+# ripgrep
+export RIPGREP_CONFIG_PATH="$HOME/.config/ripgrep"

@@ -26,7 +26,6 @@ sloptions =
   end
 
 class MultiLevelRipgrep < CommandLineProgram
-  # rubocop:disable Metrics/MethodLength
   def call
     *@initial_filters, @final_search = arguments
 
@@ -69,7 +68,6 @@ class MultiLevelRipgrep < CommandLineProgram
         puts(remainder)
       end
   end
-  # rubocop:enable Metrics/MethodLength
 
   private
 

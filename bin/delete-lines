@@ -1,31 +1,44 @@
 #!/usr/bin/env bash
 
 # [delete] every [line] from git-tracked files (in the current directory or in
-# the specified [target]) that matches the given <regex>.
+# the specified [target(s)]) that matches the given <regex>.
 #
 # Usage:
-#   delete-lines.sh "<regex>" [target]
+#   delete-lines.sh "<regex>" [target(s)]
 #
 # Examples:
 #   delete-lines '^\s*# rubocop:(disable|enable) Metrics/(MethodLength|PerceivedComplexity)$'
 #   delete-lines '^\s*# rubocop:(disable|enable) Metrics/(MethodLength|PerceivedComplexity)$' app/
 #   delete-lines '^\s*# rubocop:(disable|enable) Metrics/(MethodLength|PerceivedComplexity)$' app/controllers/logs/uploads_controller.rb
+#   delete-lines '^\s*# rubocop:(disable|enable) Rails/CreateTableWithTimestamps$' $(git ls-files | rg "db\/migrate\/(201|202[0-4])")
 
 set -euo pipefail # exit on any error, don't allow undefined variables, pipes don't swallow errors
 
-# Validate the number of arguments.
-if [ $# -eq 1 ]; then
-  # No path provided, use current directory.
-  mapfile -d '' FILES < <(git ls-files -z -- .)
-elif [ $# -eq 2 ]; then
-  # Path provided (file or directory).
-  mapfile -d '' FILES < <(git ls-files -z -- "$2")
-else
-  echo "Usage: $0 <pattern> [path]"
-  exit 1
+# Check if inside a git repository.
+if ! git rev-parse --is-inside-work-tree > /dev/null 2>&1; then
+    echo "Error: Not inside a git repository."
+    exit 1
 fi
 
-pattern="$1"
+# Ensure at least one argument (the pattern) is provided.
+if [ $# -lt 1 ]; then
+    echo "Usage: $0 <pattern> [path...]"
+    exit 1
+fi
 
-# Use perl to delete lines matching the pattern from the tracked files.
+# Store the regex pattern.
+pattern="$1"
+shift
+
+# Set paths: default to current directory if no paths are provided.
+if [ $# -eq 0 ]; then
+    paths=( "." )
+else
+    paths=( "$@" )
+fi
+
+# Get the list of git-tracked files in the specified paths.
+mapfile -d '' FILES < <(git ls-files -z -- "${paths[@]}")
+
+# Delete lines matching the pattern from the tracked files.
 perl -i -ne 'BEGIN { $pattern = shift @ARGV } print unless /$pattern/' -- "$pattern" "${FILES[@]}"

@@ -16,6 +16,7 @@ ln -sf ~/code/dotfiles/kitty/ ~/.config/
 ln -sf ~/code/dotfiles/mise.source.toml ~/.config/mise/config.toml
 ln -sf ~/code/dotfiles/mitmproxy.yml ~/.mitmproxy/config.yaml
 ln -sf ~/code/dotfiles/pryrc.rb ~/.pryrc
+ln -sf ~/code/dotfiles/ripgrep ~/.config/ripgrep
 ln -sf ~/code/dotfiles/rspec ~/.rspec
 ln -sf ~/code/dotfiles/zsh/themes/bolso.zsh-theme ~/.oh-my-zsh/custom/themes/bolso.zsh-theme
 ln -sf ~/code/dotfiles/zshrc.zsh ~/.zshrc

@@ -6,10 +6,10 @@ file_ends_with_exactly_one_newline() {
   [[ $(tail -c2 "$1" | wc -l) -eq 1 && $(tail -c1 "$1" | wc -l) -eq 1 ]]
 }
 
-is_text_file() {
+is_file_with_text() {
   local file="$1"
 
-  if file "$file" | grep -q 'text' ; then
+  if file "$file" | grep -Pq '\b(text|SVG)\b' ; then
     return 0
   else
     return 1
@@ -18,7 +18,7 @@ is_text_file() {
 
 text_files() {
   while read -r file ; do
-    if is_text_file "$file" ; then
+    if is_file_with_text "$file" ; then
       echo "$file"
     fi
   done
@@ -48,7 +48,7 @@ else
   git_diff_hash_after=$(git diff | sha1sum | choose 0)
 
   if [ "$git_diff_hash_before" == "$git_diff_hash_after" ] ; then
-    write-background-notification 'Changed text files all end with exactly one newline.'
+    write-background-notification 'Changed files with text all end with exactly one newline.'
   else
     write-background-notification 'Some files did not end with exactly one newline. They were all corrected.'
     exit 1

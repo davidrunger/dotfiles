@@ -82,7 +82,6 @@ class StackTraceViewer < CommandKit::Command
     options[:exclude]
   end
 
-  # rubocop:disable Metrics/MethodLength
   def print_context_for_line(line, stack_trace_order_number)
     if line.include?('<internal:')
       puts(
@@ -130,7 +129,6 @@ class StackTraceViewer < CommandKit::Command
       file_path,
     )
   end
-  # rubocop:enable Metrics/MethodLength
 end
 
 StackTraceViewer.start

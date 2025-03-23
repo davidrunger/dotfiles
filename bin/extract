@@ -14,14 +14,13 @@
 
 set -euo pipefail # exit on any error, don't allow undefined variables, pipes don't swallow errors
 
-pattern="$1"
-
-perl -nle '
-  if (/'"$pattern"'/) {
+perl -s -nle '
+  $regex = qr/$pattern/;
+  if (/$regex/) {
     if (defined $1) {
       print $1;
     } else {
       print $&;
     }
   }
-'
+' -- -pattern="$1"

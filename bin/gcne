@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+
+# [g]it [c]ommit making [n]o [e]dits
+#
+# This is useful after resolving a merge conflict in order to commit the
+# resolved merge commit without opening the editor to save the default message.
+
+set -euo pipefail # exit on any error, don't allow undefined variables, pipes don't swallow errors
+
+git commit --no-edit

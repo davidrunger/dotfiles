@@ -1,0 +1,2 @@
+# To switch from a specified GitHub branch to the default branch (example):
+rm -rf /home/david/.rbenv/versions/3.4.2/lib/ruby/gems/3.4.0/cache/bundler/git/paper_trail-e72cb6eaeabf85d79a95ce2079562f125a7ce183

@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+
+# [check] a [gem] (for security risks or other reasons) before actually installing it.
+#
+# Example(s):
+#   check-gem shaped
+
+set -euo pipefail # exit on any error, don't allow undefined variables, pipes don't swallow errors
+
+gem_name=$1
+
+cd ~/Downloads
+gem fetch "$gem_name"
+gem unpack "$gem_name"-*.gem
+$EDITOR "$(find . -type d -name "$gem_name-*" | head -1)"

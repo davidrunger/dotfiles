@@ -159,7 +159,7 @@ class WaitForChecksRunner::LoopRunner
     `gh pr checks $(branch) --json 'startedAt' --jq '.[] | .startedAt'`.
       split(/\s+/m).
       min&.
-      then { Time.iso8601(_1) }
+      then { Time.iso8601(it) }
   end
 
   def warn_if_unexpectedly_large_num_checks
@@ -191,7 +191,7 @@ class WaitForChecksRunner::LoopRunner
 
   memoize \
   def total_num_started_checks
-    check_status_counts.reject { _1 == SKIPPED }.sum(&:last)
+    check_status_counts.reject { it == SKIPPED }.sum(&:last)
   end
 
   memoize \
@@ -217,7 +217,7 @@ class WaitForChecksRunner::LoopRunner
     `gh pr checks #{branch_name} --json 'state' --jq '.[] | .state'`.
       split(/\s+/m).
       tally.
-      tap { _1.default = 0 }.
+      tap { it.default = 0 }.
       freeze
   end
 

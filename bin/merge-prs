@@ -196,7 +196,7 @@ class GithubPrAutoMerger < CommandKit::Command
         conclusions = latest_conclusions
 
         unskipped_statuses_and_conclusions =
-          (statuses + conclusions).compact.reject { _1.in?(%w[skipped]) }
+          (statuses + conclusions).compact.reject { it.in?(%w[skipped]) }
 
         # There are no actions yet.
         if unskipped_statuses_and_conclusions.empty?

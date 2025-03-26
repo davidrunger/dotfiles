@@ -33,14 +33,14 @@ output_thread =
   end
 
 guard(:shell, all_on_start: true) do
-  directories_to_watch = %w[app bin lib personal spec].select { Dir.exist?(_1) }
+  directories_to_watch = %w[app bin lib personal spec].select { Dir.exist?(it) }
 
   # https://web.archive.org/web/20200927034139/https://github.com/guard/listen/wiki/Duplicate-directory-errors
   directories(directories_to_watch)
 
   watch_regex =
     %r{^(
-      #{directories_to_watch.map { "#{_1}/.*.rb" }.join("|\n")}
+      #{directories_to_watch.map { "#{it}/.*.rb" }.join("|\n")}
     )}x
 
   watch(watch_regex) do |guard_match_result|

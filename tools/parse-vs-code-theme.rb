@@ -18,7 +18,7 @@ theme_data = JSON.parse(File.read(ARGV[0]))
 token_colors = theme_data['tokenColors']
 colors = theme_data['colors']
 
-token_colors.reject! { BAD_TOKEN_COLOR_NAMES.include?(_1['name']) }
+token_colors.reject! { BAD_TOKEN_COLOR_NAMES.include?(it['name']) }
 
 token_colors.map! do |token_color|
   if token_color['name'] == 'Methods'

@@ -19,7 +19,7 @@ guard(:shell, all_on_start: true) do
       start_time = Time.now
       # rubocop:enable Rails/TimeZone, Lint/RedundantCopDisableDirective
       system('clear')
-      system(<<~SH.squish.tap { puts(_1) })
+      system(<<~SH.squish.tap { puts(it) })
         jest --verbose=false #{ENV.fetch('TARGET_SPEC_FILES')}
           #{"-t '#{ENV.fetch('JEST_TARGET_PATTERN')}'" if ENV.fetch('JEST_TARGET_PATTERN', nil)}
       SH

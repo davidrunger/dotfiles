@@ -28,13 +28,11 @@ for dir in $(my-repos) ; do
         # The TOC is up to date. The only diff is updating the updated-at timestamp.
         gco .
       else
+        gfcob "$branch_name"
         git add .
         git commit --message "Update table of contents
 
 \`$update_command\`"
-        gfcob "$branch_name"
-        gcp main
-        git branch --force main origin/main
         hpr
       fi
     fi

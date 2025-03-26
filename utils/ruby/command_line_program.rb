@@ -22,7 +22,7 @@ class CommandLineProgram
     @arguments = sloptions.arguments
     @options = sloptions
     options.options.options.
-      select { OPTION_TYPES_TO_EXPOSE.include?(_1.class) }.
+      select { OPTION_TYPES_TO_EXPOSE.include?(it.class) }.
       each do |option|
         define_singleton_method(option.key) do
           @options[option.key]

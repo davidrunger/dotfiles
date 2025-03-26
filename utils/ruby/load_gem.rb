@@ -14,7 +14,7 @@ def load_gem(gem_name, load_path_only: false, require_name: gem_name)
     return
   end
 
-  rbenv_gem_path = Gem.paths.path.find { _1.include?('.rbenv') }
+  rbenv_gem_path = Gem.paths.path.find { it.include?('.rbenv') }
   matching_gem_directories =
     Dir["#{rbenv_gem_path}/gems/#{gem_name}-*"].grep(%r{/#{gem_name}-\d[^/]+\z})
   latest_gem_directory =

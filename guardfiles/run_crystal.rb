@@ -6,7 +6,7 @@ require_relative "#{Dir.home}/code/dotfiles/utils/ruby/guard_shell_with_guard_mo
 
 # rubocop:disable Rails/TimeZone, Lint/RedundantCopDisableDirective
 guard(:shell, all_on_start: true) do
-  directories_to_watch = %w[bin exe personal spec src].select { Dir.exist?(_1) }
+  directories_to_watch = %w[bin exe personal spec src].select { Dir.exist?(it) }
 
   # https://web.archive.org/web/20200927034139/https://github.com/guard/listen/wiki/Duplicate-directory-errors
   directories(directories_to_watch)

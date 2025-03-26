@@ -7,11 +7,11 @@ require_relative "#{Dir.home}/code/dotfiles/utils/ruby/guard_shell_with_guard_mo
 NUM_BACKTRACE_LINES_TO_PRINT = 5
 
 guard(:shell, all_on_start: true) do
-  directories_to_watch = %w[app bin lib personal spec].select { Dir.exist?(_1) }
+  directories_to_watch = %w[app bin lib personal spec].select { Dir.exist?(it) }
 
   # Don't watch `lib/` (the shards directory) if `shard.yml` exists.
   if File.exist?('shard.yml')
-    directories_to_watch.reject! { _1 == 'lib' }
+    directories_to_watch.reject! { it == 'lib' }
   end
 
   # https://web.archive.org/web/20200927034139/https://github.com/guard/listen/wiki/Duplicate-directory-errors
@@ -19,7 +19,7 @@ guard(:shell, all_on_start: true) do
 
   watch_regex =
     %r{^(
-      #{directories_to_watch.map { "#{_1}/.*" }.join("|\n")}
+      #{directories_to_watch.map { "#{it}/.*" }.join("|\n")}
     )}x
 
   watch(watch_regex) do |guard_match_result|

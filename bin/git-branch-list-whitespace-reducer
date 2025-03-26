@@ -32,7 +32,7 @@ class GitBranchListWhitespaceReducer < CommandLineProgram
 
       @stdin_content.
         split("\n").
-        map { _1.sub(/(\A[ *]{2}\S+)#{' ' * spaces_to_remove}/, '\1') }.
+        map { it.sub(/(\A[ *]{2}\S+)#{' ' * spaces_to_remove}/, '\1') }.
         join("\n")
     end
   end
@@ -54,7 +54,7 @@ class GitBranchListWhitespaceReducer < CommandLineProgram
   def lengths_of_spaces
     @stdin_content.
       split("\n").
-      map { num_spaces_in_line(_1) }
+      map { num_spaces_in_line(it) }
   end
 end
 

@@ -35,7 +35,7 @@ class MultiLevelRipgrep < CommandLineProgram
           match(/(?<prefix>\A\e\[0m\e\[35m\S+:\e\[0m\e\[32m\d+\e\[0m:)(?<remainder>.*\z)/).
           named_captures.symbolize_keys
       end.map do |line_match|
-        path, line_number = line_match[:prefix].split(':').map { _1.split(':').first }
+        path, line_number = line_match[:prefix].split(':').map { it.split(':').first }
         path_segments = path.split('/')
         line_match.merge(
           path_segments:,

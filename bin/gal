@@ -235,9 +235,9 @@ class Runner
     if guardfile_option.present?
       guardfile_option
     elsif (args = @opts.args).present?
-      if args.all? { _1.include?('spec/') && _1.match?(/\.rb(:\d+)?\z/) }
+      if args.all? { it.include?('spec/') && it.match?(/\.rb(:\d+)?\z/) }
         :spec
-      elsif args.all? { _1.match?(/\.test\.tsx?\z/) }
+      elsif args.all? { it.match?(/\.test\.tsx?\z/) }
         :jest
       else
         raise('Could not determine guardfile type from argument(s)!')

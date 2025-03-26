@@ -187,7 +187,7 @@ class SpecFileFinder < CommandLineProgram
 
   def line_change_count(commit, file_path)
     output = `git show --shortstat #{commit} -- #{file_path}`.strip
-    line_changes = output.scan(/(\d+) (?:insertions?|deletions?)/).flatten.map { Integer(_1) }
+    line_changes = output.scan(/(\d+) (?:insertions?|deletions?)/).flatten.map { Integer(it) }
     line_changes.sum
   end
 end

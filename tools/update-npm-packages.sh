@@ -21,13 +21,11 @@ update_and_create_pr() {
 
   # If there are changes, commit them and open a PR.
   if ! git diff --quiet; then
+    gfcob "$branch_name"
     git add .
     git commit --message "Update NPM packages
 
 \`$update_command\`"
-    gfcob "$branch_name"
-    gcp main
-    git branch --force main origin/main
     hpr
   fi
 }

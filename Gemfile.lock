@@ -95,7 +95,7 @@ GEM
       memo_wise (>= 1.7)
       rb-inotify (>= 0.11.1)
       timecop (>= 0.9.10)
-    logger (1.6.6)
+    logger (1.7.0)
     lumberjack (1.2.10)
     memo_wise (1.11.0)
     method_source (1.1.0)
@@ -291,7 +291,7 @@ CHECKSUMS
   lint_roller (1.1.0) sha256=2c0c845b632a7d172cb849cc90c1bce937a28c5c8ccccb50dfd46a485003cc87
   listen (3.9.0) sha256=db9e4424e0e5834480385197c139cb6b0ae0ef28cc13310cfd1ca78377d59c67
   living_document (2.1.0) sha256=296f515d00cbbfb82e46c1f0fe168fdd7b23b23e500315488456b86e09c6330f
-  logger (1.6.6) sha256=dd618d24e637715472732e7eed02e33cfbdf56deaad225edd0f1f89d38024017
+  logger (1.7.0) sha256=196edec7cc44b66cfb40f9755ce11b392f21f7967696af15d274dde7edff0203
   lumberjack (1.2.10) sha256=bbfe951629341095028ecbf1ad496b58bec3f8bcad6fe35a203a377839c42b6c
   memo_wise (1.11.0) sha256=06ef23a1edb6b8ee4f37d950bba04836b437b4d1036e45d24c2fd2f25b5490c3
   method_source (1.1.0) sha256=181301c9c45b731b4769bc81e8860e72f9161ad7d66dd99103c9ab84f560f5c5

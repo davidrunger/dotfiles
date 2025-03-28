@@ -83,7 +83,9 @@ export async function enrichRepositories(
   );
 
   if (reposToEnrich.length > 0) {
+    console.log('Sleeping for 60 seconds...');
     await new Promise((resolve) => setTimeout(resolve, 60000));
+    console.log('... done.');
 
     // Split into batches (e.g. 20 repos per query).
     const batchSize = 20;
@@ -153,7 +155,9 @@ export async function enrichRepositories(
   // Enrich starred dates (if desired)
   // ------------------------------
   if (options.enrichStarredDates) {
+    console.log('Sleeping for 60 seconds...');
     await new Promise((resolve) => setTimeout(resolve, 60000));
+    console.log('... done.');
 
     // Fetch the authenticated viewer's starred repositories.
     let starredRepos: { node: { nameWithOwner: string }; starredAt: string }[] =

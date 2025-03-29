@@ -1,0 +1,30 @@
+#!/usr/bin/env bash
+
+# [review] [changes] in repositories over a given time period.
+#
+# Example:
+#  review-changes 1.week
+
+set -euo pipefail # exit on any error, don't allow undefined variables, pipes don't swallow errors
+
+time_period=$1
+
+cd ~/code
+
+for dir in $(my-repos) ; do
+  cd "$dir"
+  blue "$dir"
+
+  DELTA_PAGER="cat" git diff "HEAD@{$time_period.ago}" -- . \
+    ':(exclude)Gemfile.lock' \
+    ':(exclude)yarn.lock' \
+    ':(exclude)pnpm-lock.yaml' \
+    ':(exclude)package-lock.json' \
+    ':(exclude)**/Gemfile.lock' \
+    ':(exclude)**/yarn.lock' \
+    ':(exclude)**/pnpm-lock.yaml' \
+    ':(exclude)**/package-lock.json'
+
+  cd - &>/dev/null
+  echo
+done

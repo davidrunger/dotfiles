@@ -20,4 +20,4 @@ if use-strict-git-rules && ! may-edit-latest-commit ; then
   exit 1
 fi
 
-git add -A . && git commit --amend --no-edit
+git add -A . && git commit --amend --no-edit --allow-empty

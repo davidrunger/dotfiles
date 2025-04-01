@@ -11,6 +11,7 @@
 #
 # rubocop:disable Layout/LineLength
 # Stack traces should have a format like this:
+#     app/views/quiz_questions/_closed.html.haml:2
 #     /home/david/.rbenv/versions/3.4.1/lib/ruby/gems/3.4.0/gems/rspec-mocks-3.13.2/lib/rspec/mocks/message_expectation.rb:762:in 'block in RSpec::Mocks::Implementation#call'
 #     /home/david/code/david_runger/config/initializers/error_subscriber.rb:35:in 'Kernel#public_send'
 #     from /app/vendor/bundle/ruby/3.4.0/bundler/gems/typelizer-147c27dea7de/lib/typelizer/interface.rb:79:in 'Typelizer::Interface#infer_types'
@@ -99,7 +100,7 @@ class StackTraceViewer < CommandKit::Command
       return
     end
 
-    match = line.match(/^\s*(?:#|from)?\s*(\S+):(\d+):in/)
+    match = line.match(/^\s*(?:#|from)?\s*(\S+):(\d+)(?::in|$)/)
 
     if !match
       return

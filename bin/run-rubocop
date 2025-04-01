@@ -4,8 +4,12 @@
 
 readarray -t all_git_files < <(git ls-files)
 
-# If rubocop is listed in the  Gemfile...
-if [ -f Gemfile ] && rg --quiet "rubocop" Gemfile; then
+# If rubocop is listed in the Gemfile or gemspec ...
+# shellcheck disable=SC2144
+if {
+  { [ -f Gemfile ] && rg --quiet "rubocop" Gemfile ; } || \
+    { [ -f *.gemspec ] && rg --quiet "rubocop" ./*.gemspec ; } ;
+} ; then
   # and there is a `bin/rubocop` executable, then run it.
   if [ -f bin/rubocop ]; then
     bin/rubocop "${all_git_files[@]}" --force-exclusion "$@"

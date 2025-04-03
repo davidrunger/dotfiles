@@ -1,15 +1,16 @@
 #!/usr/bin/env bash
 
 # [d]iff [s]ince [p]ush
-# Prints the diff or a branch since the last push.
+# Prints the diff of the current branch since the last push.
 
 set -euo pipefail # exit on any error, don't allow undefined variables, pipes don't swallow errors
 
 # https://stackoverflow.com/a/74795510/4009384
+# Get the files that have changed (ignoring merge commits) and print the diff
+# since the last push for those files.
 git log \
   --pretty=format: --no-merges --first-parent --name-only \
   "origin/$(branch).." \
   | grep -v '^$' \
-  | sort \
-  | uniq \
+  | sort -u \
   | xargs git diff "origin/$(branch).." --

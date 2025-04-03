@@ -20,7 +20,6 @@ alias gcpfa='git cherry-pick $(non-main-branches | fzf)'
 alias gcu='git add . && git commit -m "Z Update"'
 alias gd='git diff --no-prefix'
 alias gdc='git diff --no-prefix --cached'
-alias gdob='git diff origin/$(git branch --show-current)..$(git branch --show-current)'
 alias gemd='cd "$(gem-directory)"'
 alias gemdg='cd "$(gem-directory)/../bundler/gems"'
 alias gg="git log --graph --abbrev-commit --decorate --date=relative --format=format:'%C(bold blue)%h%C(reset) %C(bold green)%d%C(reset) %C(white)%s%C(reset) - %C(bold white)%an%C(reset) %C(bold yellow)(%ar)%C(reset)' --all"

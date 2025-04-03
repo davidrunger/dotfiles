@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+# [g]it [a]dd . && git [c]ommit
+
+set -euo pipefail # exit on any error, don't allow undefined variables, pipes don't swallow errors
+
+ga . && gcom

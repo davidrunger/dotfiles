@@ -9,7 +9,7 @@ alias dots='cd ~/code/dotfiles'
 alias dotsp='cd ~/code/dotfiles-personal'
 alias down='cd ~/Downloads'
 alias fix='git diff --name-only | uniq | xargs $EDITOR'
-alias fsk='redis-cli -n 1 FLUSHDB && sk' # `-n 1` because of `REDIS_DATABASE_NUMBER=1` in `.env`
+alias fsk='redis-cli -n 1 FLUSHDB && SIDEKIQ_CONCURRENCY=1 bin/sidekiq' # `-n 1` because of `REDIS_DATABASE_NUMBER=1` in `.env`
 alias gba='GIT_PAGER=cat git branch -vv'
 alias gbdf='git branch -D $(active-branches | fzf)'
 alias gcme='git commit --allow-empty --message'
@@ -34,7 +34,6 @@ alias gra='git rebase --abort'
 alias grc='GIT_EDITOR=true git rebase --continue'
 alias grs='git rebase --show-current-patch'
 alias gsf='git show $(active-branches | fzf)'
-alias gsl='git show -s --format=%s'
 alias hwm='hpr && echo && wm'
 alias ls='eza --binary'
 alias md='mkdir -p'
@@ -48,13 +47,9 @@ alias s.='$EDITOR .'
 alias s='$EDITOR'
 alias sha='git log $(main-branch) --format=format:%H | head -n 1 | cut -c 1-8 | cpy'
 alias shaf='git log $(main-branch) --format=format:%H | head -n 1 | cpy'
-alias sk="SIDEKIQ_CONCURRENCY=1 bin/sidekiq"
 alias ss='bin/spring stop'
-alias td='s $HOME/notes/TODO.md'
 alias wm='wait-merge'
 alias work='cd ~/code'
-alias zrc='$EDITOR ~/.zshrc'
-alias zs='source ~/.zshrc'
 
 if [ -e "$HOME/code/dotfiles-personal/shell/aliases.zsh" ]; then
   . "$HOME/code/dotfiles-personal/shell/aliases.zsh"

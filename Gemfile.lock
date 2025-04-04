@@ -193,7 +193,7 @@ GEM
     securerandom (0.4.1)
     shellany (0.0.1)
     slop (4.10.1)
-    sorbet-runtime (0.5.11984)
+    sorbet-runtime (0.5.11987)
     stringio (3.1.6)
     tapp (1.5.1)
       thor
@@ -337,7 +337,7 @@ CHECKSUMS
   securerandom (0.4.1) sha256=cc5193d414a4341b6e225f0cb4446aceca8e50d5e1888743fac16987638ea0b1
   shellany (0.0.1) sha256=0e127a9132698766d7e752e82cdac8250b6adbd09e6c0a7fbbb6f61964fedee7
   slop (4.10.1) sha256=844322b5ffcf17ed4815fdb173b04a20dd82b4fd93e3744c88c8fafea696d9c7
-  sorbet-runtime (0.5.11984) sha256=19b160ff972db140d6516e57587932ba6789d269ac546fcff6948ad45263c30d
+  sorbet-runtime (0.5.11987) sha256=060653f508e9f32b6b3713426b60e56e878e4fdab194c1034859528798b50cb9
   stringio (3.1.6) sha256=292c495d1657adfcdf0a32eecf12a60e6691317a500c3112ad3b2e31068274f5
   tapp (1.5.1) sha256=2988d1cf968f3f830e9189ae5fa4d84ec4edde4417ff6bccce456eca1736373f
   thor (1.3.2) sha256=eef0293b9e24158ccad7ab383ae83534b7ad4ed99c09f96f1a6b036550abbeda

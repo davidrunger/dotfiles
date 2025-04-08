@@ -30,7 +30,7 @@ class MultiLevelRipgrep < CommandLineProgram
     *@initial_filters, @final_search = arguments
 
     line_matches =
-      `#{command}`.split("\n").map do |line|
+      `RIPGREP_CONFIG_PATH= #{command}`.split("\n").map do |line|
         line.
           match(/(?<prefix>\A\e\[0m\e\[35m\S+:\e\[0m\e\[32m\d+\e\[0m:)(?<remainder>.*\z)/).
           named_captures.symbolize_keys

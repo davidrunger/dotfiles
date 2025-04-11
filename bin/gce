@@ -5,4 +5,4 @@
 set -euo pipefail # exit on any error, don't allow undefined variables, pipes don't swallow errors
 
 verify-on-ok-branch
-git commit --allow-empty
+git commit --allow-empty "$@"

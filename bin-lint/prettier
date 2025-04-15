@@ -9,7 +9,19 @@ set -euo pipefail # exit on any error, don't allow undefined variables, pipes do
 readarray -t files_for_prettier < <(
   changed-not-deleted-files | \
     rg '\.' | \
-    rg -v '\.(conf|cr|haml|lock|node-version|prettierignore|rb|sh|toml|zsh(rc)?)$' || \
+    rg -v '\.('\
+'conf|'\
+'cr|'\
+'haml|'\
+'lock|'\
+'node-version|'\
+'prettierignore|'\
+'rb|'\
+'ruby-version|'\
+'sh|'\
+'toml|'\
+'zsh(rc)?'\
+')$' || \
     true
 )
 

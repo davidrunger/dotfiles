@@ -46,6 +46,7 @@ touch ~/.pry_history
 # brew bundle
 
 # bundle install
+# bundle plugin install bundler-why
 
 # pnpm add --global http-server live-server prettier typescript tsx
 

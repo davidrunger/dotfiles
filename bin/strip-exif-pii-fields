@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+
+# [strip] [exif] data [p]ersonally [i]dentifiable [i]nformation [fields]
+#
+# Example:
+#   strip-exif-pii-fields IMG_2601.jpg
+
+set -euo pipefail # exit on any error, don't allow undefined variables, pipes don't swallow errors
+
+exiftool \
+  -gps:all= \
+  -make= -model= \
+  -lensmake= -lensmodel= -lensid= \
+  -hostcomputer= \
+  -serialnumber= -ownername= \
+  -offsettime= -offsettimeoriginal= -offsettimedigitized= \
+  -MakerNotes:all= \
+  -icc_profile:all= \
+  -overwrite_original \
+  "$@"

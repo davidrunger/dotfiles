@@ -1,5 +1,6 @@
 curl
 dirmngr
+exiftool
 gawk
 gnupg2
 gpg

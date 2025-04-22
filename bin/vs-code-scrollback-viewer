@@ -10,7 +10,4 @@ directory=/tmp/scrollback-viewer
 mkdir -p "$directory"
 tempfile=$(mktemp "$directory/XXXXXX.txt")
 cat > "$tempfile"
-# Add linuxbrew to PATH, so we have `sd`.
-export PATH="/home/linuxbrew/.linuxbrew/bin:$PATH"
-sd '\x1B\[[0-9;]*[a-zA-Z]' '' "$tempfile"
 code "$tempfile"

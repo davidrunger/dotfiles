@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 # frozen_string_literal: true
 
-# Automatically merge as many dependabot-authored PRs in davidrunger repos as
+# Automatically merge as many bot-authored PRs in davidrunger repos as
 # possible. (This is better than auto-merging PRs immediately if/when they pass
 # all checks, because, by launching this script manually, I can ensure that PRs
 # are only merged and deployed when I am aware that they are being merged and
@@ -58,7 +58,7 @@ class GithubPrAutoMerger < CommandKit::Command
     github_client # make sure client can be initialized without error
 
     repos.each do |repo|
-      merge_dependabot_prs(repo)
+      merge_bot_prs(repo)
     rescue StandardError => e
       puts("Error processing repo #{repo}: #{e.message}".red)
     end
@@ -87,8 +87,8 @@ class GithubPrAutoMerger < CommandKit::Command
     raise('Invalid GitHub access token.')
   end
 
-  def merge_dependabot_prs(repo)
-    PullRequestMerger.new(repo, github_client, verbose?).merge_dependabot_prs
+  def merge_bot_prs(repo)
+    PullRequestMerger.new(repo, github_client, verbose?).merge_bot_prs
   end
 
   def exit_gracefully
@@ -107,12 +107,12 @@ class GithubPrAutoMerger < CommandKit::Command
       @verbose = verbose
     end
 
-    def merge_dependabot_prs
-      dependabot_prs&.each_with_index do |pr, index|
+    def merge_bot_prs
+      bot_prs&.each_with_index do |pr, index|
         merge_if_ready(pr)
 
-        unless index == dependabot_prs.size - 1
-          # Wait between PRs in the same repo to give dependabot time to start rebasing, if needed.
+        unless index == bot_prs.size - 1
+          # Wait between PRs in the same repo to give bots time to start rebasing, if needed.
           sleep(10)
         end
       rescue => error
@@ -121,10 +121,12 @@ class GithubPrAutoMerger < CommandKit::Command
     end
 
     memoize \
-    def dependabot_prs
+    def bot_prs
       log_verbose("Fetching PRs for #{@repo}")
 
-      @client.pull_requests(repo_hash, author: 'dependabot', state: 'open').tap do
+      @client.pull_requests(repo_hash, state: 'open').select do |pr|
+        pr.user.type == 'Bot'
+      end.tap do
         log_verbose("Done fetching PRs for #{@repo}".cyan)
       end
     end

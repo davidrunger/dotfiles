@@ -18,8 +18,8 @@ fi
 
 wait-for-gh-checks "$gh_check_branch"
 
-if [[ "$gh_check_branch" =~ ^dependabot/ ]] ; then
-  # Omit the verbose PR description as the commit body for Dependabot PRs.
+if [[ "$gh_check_branch" =~ ^(dependabot|renovate)/ ]] ; then
+  # Omit the verbose PR description as the commit body for bot dependency update PRs.
   gh pr merge "$gh_check_branch" --squash --body ''
 else
   gh pr merge "$gh_check_branch" --squash

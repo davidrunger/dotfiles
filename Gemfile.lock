@@ -177,7 +177,7 @@ GEM
     rubocop-rspec (3.6.0)
       lint_roller (~> 1.1)
       rubocop (~> 1.72, >= 1.72.1)
-    ruby-lsp (0.23.24)
+    ruby-lsp (0.24.1)
       language_server-protocol (~> 3.17.0)
       prism (>= 1.2, < 2.0)
       rbs (>= 3, < 5)
@@ -195,7 +195,7 @@ GEM
     securerandom (0.4.1)
     shellany (0.0.1)
     slop (4.10.1)
-    sorbet-runtime (0.5.12157)
+    sorbet-runtime (0.5.12163)
     stringio (3.1.7)
     tapp (1.5.1)
       thor
@@ -332,7 +332,7 @@ CHECKSUMS
   rubocop-ast (1.45.0) sha256=0b4ade77d15f25b9e07214fb42fa98164f5316accea525e14e44bbb8f06f78d7
   rubocop-performance (1.25.0) sha256=6f7d03568a770054117a78d0a8e191cefeffb703b382871ca7743831b1a52ec1
   rubocop-rspec (3.6.0) sha256=c0e4205871776727e54dee9cc91af5fd74578001551ba40e1fe1a1ab4b404479
-  ruby-lsp (0.23.24) sha256=c50f2097aa572c40aa36e4e80a59c4931f007be4f08836235020ab68d78a0d84
+  ruby-lsp (0.24.1) sha256=e75c94ea56af996bd4c7c6458f16b7b7be2420591ce72b1d3c2378681379beb3
   ruby-progressbar (1.13.0) sha256=80fc9c47a9b640d6834e0dc7b3c94c9df37f08cb072b7761e4a71e22cff29b33
   runger_byebug (11.4.0) sha256=569e22ba2215f57e7f69e145fcb63be401e29fcd312f7936d813e12d0c7bbee6
   runger_style (5.8.2) sha256=b0186f977babf202786ba9ae1137543e2fd5625f1f94517a8cf81e4b674fa4db
@@ -340,7 +340,7 @@ CHECKSUMS
   securerandom (0.4.1) sha256=cc5193d414a4341b6e225f0cb4446aceca8e50d5e1888743fac16987638ea0b1
   shellany (0.0.1) sha256=0e127a9132698766d7e752e82cdac8250b6adbd09e6c0a7fbbb6f61964fedee7
   slop (4.10.1) sha256=844322b5ffcf17ed4815fdb173b04a20dd82b4fd93e3744c88c8fafea696d9c7
-  sorbet-runtime (0.5.12157) sha256=dd9f784e95b433b2869ff0e1ede1a692c44f4cabd93813cd4b6707311ec79224
+  sorbet-runtime (0.5.12163) sha256=894e30bd8561568e7bca0423d23db06eb9556ffc946ad5cfb4a08d539fa79125
   stringio (3.1.7) sha256=5b78b7cb242a315fb4fca61a8255d62ec438f58da2b90be66048546ade4507fa
   tapp (1.5.1) sha256=2988d1cf968f3f830e9189ae5fa4d84ec4edde4417ff6bccce456eca1736373f
   thor (1.3.2) sha256=eef0293b9e24158ccad7ab383ae83534b7ad4ed99c09f96f1a6b036550abbeda

@@ -186,7 +186,7 @@ GEM
     runger_byebug (11.4.0)
       irb
       reline
-    runger_style (5.8.2)
+    runger_style (5.9.0)
       prism (>= 0.24.0)
       rubocop (>= 1.72.0)
     sawyer (0.9.2)
@@ -335,7 +335,7 @@ CHECKSUMS
   ruby-lsp (0.24.1) sha256=e75c94ea56af996bd4c7c6458f16b7b7be2420591ce72b1d3c2378681379beb3
   ruby-progressbar (1.13.0) sha256=80fc9c47a9b640d6834e0dc7b3c94c9df37f08cb072b7761e4a71e22cff29b33
   runger_byebug (11.4.0) sha256=569e22ba2215f57e7f69e145fcb63be401e29fcd312f7936d813e12d0c7bbee6
-  runger_style (5.8.2) sha256=b0186f977babf202786ba9ae1137543e2fd5625f1f94517a8cf81e4b674fa4db
+  runger_style (5.9.0) sha256=2060b5aa6710f6967aac7e553e0b11e3ad26d87036c7da5a7e8d7b98f9f1052b
   sawyer (0.9.2) sha256=fa3a72d62a4525517b18857ddb78926aab3424de0129be6772a8e2ba240e7aca
   securerandom (0.4.1) sha256=cc5193d414a4341b6e225f0cb4446aceca8e50d5e1888743fac16987638ea0b1
   shellany (0.0.1) sha256=0e127a9132698766d7e752e82cdac8250b6adbd09e6c0a7fbbb6f61964fedee7

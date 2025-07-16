@@ -39,7 +39,7 @@ GEM
     diff-lcs (1.6.2)
     dotenv (3.1.8)
     drb (2.2.3)
-    erb (5.0.1)
+    erb (5.0.2)
     faraday (2.13.2)
       faraday-net_http (>= 2.0, < 3.5)
       json
@@ -265,7 +265,7 @@ CHECKSUMS
   diff-lcs (1.6.2) sha256=9ae0d2cba7d4df3075fe8cd8602a8604993efc0dfa934cff568969efb1909962
   dotenv (3.1.8) sha256=9e1176060ced581f8e6ce4384e91361817763a76e3c625c8bddc18b35bd392c3
   drb (2.2.3) sha256=0b00d6fdb50995fe4a45dea13663493c841112e4068656854646f418fda13373
-  erb (5.0.1) sha256=760439803b36cc93eca8a266aab614614e588024a89bc30a62e78d98ff452c23
+  erb (5.0.2) sha256=d30f258143d4300fb4ecf430042ac12970c9bb4b33c974a545b8f58c1ec26c0f
   faraday (2.13.2) sha256=5c19762e3bbe78e61d8007c5119f2968373c5296d6c6d6aa05b6f9cec34f2a1a
   faraday-net_http (3.4.1) sha256=095757fae7872b94eac839c08a1a4b8d84fd91d6886cfbe75caa2143de64ab3b
   fcom (0.14.5) sha256=f1664551947541f918c91d7805f8a0dab485c816596e4b5d77fc5be06dcc6669

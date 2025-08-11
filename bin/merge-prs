@@ -109,10 +109,11 @@ class GithubPrAutoMerger < CommandKit::Command
 
     def merge_bot_prs
       bot_prs&.each_with_index do |pr, index|
-        merge_if_ready(pr)
+        merged = merge_if_ready(pr)
 
-        unless index == bot_prs.size - 1
-          # Wait between PRs in the same repo to give bots time to start rebasing, if needed.
+        if merged && index != bot_prs.size - 1
+          # Wait between merged PRs in the same repo to give bots time to start
+          # rebasing, if needed.
           sleep(10)
         end
       rescue => error
@@ -134,8 +135,12 @@ class GithubPrAutoMerger < CommandKit::Command
     def merge_if_ready(pr)
       if dependabot_rebasing?(pr)
         log_verbose("Dependabot is rebasing PR ##{pr.number} in #{@repo}. Skipping.".yellow)
+        false
       elsif checks_completed_successfully?(pr) && merge_pr(pr)
         log_merged_pr(pr)
+        true
+      else
+        false
       end
     end
 

@@ -15,7 +15,7 @@ module Tapp::Printer
     def print(tapped_object)
       calling_line =
         caller.find do |line|
-          !line.match?(%r{z\.rb|tapp|pry|[b]yebug|internal:kernel})
+          !line.match?(%r{z\.rb|tapp|pry|byebug|internal:kernel})
         end
       filepath, line_number_string = calling_line.match(/\A([^:]*):(\d+)/).to_a.drop(1)
       line_number = Integer(line_number_string)

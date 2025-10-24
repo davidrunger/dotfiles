@@ -26,13 +26,8 @@ module Helpers
 
   private
 
-  def log_verbose(message)
-    puts(message) if verbose?
-  end
-
-  memoize \
-  def verbose?
-    !!@verbose
+  def log(message)
+    puts(message)
   end
 
   def repo_hash
@@ -43,14 +38,6 @@ end
 class GithubPrAutoMerger < CommandKit::Command
   include Helpers
   prepend Memoization
-
-  option(
-    :verbose,
-    short: '-v',
-    desc: 'Enable verbose logging of GitHub API calls',
-  ) do
-    @verbose = true
-  end
 
   def run
     Signal.trap('SIGINT') { exit_gracefully }
@@ -88,7 +75,7 @@ class GithubPrAutoMerger < CommandKit::Command
   end
 
   def merge_bot_prs(repo)
-    PullRequestMerger.new(repo, github_client, verbose?).merge_bot_prs
+    PullRequestMerger.new(repo, github_client).merge_bot_prs
   end
 
   def exit_gracefully
@@ -101,10 +88,9 @@ class GithubPrAutoMerger < CommandKit::Command
     include Helpers
     prepend Memoization
 
-    def initialize(repo, client, verbose)
+    def initialize(repo, client)
       @repo = repo
       @client = client
-      @verbose = verbose
     end
 
     def merge_bot_prs
@@ -123,18 +109,18 @@ class GithubPrAutoMerger < CommandKit::Command
 
     memoize \
     def bot_prs
-      log_verbose("Fetching PRs for #{@repo}")
+      log("Fetching PRs for #{@repo}")
 
       @client.pull_requests(repo_hash, state: 'open').select do |pr|
         pr.user.type == 'Bot'
       end.tap do
-        log_verbose("Done fetching PRs for #{@repo}".cyan)
+        log("Done fetching PRs for #{@repo}".cyan)
       end
     end
 
     def merge_if_ready(pr)
       if dependabot_rebasing?(pr)
-        log_verbose("Dependabot is rebasing PR ##{pr.number} in #{@repo}. Skipping.".yellow)
+        log("Dependabot is rebasing PR ##{pr.number} in #{@repo}. Skipping.".yellow)
         false
       elsif checks_completed_successfully?(pr) && merge_pr(pr)
         log_merged_pr(pr)
@@ -163,7 +149,7 @@ class GithubPrAutoMerger < CommandKit::Command
     end
 
     def merge_pr(pr)
-      log_verbose("Merging PR ##{pr.number} in #{@repo}")
+      log("Merging PR ##{pr.number} in #{@repo}")
 
       @client.merge_pull_request(
         repo_hash,

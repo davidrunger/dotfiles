@@ -15,8 +15,8 @@ importers:
         specifier: ^5.8.2
         version: 5.8.2
       ky:
-        specifier: ^1.13.0
-        version: 1.13.0
+        specifier: ^1.14.0
+        version: 1.14.0
     devDependencies:
       '@ianvs/prettier-plugin-sort-imports':
         specifier: ^4.7.0
@@ -146,8 +146,8 @@ packages:
     engines: {node: '>=6'}
     hasBin: true
 
-  ky@1.13.0:
-    resolution: {integrity: sha512-JeNNGs44hVUp2XxO3FY9WV28ymG7LgO4wju4HL/dCq1A8eKDcFgVrdCn1ssn+3Q/5OQilv5aYsL0DMt5mmAV9w==}
+  ky@1.14.0:
+    resolution: {integrity: sha512-Rczb6FMM6JT0lvrOlP5WUOCB7s9XKxzwgErzhKlKde1bEV90FXplV1o87fpt4PU/asJFiqjYJxAJyzJhcrxOsQ==}
     engines: {node: '>=18'}
 
   lodash.defaults@4.2.0:
@@ -298,7 +298,7 @@ snapshots:
 
   jsesc@3.1.0: {}
 
-  ky@1.13.0: {}
+  ky@1.14.0: {}
 
   lodash.defaults@4.2.0: {}
 

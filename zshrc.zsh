@@ -105,7 +105,7 @@ path=(
   $HOME/.local/bin
   node_modules/.bin
   # https://github.com/Homebrew/homebrew-core/issues/ 121043#issuecomment-1397888835
-  $HOMEBREW_PREFIX/opt/postgresql@17/bin
+  $HOMEBREW_PREFIX/opt/postgresql@18/bin
   $path
 )
 

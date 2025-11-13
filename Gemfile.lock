@@ -178,7 +178,7 @@ GEM
     rubocop-rspec (3.8.0)
       lint_roller (~> 1.1)
       rubocop (~> 1.81)
-    ruby-lsp (0.26.2)
+    ruby-lsp (0.26.3)
       language_server-protocol (~> 3.17.0)
       prism (>= 1.2, < 2.0)
       rbs (>= 3, < 5)
@@ -331,7 +331,7 @@ CHECKSUMS
   rubocop-ast (1.48.0) sha256=22df9bbf3f7a6eccde0fad54e68547ae1e2a704bf8719e7c83813a99c05d2e76
   rubocop-performance (1.26.1) sha256=cd19b936ff196df85829d264b522fd4f98b6c89ad271fa52744a8c11b8f71834
   rubocop-rspec (3.8.0) sha256=28440dccb3f223a9938ca1f946bd3438275b8c6c156dab909e2cb8bc424cab33
-  ruby-lsp (0.26.2) sha256=b4e0da60d97d453ae8f91f065197f2ab189955bba763a128a416cc4c3fa1d976
+  ruby-lsp (0.26.3) sha256=80d28b6c80ce3003997ebebe9bab5599e21fa6888cb5bdb4cee7d24b461d6981
   ruby-progressbar (1.13.0) sha256=80fc9c47a9b640d6834e0dc7b3c94c9df37f08cb072b7761e4a71e22cff29b33
   runger_byebug (11.4.0) sha256=569e22ba2215f57e7f69e145fcb63be401e29fcd312f7936d813e12d0c7bbee6
   runger_style (5.10.0) sha256=6eb54391055adef58e5c6f200ee633e1c1099f4e49b40d843714a26b2fff2a26

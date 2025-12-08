@@ -1,6 +1,6 @@
 GIT
   remote: https://github.com/davidrunger/pry-byebug.git
-  revision: 0b596b133d49f9d1dcf7bd6210604cfd60c45cba
+  revision: 5f95946a2506c84f2f49246b415108671397d5db
   specs:
     pry-byebug (3.10.1)
       pry (>= 0.13)
@@ -351,7 +351,7 @@ CHECKSUMS
   yard (0.9.38) sha256=721fb82afb10532aa49860655f6cc2eaa7130889df291b052e1e6b268283010f
 
 RUBY VERSION
-  ruby 3.4.7p58
+  ruby 3.4.7
 
 BUNDLED WITH
   4.0.0

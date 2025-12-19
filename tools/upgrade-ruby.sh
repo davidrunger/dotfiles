@@ -33,7 +33,8 @@ for dir in $(my-repos) ; do
     if [[ "$old_ruby_version" != "$new_ruby_version" ]]; then
       set -x
 
-      gfcob bump-ruby
+      update-main-branch
+      git checkout -b "bump-ruby" "origin/$(main-branch)"
       sd -F "$old_ruby_version" "$new_ruby_version" .ruby-version
       bundle update --ruby --bundler
       gacm "Bump Ruby from $old_ruby_version to $new_ruby_version"

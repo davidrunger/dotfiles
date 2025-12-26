@@ -10,6 +10,8 @@ set -euo pipefail # don't allow undefined variables, pipes don't swallow errors
 
 ruby_version_file=".ruby-version"
 new_ruby_version="$1"
+branch_name="bump-ruby"
+ignore_dirs=$(runger-config -d ~/code/dotfiles --show forks | paste -sd '|' -)
 
 if [[ -z "$new_ruby_version" ]]; then
   echo "Usage: $0 <new_ruby_version>"
@@ -28,13 +30,13 @@ for dir in $(my-repos) ; do
   cd "$dir" || exit
   blue "# $dir"
 
-  if test -f $ruby_version_file ; then
+  if test -f $ruby_version_file && ! [[ "$dir" =~ ^(${ignore_dirs})$ ]] ; then
     old_ruby_version=$(head -n1 "$ruby_version_file")
-    if [[ "$old_ruby_version" != "$new_ruby_version" ]]; then
+    if git diff --quiet && ! branch-exists "$branch_name" && [[ "$old_ruby_version" != "$new_ruby_version" ]]; then
       set -x
 
       update-main-branch
-      git checkout -b "bump-ruby" "origin/$(main-branch)"
+      git checkout -b "$branch_name" "origin/$(main-branch)"
       sd -F "$old_ruby_version" "$new_ruby_version" .ruby-version
       bundle update --ruby --bundler
       gacm "Bump Ruby from $old_ruby_version to $new_ruby_version"

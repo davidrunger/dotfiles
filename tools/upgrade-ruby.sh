@@ -30,7 +30,11 @@ for dir in $(my-repos) ; do
   cd "$dir" || exit
   blue "# $dir"
 
-  if test -f $ruby_version_file && ! [[ "$dir" =~ ^(${ignore_dirs})$ ]] ; then
+  if ! test -f $ruby_version_file ; then
+    echo "No $ruby_version_file found."
+  elif [[ "$dir" =~ ^(${ignore_dirs})$ ]] ; then
+    echo "Directory is ignored for Ruby upgrades."
+  else
     old_ruby_version=$(head -n1 "$ruby_version_file")
     if git diff --quiet && ! branch-exists "$branch_name" && [[ "$old_ruby_version" != "$new_ruby_version" ]]; then
       set -x
@@ -46,8 +50,6 @@ for dir in $(my-repos) ; do
     else
       echo "Already at Ruby $new_ruby_version"
     fi
-  else
-    echo "No $ruby_version_file found"
   fi
 
   echo

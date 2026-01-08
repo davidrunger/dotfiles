@@ -62,6 +62,7 @@ guard(:shell, all_on_start: true) do
       next
     end
 
+    # rubocop:disable RSpec/Output
     begin
       match = guard_match_result.instance_variable_get(:@original_value) || '[no match]'
       puts("Match for #{match} triggered execution.")
@@ -80,6 +81,7 @@ guard(:shell, all_on_start: true) do
       puts(exception.message)
       puts(exception.backtrace)
     end
+    # rubocop:enable RSpec/Output
 
     # rubocop:disable Rails/TimeZone, Lint/RedundantCopDisableDirective
     "Done in #{(Time.now - start_time).round(2)} seconds."

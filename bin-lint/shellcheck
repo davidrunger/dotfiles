@@ -15,7 +15,8 @@ shebang_files=$(
 
 extension_files=$(
   changed-not-deleted-files | \
-    rg '\.(bash|sh)$' || \
+    rg '\.(bash|sh)$' | \
+    rg -v 'docs/' || \
     true
 )
 

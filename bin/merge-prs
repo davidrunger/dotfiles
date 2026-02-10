@@ -149,6 +149,12 @@ class GithubPrAutoMerger < CommandKit::Command
     end
 
     def merge_pr(pr)
+      # Re-check immediately before merge in case Dependabot started rebasing
+      if dependabot_rebasing?(pr)
+        log("Dependabot started rebasing PR ##{pr.number} in #{@repo}. Skipping.".yellow)
+        return false
+      end
+
       log("Merging PR ##{pr.number} in #{@repo}")
 
       @client.merge_pull_request(

@@ -35,7 +35,7 @@ end
 module MethodPatches
   # "source location" (returns the source location of a method as "path/file.rb:line_number")
   def sl
-    source_location&.map(&:to_s)&.join(':')
+    source_location&.join(':')
   end
 
   # "sublime" (open the current method's source location in VSCode)

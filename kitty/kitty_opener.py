@@ -50,6 +50,11 @@ home = str(Path.home())
 editor = f"{home}/code/dotfiles/bin/editor"
 
 
+regex = re.compile(
+    r"\b(action=[^#\s]+#\S+)\b|(?:\b|\(|\s|^|/)([0-9a-f]{6,40}|#\d+)(?:\b|\))|((?:~|/|\b|\.)[^\s{}'\"\[\]]+/[^\s{}'\":]+(?::\d+){0,2}\b/?)"
+)
+
+
 def build_regex(cwd):
     try:
         cwd_files = [p.name for p in Path(cwd).iterdir()]
@@ -66,9 +71,7 @@ def build_regex(cwd):
             r"|" + cwd_file_pattern
         )
     else:
-        return re.compile(
-            r"\b(action=[^#\s]+#\S+)\b|(?:\b|\(|\s|^|/)([0-9a-f]{6,40}|#\d+)(?:\b|\))|((?:~|/|\b|\.)[^\s{}'\"\[\]]+/[^\s{}'\":]+(?::\d+){0,2}\b/?)"
-        )
+        return regex
 
 
 def mark(text, args, Mark, extra_cli_args, *a):

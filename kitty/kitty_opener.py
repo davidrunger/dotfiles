@@ -5,6 +5,7 @@ from pathlib import Path
 
 # NOTE: Debug with this function and run (in dotfiles) `gal -g bash --force` and
 # make the bash script `cat personal/random.txt`.
+# TEST COMMENT!
 def debug(text):
     subprocess.run(f"echo '{text}' >> /home/david/code/dotfiles/personal/random.txt", shell=True)
 

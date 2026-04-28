@@ -16,6 +16,7 @@ readarray -t files_for_prettier < <(
 'lock|'\
 'node-version|'\
 'prettierignore|'\
+'py|'\
 'rb|'\
 'ruby-version|'\
 'sh|'\

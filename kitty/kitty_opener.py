@@ -55,10 +55,31 @@ regex = re.compile(
 )
 
 
+def build_regex(cwd):
+    try:
+        cwd_files = [p.name for p in Path(cwd).iterdir()]
+    except OSError:
+        cwd_files = []
+
+    if cwd_files:
+        escaped = sorted([re.escape(f) for f in cwd_files], key=len, reverse=True)
+        cwd_file_pattern = r"(?<![/\w])(" + "|".join(escaped) + r")(?::\d+){0,2}(?![/\w])"
+        return re.compile(
+            r"\b(action=[^#\s]+#\S+)\b"
+            r"|(?:\b|\(|\s|^|/)([0-9a-f]{6,40}|#\d+)(?:\b|\))"
+            r"|((?:~|/|\b|\.)[^\s{}'\"\[\]]+/[^\s{}'\":]+(?::\d+){0,2}\b/?)"
+            r"|" + cwd_file_pattern
+        )
+    else:
+        return regex
+
+
 def mark(text, args, Mark, extra_cli_args, *a):
     # This function is responsible for finding all
     # matching text. extra_cli_args are any extra arguments
     # passed on the command line when invoking the kitten.
+    cwd = str(Path.cwd())
+    regex = build_regex(cwd)
     for idx, m in enumerate(re.finditer(regex, text)):
         # Iterate over each capturing group in the match
         for group_num in range(1, len(m.groups()) + 1):

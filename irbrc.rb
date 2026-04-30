@@ -21,3 +21,5 @@ IRB::Irb.class_eval do
     puts("#=> #{@context.last_value.ai}")
   end
 end
+
+IRB.conf[:SHOW_BANNER] = false

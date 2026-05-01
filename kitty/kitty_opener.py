@@ -3,10 +3,14 @@ import re
 import subprocess
 from pathlib import Path
 
+
 # NOTE: Debug with this function and run (in dotfiles) `gal -g bash --force` and
 # make the bash script `cat personal/random.txt`.
 def debug(text):
-    subprocess.run(f"echo '{text}' >> /home/david/code/dotfiles/personal/random.txt", shell=True)
+    subprocess.run(
+        f"echo '{text}' >> /home/david/code/dotfiles/personal/random.txt", shell=True
+    )
+
 
 symlink_extracting_regex = r": symbolic link to (.+)"
 

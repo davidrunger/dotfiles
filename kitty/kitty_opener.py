@@ -63,7 +63,9 @@ def build_regex(cwd):
 
     if cwd_files:
         escaped = sorted([re.escape(f) for f in cwd_files], key=len, reverse=True)
-        cwd_file_pattern = r"(?<![/\w])(" + "|".join(escaped) + r")(?::\d+){0,2}(?![/\w])"
+        cwd_file_pattern = (
+            r"(?<![/\w])((?:" + "|".join(escaped) + r")(?::\d+){0,2})(?![/\w])"
+        )
         return re.compile(
             r"\b(action=[^#\s]+#\S+)\b"
             r"|(?:\b|\(|\s|^|/)([0-9a-f]{6,40}|#\d+)(?:\b|\))"

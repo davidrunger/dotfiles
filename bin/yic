@@ -10,7 +10,7 @@ if runger-config --silent javascript-install-command ; then
 elif [ -f yarn.lock ] ; then
   yarn install --check-files
 elif [ -f pnpm-lock.yaml ] ; then
-  pnpm install --frozen-lockfile
+  pnpm install --frozen-lockfile --config.confirmModulesPurge=false
 else
   pnpm install
 fi

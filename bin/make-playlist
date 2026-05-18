@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# Create a `.m3u8` playlist (named after the current directory) using all mp3
+# Create an `.m3u8` playlist (named after the current directory) using all mp3
 # files in the current directory.
 
 set -euo pipefail # exit on any error, don't allow undefined variables, pipes don't swallow errors

@@ -10,6 +10,8 @@
 
 require 'bundler/setup'
 require 'dotenv/load'
+require 'faraday'
+require 'faraday/retry'
 require 'octokit'
 require 'command_kit'
 require 'active_support'

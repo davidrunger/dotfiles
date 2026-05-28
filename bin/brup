@@ -30,4 +30,9 @@ update_oh_my_zsh() {
   "$ZSH/tools/changelog.sh" "$sha_after" "$sha_before"
 }
 
-(update_homebrew && echo && update_oh_my_zsh) |& tee "$output_log_file"
+(update_homebrew &&
+  echo &&
+  update_oh_my_zsh &&
+  echo &&
+  pnpm self-update
+) |& tee "$output_log_file"

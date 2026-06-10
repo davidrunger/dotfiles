@@ -1,1 +1,4 @@
-minimumReleaseAge: 0 # Don't require waiting any amount of time to install a new release.
+minimumReleaseAge: 7200 # Wait 5 days before installing new releases.
+minimumReleaseAgeExclude:
+  - '@types/node@25.9.2'
+  - prettier@3.8.4

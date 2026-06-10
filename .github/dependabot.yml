@@ -9,6 +9,8 @@ updates:
       timezone: America/Chicago
     allow:
       - dependency-type: all
+    cooldown:
+      default-days: 5
 
   - package-ecosystem: npm
     directory: '/'
@@ -16,4 +18,6 @@ updates:
       interval: cron
       cronjob: '4 4 * * *'
       timezone: America/Chicago
+    cooldown:
+      default-days: 5
     open-pull-requests-limit: 20

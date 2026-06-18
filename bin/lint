@@ -3,7 +3,7 @@
 # Execute a linter script defined in this repo's `bin-lint/` directory.
 #
 # Example:
-#   lint gitleaks
+#   lint secrets
 
 set -euo pipefail # exit on any error, don't allow undefined variables, pipes don't swallow errors
 

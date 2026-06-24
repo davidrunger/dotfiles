@@ -1,6 +1,11 @@
 #!/usr/bin/env zsh
 
-# Run [br]ew [up]date and [br]ew [up]grade and save the printed output.
+# This `brup` script is named because it initially ran [br]ew [up]date and
+# [br]ew [up]grade. Now it also updates other tools, like pnpm and Oh My Zsh. It
+# also saves the printed output from the updates, in case that will be useful
+# for future debugging of an issue that might have been caused by an upgrade, or
+# in case there was some post-update tip I need to read (but didn't read when it
+# was printed to the terminal).
 
 set -eu # exit on any error, don't allow undefined variables
 

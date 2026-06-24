@@ -30,9 +30,17 @@ update_oh_my_zsh() {
   "$ZSH/tools/changelog.sh" "$sha_after" "$sha_before"
 }
 
-(pnpm self-update &&
-  echo &&
-  update_homebrew &&
-  echo &&
+perform_updates() {
+  echo '=== pnpm ==='
+  pnpm self-update
+  echo
+
+  echo '=== Homebrew ==='
+  update_homebrew
+  echo
+
+  echo '=== Oh My Zsh ==='
   update_oh_my_zsh
-) |& tee "$output_log_file"
+}
+
+perform_updates |& tee "$output_log_file"

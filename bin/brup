@@ -36,15 +36,15 @@ update_oh_my_zsh() {
 }
 
 perform_updates() {
-  echo '=== pnpm ==='
+  blue '=== pnpm ==='
   pnpm self-update
   echo
 
-  echo '=== Homebrew ==='
+  blue '=== Homebrew ==='
   update_homebrew
   echo
 
-  echo '=== Oh My Zsh ==='
+  blue '=== Oh My Zsh ==='
   update_oh_my_zsh
 }
 

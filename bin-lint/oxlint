@@ -1,0 +1,40 @@
+#!/usr/bin/env bash
+
+# Run Oxlint.
+
+set -euo pipefail # exit on any error, don't allow undefined variables, pipes don't swallow errors
+
+readarray -t files_for_oxlint < <(
+  changed-not-deleted-files | \
+    rg "app/javascript/.*\.(js|ts|vue)$" | \
+    rg -v "app/javascript/types/(bootstrap|responses|serializers)/" || \
+    true
+)
+
+git_diff_hash_before=$(git diff | sha1sum | choose 0)
+
+if [ ${#files_for_oxlint[@]} -eq 0 ]; then
+  write-background-notification 'No files need to be linted by Oxlint.'
+else
+  set +e
+  (
+    set -x
+    ./node_modules/.bin/oxlint --max-warnings 0 --fix "${files_for_oxlint[@]}"
+  )
+  oxlint_status=$?
+  set -e
+
+  if [ $oxlint_status -eq 0 ]; then
+    git_diff_hash_after=$(git diff | sha1sum | choose 0)
+
+    if [ "$git_diff_hash_before" == "$git_diff_hash_after" ] ; then
+      write-background-notification 'Changed files satisfy Oxlint.'
+    else
+      write-background-notification 'There were Oxlint violation(s). They were all autocorrected.'
+      exit 1
+    fi
+  else
+    write-background-notification 'There were Oxlint violations(s) that could not be autocorrected.'
+    exit 1
+  fi
+fi

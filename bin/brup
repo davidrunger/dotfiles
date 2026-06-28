@@ -46,6 +46,10 @@ perform_updates() {
 
   blue '=== Oh My Zsh ==='
   update_oh_my_zsh
+  echo
+
+  blue '=== dotfiles ==='
+  (cd ~/code/dotfiles && main)
 }
 
 perform_updates |& tee "$output_log_file"

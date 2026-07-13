@@ -11,7 +11,7 @@ module SqlUtils
   ].freeze
 
   def reformat_match?(sql)
-    FORMATTING_NEEDED_PATTERNS.any? { sql.include?(it) }
+    FORMATTING_NEEDED_PATTERNS.intersect?(sql)
   end
 
   def format_sql_if_necessary

@@ -5,7 +5,7 @@ require "yaml"
 require "memoization"
 
 class RungerConfig
-  def initialize(directory : String | Nil)
+  def initialize(directory : String?)
     @directory = directory || "."
   end
 
@@ -57,7 +57,7 @@ class RungerConfig
     open_config_file(".runger-config.private.yml", config_key: config_key)
   end
 
-  def open_config_file(file_name : String, config_key : String | Nil = nil)
+  def open_config_file(file_name : String, config_key : String? = nil)
     file_path = directory_relative_file_path(file_name)
 
     if !File.exists?(file_path)

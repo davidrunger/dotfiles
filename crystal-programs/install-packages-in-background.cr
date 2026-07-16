@@ -115,14 +115,14 @@ class InstallPackagesInBackground
 
     zsh_command =
       <<-ZSH
-      {
-        (
-          #{command} && \\
-            notify 'Command succeeded in #{current_directory}' '#{command}' || \\
-            notify-error 'Command failed in #{current_directory}' '#{command}'
-        ) & disown
-      } &>/dev/null
-      ZSH
+        {
+          (
+            #{command} && \\
+              notify 'Command succeeded in #{current_directory}' '#{command}' || \\
+              notify-error 'Command failed in #{current_directory}' '#{command}'
+          ) & disown
+        } &>/dev/null
+        ZSH
 
     File.write(executable_path, <<-SCRIPT)
       #!/usr/bin/env zsh

@@ -1,3 +1,5 @@
 # I think parens suggest that it's intentional assignment, rather than a botched condition check.
+Lint/AssignmentInCallArgument:
+  Enabled: false
 Style/ParenthesesAroundCondition:
   Enabled: false

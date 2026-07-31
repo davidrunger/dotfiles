@@ -50,6 +50,9 @@ fi
 # NOTE: YJIT requires Rust to be installed.
 # NOTE: Jemalloc requires `sudo apt-get install libjemalloc-dev`.
 export RUBY_CONFIGURE_OPTS="--enable-yjit --with-jemalloc"
+# https://chat.deepseek.com/share/mddi9z5u7wtwod5l4x
+export PATH="/usr/local/bin:/usr/bin:/bin:$PATH"
+export RUBY_CONFIGURE_OPTS="--with-gmp-dir=/usr"
 
 # yarn setup
 if command -v yarn &> /dev/null ; then

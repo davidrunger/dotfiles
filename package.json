@@ -5,7 +5,7 @@
   "private": true,
   "dependencies": {
     "chalk": "^6.0.0",
-    "ioredis": "^5.11.1",
+    "ioredis": "^6.0.0",
     "ky": "^2.0.2"
   },
   "devDependencies": {

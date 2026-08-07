@@ -50,3 +50,20 @@
 - Prefer repository-provided wrappers and binstubs over commands that bypass them.
 - Use `pnpm` for JavaScript package management, unless the project is already using a different tool (e.g. as evidenced by a `yarn.lock` file).
 - Do not add a dependency in any environment, including development or test, without the user's explicit consent. Dependency additions carry supply-chain, vulnerability, and local-machine risks.
+
+## Test workflow
+
+- Run targeted tests while developing, and run targeted linters on changed files when they provide useful feedback.
+- Use CI as the portable broad-check mechanism. Do not assume that local helper commands are installed, and do not push merely to trigger CI.
+
+## Test design
+
+- When an RSpec example description contains an apostrophe, delimit the string with double quotes rather than escaping the apostrophe in a single-quoted string. RSpec omits the escape character from documentation output, so keeping the source text identical to the rendered description makes the example searchable.
+- Keep tests focused on the behavior under test. Set up only attributes and conditions that are relevant to that behavior.
+- Express required relationships directly instead of relying on incidental fixture identities.
+- Avoid confounding conditions in regression tests. Construct the example so that the rule under test, not an unrelated validation, privacy setting, authorization rule, or fixture detail, determines the outcome.
+- Before adding a test-specific condition, ask whether changing that condition should affect the expected result. If not, omit it.
+
+## Generated files
+
+- When a file says that it is generated, find and run its owning generator instead of editing the output.

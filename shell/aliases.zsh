@@ -9,7 +9,7 @@ alias dots='cd ~/code/dotfiles'
 alias dotsp='cd ~/code/dotfiles-personal'
 alias down='cd ~/Downloads'
 alias fix='git diff --name-only | uniq | xargs $EDITOR'
-alias fsk='redis-cli -n 1 FLUSHDB && SIDEKIQ_CONCURRENCY=1 bin/sidekiq' # `-n 1` because of `REDIS_DATABASE_NUMBER=1` in `.env`
+alias fsk='redis-cli -n 1 FLUSHDB && SIDEKIQ_CONCURRENCY=1 bin/sidekiq' # `-n 1` because Sidekiq uses Redis db 1 by default
 alias gba='GIT_PAGER=cat git branch -vv'
 alias gbdf='git branch -D $(active-branches | fzf)'
 alias gcme='git commit --allow-empty --message'

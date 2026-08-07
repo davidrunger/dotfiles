@@ -14,7 +14,7 @@ system('redis-cli -n 3 FLUSHDB', exception: true)
 sidekiq_pid =
   Process.spawn(
     {
-      'REDIS_DATABASE_NUMBER' => '3',
+      'SIDEKIQ_REDIS_DATABASE_NUMBER' => '3',
       'SIDEKIQ_CONCURRENCY' => '1',
     },
     'bin/sidekiq',

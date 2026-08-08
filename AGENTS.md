@@ -63,6 +63,15 @@
 - Express required relationships directly instead of relying on incidental fixture identities.
 - Avoid confounding conditions in regression tests. Construct the example so that the rule under test, not an unrelated validation, privacy setting, authorization rule, or fixture detail, determines the outcome.
 - Before adding a test-specific condition, ask whether changing that condition should affect the expected result. If not, omit it.
+- Prefer exercising real application behavior over stubs and mocks when reasonably possible. Treat `instance_double`, `and_return`, and similar constructs as last resorts; prefer `and_call_original` or real objects and deliveries when that keeps the test focused and manageable. This is a preference, not a blanket prohibition.
+
+## Ruby conventions
+
+- When a computed result is reused, prefer memoizing the method rather than assigning a same-named local variable solely to avoid recomputation. Use the repository's `Memoization` pattern where available.
+
+## Naming
+
+- Prefer names that communicate a value's type or role at method boundaries. For example, use `recipient_email` rather than `recipient` when a value is an email address, especially when another parameter such as `actor` is an object.
 
 ## Generated files
 

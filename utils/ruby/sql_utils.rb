@@ -11,9 +11,7 @@ module SqlUtils
   ].freeze
 
   def reformat_match?(sql)
-    # rubocop:disable Style/ArrayIntersect
     FORMATTING_NEEDED_PATTERNS.any? { sql.include?(it) }
-    # rubocop:enable Style/ArrayIntersect
   end
 
   def format_sql_if_necessary

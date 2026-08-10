@@ -79,6 +79,7 @@
 
 ## Naming
 
+- Name a method or function that is used primarily for its return value as a noun describing what it returns, such as `neutralized_formula`. Use a verb name only when the method or function is used primarily for a side effect.
 - Prefer names that communicate a value's type or role at method boundaries. For example, use `recipient_email` rather than `recipient` when a value is an email address, especially when another parameter such as `actor` is an object.
 
 ## Generated files

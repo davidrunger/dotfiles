@@ -60,6 +60,7 @@
 ## Test design
 
 - When an RSpec example description contains an apostrophe, delimit the string with double quotes rather than escaping the apostrophe in a single-quoted string. RSpec omits the escape character from documentation output, so keeping the source text identical to the rendered description makes the example searchable.
+- Prefer reusing fixtures over creating new database records when an appropriate fixture is easy to select and its specific identity is not behaviorally significant. This keeps tests faster without coupling them to incidental fixture details.
 - Keep tests focused on the behavior under test. Set up only attributes and conditions that are relevant to that behavior.
 - Express required relationships directly instead of relying on incidental fixture identities.
 - Avoid confounding conditions in regression tests. Construct the example so that the rule under test, not an unrelated validation, privacy setting, authorization rule, or fixture detail, determines the outcome.

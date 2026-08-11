@@ -50,6 +50,7 @@
 - Use Markdown code formatting in commit message bodies for code identifiers, commands, file paths, environment variables, literal values, and other code-like text. Use inline backticks for short spans and fenced code blocks for multiline examples when useful.
 - In commit message bodies, use double quotes rather than backticks for concrete user-facing copy, error messages, labels, and other prose phrases when discussing their wording or presentation, even if the text is implemented as a string literal. Use backticks when discussing the source-level literal or code expression itself.
 - When a change is motivated by, follows from, or corrects a specific earlier commit or pull request, reference that change in the commit message body. Include the pull request number or link, the commit hash on `main`, or both, choosing enough detail for a future reader to locate it.
+- When referencing a pull request in another repository, include its raw full URL rather than only its number or a Markdown-formatted link. GitHub can present the raw URL appropriately, while the stored Git history remains simple and unambiguous.
 
 ## General tooling
 

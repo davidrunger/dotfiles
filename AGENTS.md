@@ -30,6 +30,7 @@
 - Do not push branches or otherwise modify remote or GitHub state unless the user explicitly requests it.
 - When explicitly asked to push, send the current branch to the same-named branch on `origin` while preserving `origin/main` as the upstream. Use a command compatible with the machine's Git configuration; do not use `-u` or otherwise change the upstream to `origin/<branch-name>`.
 - Before the branch has been pushed to a remote, keep its work in a single commit and amend that commit as needed.
+- Never amend a commit on `main`. Check the current branch before amending any commit; if it is `main`, create or switch to a dedicated branch first.
 - When a relevant code change is amended into a commit, update the commit message as needed so it accurately describes the commit's final contents.
 - Do not rewrite a commit after it has been pushed. Make subsequent changes in a new commit. That new commit may itself be amended until it is pushed.
 

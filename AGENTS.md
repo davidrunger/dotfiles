@@ -74,6 +74,7 @@
 - When observing a method call, use `and_call_original` whenever reasonably possible rather than a bare stub or `and_return`. Replace the original behavior only when it cannot safely be exercised or isolation genuinely requires replacement; do not rely on a judgment that the original behavior is merely irrelevant.
 - When reasonably possible, make each `context` establish the condition described in its own label through immediately scoped `before` setup and/or `let` declarations. Nested contexts should refine that established premise rather than being solely responsible for making an ancestor context true.
 - Prefer declaring a `let` when it is overridden by a nested context, referenced directly by an expectation, or otherwise needed to express setup. Avoid extracting a one-off value into a `let` merely to make another declaration more readable when that extraction would obscure why the `let` exists or make an incidental refactor look behaviorally necessary.
+- When a spec checks that a user-facing label or control is absent, share its expected text with positive expectations through a `let` when reasonably possible. This keeps negative expectations from passing falsely when the label changes but the negative expectation is not updated.
 
 ## Ruby conventions
 

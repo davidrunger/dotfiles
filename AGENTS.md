@@ -28,6 +28,7 @@
   This keeps the branch's ahead/behind counts relative to `origin/main`.
 
 - Do not push branches or otherwise modify remote or GitHub state unless the user explicitly requests it.
+- After implementing a requested change, commit the completed work on its task branch before handing it back, unless the user specifically asks not to commit. This makes the agent's responses to review feedback easy to compare as follow-up commits in the Git reflog.
 - When explicitly asked to push, send the current branch to the same-named branch on `origin` while preserving `origin/main` as the upstream. Use a command compatible with the machine's Git configuration; do not use `-u` or otherwise change the upstream to `origin/<branch-name>`.
 - Before the branch has been pushed to a remote, keep its work in a single commit and amend that commit as needed.
 - Never amend a commit on `main`. Check the current branch before amending any commit; if it is `main`, create or switch to a dedicated branch first.

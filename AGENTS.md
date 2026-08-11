@@ -58,6 +58,10 @@
 - Use `pnpm` for JavaScript package management, unless the project is already using a different tool (e.g. as evidenced by a `yarn.lock` file).
 - Do not add a dependency in any environment, including development or test, without the user's explicit consent. Dependency additions carry supply-chain, vulnerability, and local-machine risks.
 
+## User interface conventions
+
+- Give new user-facing controls and elements deliberate styling so that they look polished and communicate their purpose visually. Prefer existing classes, CSS, components, and presentation patterns when suitable. When the project has no suitable existing pattern, consider adding a reusable one or ask the user for guidance when the appropriate design is unclear.
+
 ## Test workflow
 
 - Run targeted tests while developing, and run targeted linters on changed files when they provide useful feedback.

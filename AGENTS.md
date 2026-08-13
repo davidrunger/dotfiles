@@ -75,6 +75,7 @@
 - Prefer reusing fixtures over creating new database records when an appropriate fixture is easy to select and its specific identity is not behaviorally significant. This keeps tests faster without coupling them to incidental fixture details.
 - Keep tests focused on the behavior under test. Set up only attributes and conditions that are relevant to that behavior.
 - Generally test behavior and semantics rather than presentation details such as CSS classes or styling. Assert styling only when the presentation itself is the behavior under test.
+- In feature specs and other browser-driven tests, prefer establishing state through real browser actions, such as clicking controls, submitting forms, or navigating, whenever reasonably possible. Avoid artificially manipulating the situation through direct database updates or internal method calls when the browser can perform the same action; use direct setup when browser-driven setup would be impractical or outside the behavior under test.
 - Express required relationships directly instead of relying on incidental fixture identities.
 - Avoid confounding conditions in regression tests. Construct the example so that the rule under test, not an unrelated validation, privacy setting, authorization rule, or fixture detail, determines the outcome.
 - Before adding a test-specific condition, ask whether changing that condition should affect the expected result. If not, omit it.

@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+
+# Create a GitHub pull request and wait for it to merge.
+
+set -euo pipefail # exit on any error, don't allow undefined variables, pipes don't swallow errors
+
+hpr
+echo
+wait-merge

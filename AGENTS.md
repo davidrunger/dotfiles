@@ -37,6 +37,10 @@
 - When a relevant code change is amended into a commit, update the commit message as needed so it accurately describes the commit's final contents.
 - Do not rewrite a commit after it has been pushed. Make subsequent changes in a new commit. That new commit may itself be amended until it is pushed.
 
+## Changelogs
+
+- If a repository maintains a changelog, any non-trivial, user-facing change must include a corresponding changelog entry on the implementation branch. Follow the repository's convention for the changelog's filename and structure rather than assuming that it is named `CHANGELOG.md`.
+
 ## Commit messages
 
 - Format the first commit title on a branch as `[subject area] Imperative title [JIRA-123]`. This title becomes the GitHub pull request title and the eventual commit title on `main`, where the subject area and Jira issue are useful.

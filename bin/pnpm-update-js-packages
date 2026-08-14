@@ -1,0 +1,24 @@
+#!/usr/bin/env bash
+
+# Update JavaScript packages and open and merge a pull request.
+
+set -euo pipefail # exit on any error, don't allow undefined variables, pipes don't swallow errors
+
+gfcob update-javascript-packages
+
+yq -i 'del(.minimumReleaseAgeExclude)' pnpm-workspace.yaml
+audit_exit_status=0
+pnpm audit --fix=update || audit_exit_status=$?
+
+if [[ "$audit_exit_status" -gt 1 ]]; then
+  exit "$audit_exit_status"
+fi
+
+rm pnpm-lock.yaml
+rm node_modules/.pnpm/lock.yaml
+
+pnpm install
+pnpm dedupe
+
+gacm 'Update JavaScript packages'
+hwm

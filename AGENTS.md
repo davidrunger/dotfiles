@@ -54,6 +54,16 @@
 - Do not use backticks in commit titles. Keep titles as plain text because GitHub's special rendering of backtick-delimited text hurts the searchability of commit and pull request titles.
 - Write a detailed commit message body. Include relevant context, history, documentation links, reasoning and motivation, and consciously chosen tradeoffs where they will help a future reader understand the change.
 - When passing a multi-paragraph commit message on the command line, use a separate `-m` option for the title and each body paragraph. Do not embed `\n` escape sequences in a `-m` argument; shells can pass them literally and cause Git to store the backslash characters instead of newlines. After committing or amending, inspect the stored message to confirm that its paragraphs are formatted correctly.
+- When a commit message contains Markdown backticks, `$()`, dollar signs, or other shell-sensitive text, never place it in a double-quoted shell argument. Prefer separate single-quoted `-m` arguments when the message does not contain single quotes:
+
+  ```sh
+  git commit \
+    -m '[release-tasks] Retry migrations' \
+    -m 'Re-enable `db:migrate` before retrying it.'
+  ```
+
+  If the message contains both single quotes and shell-sensitive text, write it to a temporary file using `apply_patch`, then use `git commit --file <path>`. Do not use an unquoted heredoc. Inspect the stored message after committing or amending.
+
 - Use Markdown code formatting in commit message bodies for code identifiers, commands, file paths, environment variables, literal values, and other code-like text. Use inline backticks for short spans and fenced code blocks for multiline examples when useful. Treat this as a pre-commit gate: before every commit or amend, scan each body paragraph for these terms and add the required formatting. After committing or amending, inspect the stored message and explicitly verify that every such term is formatted before reporting completion or pushing.
 - In commit message bodies, use double quotes rather than backticks for concrete user-facing copy, error messages, labels, and other prose phrases when discussing their wording or presentation, even if the text is implemented as a string literal. Use backticks when discussing the source-level literal or code expression itself.
 - When a change is motivated by, follows from, or corrects a specific earlier commit or pull request, reference that change in the commit message body. Include the pull request number or link, the commit hash on `main`, or both, choosing enough detail for a future reader to locate it.

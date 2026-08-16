@@ -1,0 +1,85 @@
+#!/usr/bin/env bash
+
+# Report repeated commands from local Atuin history that may be worth
+# extracting into bin/ commands, without sending history anywhere.
+#
+# By default, print aggregate counts only. Pass --print-candidates to print a
+# locally reviewed shortlist. Review and remove sensitive information from any
+# printed command before sharing it.
+#
+# Examples:
+#   [inspect the most recent 1,000 entries without printing command text]
+#   report-atuin-command-candidates
+#
+#   [print the shortlist from the most recent 5,000 entries for local review]
+#   report-atuin-command-candidates --print-candidates 5000
+
+set -euo pipefail # exit on any error, don't allow undefined variables, pipes don't swallow errors
+
+history_entry_limit=1000
+history_entry_limit_was_provided=false
+print_candidates=false
+
+for argument in "$@" ; do
+  case "$argument" in
+    --print-candidates)
+      print_candidates=true
+      ;;
+    *)
+      if [[ "$argument" =~ ^[1-9][0-9]*$ && "$history_entry_limit_was_provided" == false ]] ; then
+        history_entry_limit=$argument
+        history_entry_limit_was_provided=true
+      else
+        echo "Usage: $(basename "$0") [--print-candidates] [positive history entry limit]" >&2
+        exit 1
+      fi
+      ;;
+  esac
+done
+
+if ! command -v atuin >/dev/null ; then
+  echo 'Atuin must be installed to report command candidates.' >&2
+  exit 1
+fi
+
+declare -A candidate_counts
+candidate_entry_count=0
+
+# Atuin emits null-delimited entries so multi-line commands remain one history
+# entry. Command text is held only in this local process and is not printed
+# unless --print-candidates is selected.
+while IFS= read -r -d '' history_command ; do
+  current_count=${candidate_counts["$history_command"]-0}
+  candidate_counts["$history_command"]=$((current_count + 1))
+  ((candidate_entry_count += 1))
+done < <(
+  atuin history list --cmd-only --print0 --reverse false |
+    head --zero-terminated --lines="$history_entry_limit"
+)
+
+unique_candidate_count=0
+for history_command in "${!candidate_counts[@]}" ; do
+  unique_candidate_count=$((unique_candidate_count + 1))
+done
+
+echo "Found ${unique_candidate_count} unique command candidates across ${candidate_entry_count} Atuin history entries."
+echo 'Any printed command may contain sensitive information.'
+
+if ! "$print_candidates" ; then
+  echo 'Review them locally with: report-atuin-command-candidates --print-candidates'
+  exit
+fi
+
+if [ "$unique_candidate_count" -eq 0 ] ; then
+  exit
+fi
+
+echo
+echo 'Review this output and remove sensitive information before sharing it.'
+for history_command in "${!candidate_counts[@]}" ; do
+  displayed_history_command=${history_command//$'\n'/\\n}
+  displayed_history_command=${displayed_history_command//$'\r'/\\r}
+  displayed_history_command=${displayed_history_command//$'\t'/\\t}
+
+  printf '%8d %s\n' "${candidate_counts["$history_command"]}" "$displayed_history_command"
+done | sort -rn

@@ -1,4 +1,5 @@
 alias bc='bc -l'
+alias blog='cd ~/code/blog'
 alias br='bin/rubocop'
 alias bs='bin/rspec'
 alias cdn='cd "$NOTES_DIRECTORY"'

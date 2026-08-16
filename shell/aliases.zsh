@@ -1,6 +1,7 @@
 alias bc='bc -l'
 alias br='bin/rubocop'
 alias bs='bin/rspec'
+alias cdn='cd "$NOTES_DIRECTORY"'
 alias chr='open -a Google\ Chrome'
 alias cop='run-rubocop'
 alias dbr='bin/rails db:rollback db:test:prepare'

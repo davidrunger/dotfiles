@@ -1,0 +1,63 @@
+#!/usr/bin/env bash
+
+# Report aggregate Atuin usage for this repository's Ruby executables without
+# displaying the history commands themselves. This lets a user share the
+# output with Codex when assessing Crystal migration candidates without
+# exposing command arguments, which may contain secrets.
+
+set -euo pipefail # exit on any error, don't allow undefined variables, pipes don't swallow errors
+
+repository_directory=$(cd "$(dirname "$0")/.." && pwd)
+history_entry_limit="${1:-1000}"
+
+if ! [[ "$history_entry_limit" =~ ^[1-9][0-9]*$ ]] ; then
+  echo "Usage: $(basename "$0") [positive history entry limit]" >&2
+  exit 1
+fi
+
+if ! command -v atuin >/dev/null ; then
+  echo 'Atuin must be installed to report Ruby program usage.' >&2
+  exit 1
+fi
+
+mapfile -t ruby_program_names < <(
+  rg -l '^#!/usr/bin/env ruby' "$repository_directory/bin" |
+    xargs -n1 basename |
+    sort
+)
+
+if [ "${#ruby_program_names[@]}" -eq 0 ] ; then
+  echo 'No Ruby executables were found.' >&2
+  exit 1
+fi
+
+declare -A usage_counts
+for ruby_program_name in "${ruby_program_names[@]}" ; do
+  usage_counts["$ruby_program_name"]=0
+done
+
+ruby_program_names_regex=$(IFS='|'; echo "${ruby_program_names[*]}")
+
+# Atuin emits null-delimited entries so multi-line commands remain one history
+# entry. Each entry stays local to this process; only the aggregate counts
+# below are printed. The expression intentionally recognizes executables only
+# at the beginning of a shell command or after a command separator. This
+# avoids treating a program name used as an argument as an invocation.
+while IFS= read -r -d '' history_command ; do
+  for ruby_program_name in "${ruby_program_names[@]}" ; do
+    invocation_regex="(^|[;&|()][[:space:]]*)(([^[:space:];|&()]+/)?${ruby_program_name})([[:space:];|&()]|$)"
+
+    if [[ "$history_command" =~ $invocation_regex ]] ; then
+      ((usage_counts["$ruby_program_name"] += 1))
+    fi
+  done
+done < <(
+  atuin history list --cmd-only --print0 |
+    head --zero-terminated --lines="$history_entry_limit" |
+    rg --null-data --regexp="(^|[^[:alnum:]_-])(${ruby_program_names_regex})([^[:alnum:]_-]|$)"
+)
+
+echo "Atuin history entries invoking repository Ruby programs (most recent ${history_entry_limit}):"
+for ruby_program_name in "${ruby_program_names[@]}" ; do
+  printf '%8d %s\n' "${usage_counts["$ruby_program_name"]}" "$ruby_program_name"
+done | sort -rn

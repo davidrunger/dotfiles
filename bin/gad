@@ -1,0 +1,24 @@
+#!/usr/bin/env bash
+
+# [g]it [a]mendment [d]iff
+#
+# Show the changes between the current commit and a previous version of it
+# saved in the reflog.
+#
+# Examples:
+#   [show changes from the immediately preceding version of HEAD]
+#   gad
+#
+#   [show changes from the version three HEAD movements ago]
+#   gad 3
+
+set -euo pipefail # exit on any error, don't allow undefined variables, pipes don't swallow errors
+
+if [[ $# -gt 1 || ! ${1:-1} =~ ^[1-9][0-9]*$ ]]; then
+  echo "Usage: gad [reflog-entry]" >&2
+  exit 1
+fi
+
+reflog_entry=${1:-1}
+
+git diff --no-prefix "HEAD@{${reflog_entry}}..HEAD"

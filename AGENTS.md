@@ -105,7 +105,7 @@
 - Prefer balanced sibling `context` blocks for distinct cases over treating one case as an implicit default. Keep only genuinely shared setup outside those contexts.
 - When an example description includes a "when" condition, use a `context` to establish that condition through scoped setup, and keep the example description focused on the behavior it verifies. This makes the premise explicit and keeps sibling cases balanced.
 - Prefer declaring a `let` when it is overridden by a nested context, referenced directly by an expectation, or otherwise needed to express setup. Avoid extracting a one-off value into a `let` merely to make another declaration more readable when that extraction would obscure why the `let` exists or make an incidental refactor look behaviorally necessary.
-- When a spec checks that a user-facing label or control is absent, share its expected text with positive expectations through a `let` when reasonably possible. This keeps negative expectations from passing falsely when the label changes but the negative expectation is not updated.
+- When a spec checks that a user-facing label, control, or other value is absent or otherwise does not match, share the expected value with positive expectations through a `let` when reasonably possible. This keeps negative expectations from passing falsely when the application changes but the negative expectation is not updated.
 
 ## Ruby conventions
 

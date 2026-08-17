@@ -18,6 +18,8 @@ rm pnpm-lock.yaml
 rm node_modules/.pnpm/lock.yaml
 
 pnpm install
+pnpm update --latest
+pnpm install --no-frozen-lockfile
 pnpm dedupe
 
 gacm 'Update JavaScript packages'

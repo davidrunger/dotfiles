@@ -55,6 +55,7 @@
 - When a commit bumps a version, generally name both the prior and new versions in its title, such as `[docker-compose] Bump PostgreSQL from 18.4 to 18.6`. Omit either version only when including both would be misleading or impractically long.
 - Do not use backticks in commit titles. Keep titles as plain text because GitHub's special rendering of backtick-delimited text hurts the searchability of commit and pull request titles.
 - Write a detailed commit message body. Include relevant context, history, documentation links, reasoning and motivation, and consciously chosen tradeoffs where they will help a future reader understand the change.
+- Do not mention standard checks or tests run in commit messages when they are expected to run in CI or an equivalent automated workflow. Mention validation only when it was non-standard and will not be covered by CI or an equivalent check.
 - When passing a multi-paragraph commit message on the command line, use a separate `-m` option for the title and each body paragraph. Do not embed `\n` escape sequences in a `-m` argument; shells can pass them literally and cause Git to store the backslash characters instead of newlines. After committing or amending, inspect the stored message to confirm that its paragraphs are formatted correctly.
 - When a commit message contains Markdown backticks, `$()`, dollar signs, or other shell-sensitive text, never place it in a double-quoted shell argument. Prefer separate single-quoted `-m` arguments when the message does not contain single quotes:
 

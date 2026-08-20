@@ -79,6 +79,12 @@
 - Use `pnpm` for JavaScript package management, unless the project is already using a different tool (e.g. as evidenced by a `yarn.lock` file).
 - Do not add a dependency in any environment, including development or test, without the user's explicit consent. Dependency additions carry supply-chain, vulnerability, and local-machine risks.
 
+## Persistence and side effects
+
+- Strongly prefer explicit application actions over ActiveRecord lifecycle callbacks (`after_create`, `after_create_commit`, and similar callbacks) for side effects of any kind. This includes enqueuing background jobs, sending mail, broadcasting, invalidating caches, updating related records, and calling external services. Model callbacks hide work from callers and run for every creation or update path, including factories, imports, migrations, and unrelated code paths.
+- When a record operation should trigger a side effect, use or create an action that persists the record and explicitly performs or enqueues the side effect after the persistence operation succeeds. Keep the action's transaction boundary clear, and ensure the side effect happens only after the transaction commits. Update every relevant action and test the handoff directly.
+- Treat a lifecycle callback as an exception that requires a concrete justification. Do not add `after_create_commit` or another lifecycle hook merely to avoid finding the actions that perform the operation; document why a callback is necessary when one is genuinely required.
+
 ## User interface conventions
 
 - Give new user-facing controls and elements deliberate styling so that they look polished and communicate their purpose visually. Prefer existing classes, CSS, components, and presentation patterns when suitable. When the project has no suitable existing pattern, consider adding a reusable one or ask the user for guidance when the appropriate design is unclear.

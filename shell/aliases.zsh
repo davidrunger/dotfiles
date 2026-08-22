@@ -10,6 +10,7 @@ alias dl='curl -O'
 alias dots='cd ~/code/dotfiles'
 alias dotsp='cd ~/code/dotfiles-personal'
 alias down='cd ~/Downloads'
+alias e='exit'
 alias fix='git diff --name-only | uniq | xargs $EDITOR'
 alias fsk='redis-cli -n 1 FLUSHDB && SIDEKIQ_CONCURRENCY=1 bin/sidekiq' # `-n 1` because Sidekiq uses Redis db 1 by default
 alias gba='GIT_PAGER=cat git branch -vv'

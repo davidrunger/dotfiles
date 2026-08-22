@@ -121,6 +121,10 @@
 
 - When a computed result is reused, prefer memoizing the method rather than assigning a same-named local variable solely to avoid recomputation. Use the repository's `Memoization` pattern where available.
 
+## Conditional expressions
+
+- Choose between `if` and `unless` based on the expected state, not only on logical equivalence. When the predicate describes the expected or default state, prefer `if !expected_thing_is_true?` for the exceptional path rather than `unless expected_thing_is_true?`. Prefer `unless unexpected_thing_is_true?` when `unexpected_thing_is_true?` describes an unexpected condition. For example, use `if !admin_user_signed_in?` when a signed-in AdminUser is the default assumption, but `unless Flipper.enabled?(:disable_prerendering)` when the disable flag is normally off. When an `else` branch is present, use `if` rather than `unless`.
+
 ## Naming
 
 - Name a method or function that is used primarily for its return value as a noun describing what it returns, such as `neutralized_formula`. Use a verb name only when the method or function is used primarily for a side effect.

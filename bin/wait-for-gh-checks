@@ -21,7 +21,7 @@ class WaitForChecksRunner
 
   EXPECTED_NUM_GITHUB_CHECKS_KEY = 'expected-num-github-checks'
   MAX_TIME = 8.minutes
-  RETRY_INTERVAL = 10.seconds
+  RETRY_INTERVAL = 3.seconds
 
   attr_reader :start_time, :delivered_unexpected_count_notifications
 

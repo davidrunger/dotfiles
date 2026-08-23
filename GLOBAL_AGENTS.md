@@ -10,6 +10,7 @@ Note: `~/code/dotfiles/GLOBAL_AGENTS.md` is the canonical source for my global C
 - Do not hard-wrap prose or template text solely to enforce a fixed line width. Let editors and viewers visually wrap long lines. In particular, keep long text paragraphs in `.vue` and Haml templates on a single source line unless line breaks are semantically or structurally useful. This avoids reflow-only diffs when the text changes.
 - Use blank lines to make separate logical steps visually distinct. In particular, separate adjacent guard or conditional blocks when they perform unrelated work, and apply the same principle to other adjacent statements or blocks whose relationship is not obvious.
 - Use American English spelling and vocabulary by default.
+- When adding an item to a list, check whether the existing list is sorted alphabetically. If it is, try to determine whether alphabetical order is the list's organizing principle; if it appears to be, insert the new item alphabetically as well. When creating a new list, consider using alphabetical order as its organizing principle if no better or clearer organizing rule comes to mind.
 - If the user requests non-American English spelling or vocabulary, confirm that this is intentional before starting work.
 
 ## Git workflow

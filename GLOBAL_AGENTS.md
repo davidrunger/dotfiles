@@ -1,5 +1,7 @@
 # Global Guidance
 
+Note: `~/code/dotfiles/GLOBAL_AGENTS.md` is the canonical source for my global Codex instructions and is symlinked to `~/.codex/AGENTS.md`. When asked to update my global instructions, edit `GLOBAL_AGENTS.md` in my `dotfiles` repository on a new task branch with a commit. Do not modify a repository-local `AGENTS.md` instead.
+
 ## Text and source formatting
 
 - Generally use ASCII characters in code and commit messages.

@@ -1,13 +1,7 @@
 #!/usr/bin/env bash
 
-# [g]it [b]ranches (filtered to active ones)
+# [g]it [b]ranches
 
 set -euo pipefail # exit on any error, don't allow undefined variables, pipes don't swallow errors
 
-colored_branch_output=$(git branch -vv --color)
-
-if git branch --format='%(refname:short)' | rg --quiet '^z-' ; then
-  echo "$colored_branch_output" | rg -v "\sz-" | git-branch-list-whitespace-reducer
-else
-  echo "$colored_branch_output"
-fi
+git branch -vv --color

@@ -2,10 +2,11 @@
 
 # Print [g]it [hist]ory of a file.
 
-require "clim"
 require "memoization"
+require "../utils/crystal/command_line_tool"
+require "../utils/crystal/clim_program"
 
-class GitHistory
+class GitHistory < CommandLineTool
   def initialize(
     @file : String,
     @include_ignored : Bool,
@@ -21,13 +22,10 @@ class GitHistory
     commits_to_show.each do |commit|
       puts
       run_command("hr")
-      Process.run(
+      run_command(
         "git",
         ["show", commit, "--", file_name_at_this_commit],
         env: {"DELTA_PAGER" => "cat"},
-        input: Process::Redirect::Inherit,
-        output: Process::Redirect::Inherit,
-        error: Process::Redirect::Inherit,
       )
       run_command("hr")
 
@@ -52,7 +50,7 @@ class GitHistory
   end
 
   memoize def commits_to_show : Array(String)
-    commits_from_git = capture("git", [
+    commits_from_git = capture_command("git", [
       "log",
       *git_log_limiting_arguments,
       most_recent_commit_with_file,
@@ -87,14 +85,14 @@ class GitHistory
     if File.exists?(file)
       "HEAD"
     else
-      capture("git", ["log", "--all", "-1", "--format=%H", "--", file]).rstrip
+      capture_command("git", ["log", "--all", "-1", "--format=%H", "--", file]).rstrip
     end
   end
 
   memoize def renames : Hash(String, String)
     renames = {} of String => String
 
-    rename_log = capture("git", [
+    rename_log = capture_command("git", [
       "log",
       "HEAD",
       "--format=%H",
@@ -117,7 +115,7 @@ class GitHistory
   end
 
   memoize def git_blame_ignore_revs_file : String?
-    file_path = capture("git", ["config", "blame.ignoreRevsFile"]).rstrip
+    file_path = capture_command("git", ["config", "blame.ignoreRevsFile"]).rstrip
     file_path.empty? ? nil : file_path
   end
 
@@ -130,30 +128,9 @@ class GitHistory
       end
     end
   end
-
-  private def capture(command : String, arguments : Array(String)) : String
-    output = IO::Memory.new
-    Process.run(
-      command,
-      arguments,
-      input: Process::Redirect::Inherit,
-      output: output,
-      error: Process::Redirect::Inherit,
-    )
-    output.to_s
-  end
-
-  private def run_command(command : String)
-    Process.run(
-      command,
-      input: Process::Redirect::Inherit,
-      output: Process::Redirect::Inherit,
-      error: Process::Redirect::Inherit,
-    )
-  end
 end
 
-class GitHistory::Cli < Clim
+class GitHistory::Cli < ClimProgram
   main do
     desc "Print the Git history of a file."
     usage "ghist file [options]"
@@ -186,15 +163,6 @@ class GitHistory::Cli < Clim
       ).call
     end
   end
-
-  def self.start(argv : Array(String))
-    start_parse(argv)
-  rescue ex : Clim::ClimException | Clim::ClimInvalidOptionException | Clim::ClimInvalidTypeCastException
-    STDERR.puts "ERROR: #{ex.message}"
-    STDERR.puts
-    STDERR.puts "Please see the `--help`."
-    exit(1)
-  end
 end
 
-GitHistory::Cli.start(ARGV)
+GitHistory::Cli.start!(ARGV)

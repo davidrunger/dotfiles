@@ -1,8 +1,9 @@
 #!/usr/bin/env crystal
 
-require "clim"
+require "../utils/crystal/command_line_tool"
+require "../utils/crystal/clim_program"
 
-class Notify
+class Notify < CommandLineTool
   def initialize(
     @title : String,
     @body : String,
@@ -20,7 +21,7 @@ class Notify
   end
 
   private def notify_on_linux
-    run_command("notify-send", [
+    run_command!("notify-send", [
       @title,
       @body,
       "-i",
@@ -31,7 +32,7 @@ class Notify
 
   private def notify_on_macos
     script = %(display notification "#{escape_for_applescript(@body)}" with title "#{escape_for_applescript(@title)}")
-    run_command("osascript", ["-e", script])
+    run_command!("osascript", ["-e", script])
   end
 
   private def icon_path : String
@@ -53,21 +54,9 @@ class Notify
       end
     end
   end
-
-  private def run_command(command : String, arguments : Array(String))
-    status = Process.run(
-      command,
-      arguments,
-      input: Process::Redirect::Inherit,
-      output: Process::Redirect::Inherit,
-      error: Process::Redirect::Inherit,
-    )
-
-    exit(status.exit_code) unless status.success?
-  end
 end
 
-class Notify::Cli < Clim
+class Notify::Cli < ClimProgram
   main do
     desc "Display a pop-up desktop notification."
     usage "notify title body [options]"
@@ -96,15 +85,6 @@ class Notify::Cli < Clim
       ).call
     end
   end
-
-  def self.start(argv : Array(String))
-    start_parse(argv)
-  rescue ex : Clim::ClimException | Clim::ClimInvalidOptionException | Clim::ClimInvalidTypeCastException
-    STDERR.puts "ERROR: #{ex.message}"
-    STDERR.puts
-    STDERR.puts "Please see the `--help`."
-    exit(1)
-  end
 end
 
-Notify::Cli.start(ARGV)
+Notify::Cli.start!(ARGV)

@@ -1,6 +1,6 @@
 # Global Guidance
 
-Note: `~/code/dotfiles/GLOBAL_AGENTS.md` is the canonical source for my global Codex instructions and is symlinked to `~/.codex/AGENTS.md`. It is distinct from `~/code/dotfiles/AGENTS.md`, which contains instructions for the `dotfiles` repository itself. When asked to update my global instructions, edit `GLOBAL_AGENTS.md` in my `dotfiles` repository on a new task branch with a commit. Do not modify a repository-local `AGENTS.md` instead.
+Note: `~/code/dotfiles/GLOBAL_AGENTS.md` is the canonical source for my global Codex instructions and is symlinked to `~/.codex/AGENTS.md`. It is distinct from `~/code/dotfiles/AGENTS.md`, which contains instructions for the `dotfiles` repository itself. When asked to update my global instructions, edit `GLOBAL_AGENTS.md` in my `dotfiles` repository on a new task branch with a commit, using the `global-agents/` prefix for that branch. Do not modify a repository-local `AGENTS.md` instead.
 
 ## Text and source formatting
 
@@ -57,7 +57,7 @@ Note: `~/code/dotfiles/GLOBAL_AGENTS.md` is the canonical source for my global C
 - A Jira issue key is reasonably associated with a change when it appears in the user request for that change; a ticket key and its copied ticket text in the initial request are sufficient. Do not carry a Jira key into a later, separately requested tooling, maintenance, or side-task change unless that request reasonably relates to the issue.
 - Keep the entire commit title at or below 69 characters.
 - Prefer clear, direct commit titles. Shorter wording is better when it is equally clear or clearer, but do not sacrifice useful specificity merely to minimize length.
-- When a commit bumps a version, generally name both the prior and new versions in its title, such as `[docker-compose] Bump PostgreSQL from 18.4 to 18.6`. Omit either version only when including both would be misleading or impractically long.
+- When a commit bumps a version, name both the prior and new versions in its title, using wording such as `[docker-compose] Bump PostgreSQL from 18.4 to 18.6`, whenever a clear title including both fits within the 69-character limit. If including both would exceed that limit, first shorten the rest of the title; omit either version only when necessary to stay within the limit or when including it would be misleading. If a version is omitted from the title, name both versions in the commit body.
 - Do not use backticks in commit titles. GitHub does not render backtick-delimited text in pull request titles, and the missing backticks make those titles harder to search for in git history. When a title needs to set off code-like text, use single quotes instead; they remain visible and make the title easy to copy and search.
 - Write a detailed commit message body. Include relevant context, history, documentation links, reasoning and motivation, and consciously chosen tradeoffs where they will help a future reader understand the change.
 - Do not mention standard checks or tests run in commit messages when they are expected to run in CI or an equivalent automated workflow. Mention validation only when it was non-standard and will not be covered by CI or an equivalent check.

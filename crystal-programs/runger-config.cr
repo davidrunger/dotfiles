@@ -129,9 +129,9 @@ class RungerConfig
   end
 end
 
-require "clim"
+require "../utils/crystal/clim_program"
 
-class RungerConfig::Cli < Clim
+class RungerConfig::Cli < ClimProgram
   main do
     desc "Manage and check configuration for a repository."
     usage "runger-config [options] [arguments]"
@@ -176,4 +176,4 @@ class RungerConfig::Cli < Clim
   end
 end
 
-RungerConfig::Cli.start(ARGV)
+RungerConfig::Cli.start!(ARGV)

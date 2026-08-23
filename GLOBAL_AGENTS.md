@@ -1,6 +1,6 @@
 # Global Guidance
 
-Note: `~/code/dotfiles/GLOBAL_AGENTS.md` is the canonical source for my global Codex instructions and is symlinked to `~/.codex/AGENTS.md`. When asked to update my global instructions, edit `GLOBAL_AGENTS.md` in my `dotfiles` repository on a new task branch with a commit. Do not modify a repository-local `AGENTS.md` instead.
+Note: `~/code/dotfiles/GLOBAL_AGENTS.md` is the canonical source for my global Codex instructions and is symlinked to `~/.codex/AGENTS.md`. It is distinct from `~/code/dotfiles/AGENTS.md`, which contains instructions for the `dotfiles` repository itself. When asked to update my global instructions, edit `GLOBAL_AGENTS.md` in my `dotfiles` repository on a new task branch with a commit. Do not modify a repository-local `AGENTS.md` instead.
 
 ## Text and source formatting
 
@@ -116,6 +116,7 @@ Note: `~/code/dotfiles/GLOBAL_AGENTS.md` is the canonical source for my global C
 - Prefer exercising real application behavior over stubs and mocks when reasonably possible. Treat `instance_double`, `and_return`, and similar constructs as last resorts; prefer `and_call_original` or real objects and deliveries when that keeps the test focused and manageable. This is a preference, not a blanket prohibition.
 - When observing a method call, use `and_call_original` whenever reasonably possible rather than a bare stub or `and_return`. Replace the original behavior only when it cannot safely be exercised or isolation genuinely requires replacement; do not rely on a judgment that the original behavior is merely irrelevant.
 - When reasonably possible, make each `context` establish the condition described in its own label through immediately scoped `before` setup and/or `let` declarations. Nested contexts should refine that established premise rather than being solely responsible for making an ancestor context true.
+- Within a `context`, place any directly nested `context` blocks after the `it` examples that belong to that same `context`.
 - Prefer balanced sibling `context` blocks for distinct cases over treating one case as an implicit default. Keep only genuinely shared setup outside those contexts.
 - When an example description includes a "when" condition, use a `context` to establish that condition through scoped setup, and keep the example description focused on the behavior it verifies. This makes the premise explicit and keeps sibling cases balanced.
 - Prefer declaring a `let` when it is overridden by a nested context, referenced directly by an expectation, or otherwise needed to express setup. Avoid extracting a one-off value into a `let` merely to make another declaration more readable when that extraction would obscure why the `let` exists or make an incidental refactor look behaviorally necessary.

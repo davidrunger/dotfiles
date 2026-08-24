@@ -10,8 +10,9 @@ abstract class CommandLineTool
     arguments = [] of String,
     *,
     env : Process::Env = nil,
+    input : Process::Stdio = Process::Redirect::Inherit,
   ) : Process::Status
-    run_process(command, arguments, env: env, output: Process::Redirect::Inherit)
+    run_process(command, arguments, env: env, input: input, output: Process::Redirect::Inherit)
   end
 
   protected def run_command!(command : String, arguments : Array(String))
@@ -24,13 +25,14 @@ abstract class CommandLineTool
     arguments : Array(String),
     *,
     env : Process::Env = nil,
+    input : Process::Stdio = Process::Redirect::Inherit,
     output : Process::Stdio,
   ) : Process::Status
     Process.run(
       command,
       arguments,
       env: env,
-      input: Process::Redirect::Inherit,
+      input: input,
       output: output,
       error: Process::Redirect::Inherit,
     )

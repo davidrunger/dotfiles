@@ -1,6 +1,6 @@
 # Global Guidance
 
-Note: `~/code/dotfiles/GLOBAL_AGENTS.md` is the canonical source for my global Codex instructions and is symlinked to `~/.codex/AGENTS.md`. It is distinct from `~/code/dotfiles/AGENTS.md`, which contains instructions for the `dotfiles` repository itself. When asked to update my global instructions, edit `GLOBAL_AGENTS.md` in my `dotfiles` repository on a new task branch with a commit, using the `global-agents/` prefix for that branch. Do not modify a repository-local `AGENTS.md` instead.
+Note: `~/code/dotfiles/GLOBAL_AGENTS.md` is the canonical source for my global Codex instructions and is symlinked to `~/.codex/AGENTS.md`. It is distinct from `~/code/dotfiles/AGENTS.md`, which contains instructions for the `dotfiles` repository itself. When global-instruction work is standalone, edit `GLOBAL_AGENTS.md` in my `dotfiles` repository on a dedicated task branch with a commit, using the `global-agents/` prefix for that branch. When a global-instruction clarification is directly relevant to another requested change, it may be included in that change's existing task branch and commit when explicitly requested. Do not modify a repository-local `AGENTS.md` instead.
 
 ## Text and source formatting
 

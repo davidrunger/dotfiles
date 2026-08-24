@@ -87,4 +87,4 @@ class Notify::Cli < ClimProgram
   end
 end
 
-Notify::Cli.start!(ARGV)
+Notify::Cli.start!

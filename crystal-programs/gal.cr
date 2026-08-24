@@ -289,4 +289,4 @@ class Gal::Cli < ClimProgram
   end
 end
 
-Gal::Cli.start!(ARGV)
+Gal::Cli.start!

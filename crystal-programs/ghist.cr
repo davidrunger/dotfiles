@@ -165,4 +165,4 @@ class GitHistory::Cli < ClimProgram
   end
 end
 
-GitHistory::Cli.start!(ARGV)
+GitHistory::Cli.start!

@@ -227,5 +227,5 @@ if ARGV.first? == "--preview"
 
   GitAmendmentDiff.new(ARGV[1], ARGV[2], ARGV[3], ARGV[4] == "true").call
 else
-  GitAmendmentDiffWalker::Cli.start!(ARGV)
+  GitAmendmentDiffWalker::Cli.start!
 end

@@ -176,4 +176,4 @@ class RungerConfig::Cli < ClimProgram
   end
 end
 
-RungerConfig::Cli.start!(ARGV)
+RungerConfig::Cli.start!

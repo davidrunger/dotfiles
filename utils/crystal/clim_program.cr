@@ -1,7 +1,7 @@
 require "clim"
 
 abstract class ClimProgram < Clim
-  def self.start!(argv : Array(String))
+  def self.start!(argv : Array(String) = ARGV)
     start_parse(argv)
   rescue ex : Clim::ClimException | Clim::ClimInvalidOptionException | Clim::ClimInvalidTypeCastException
     STDERR.puts "ERROR: #{ex.message}"

@@ -34,10 +34,10 @@ jobs:
         uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
           path: bin/ameba
-          key: ${{ runner.os }}-ameba-${{ hashFiles('bin/ameba.cr', '**/shard.lock') }}
+          key: ${{ runner.os }}-ameba-v2-${{ hashFiles('bin/ameba.cr', '**/shard.lock') }}
 
       - name: Force ameba rebuild if needed
-        run: '[ -f bin/ameba ] || crystal build -Dpreview_mt -o bin/ameba bin/ameba.cr'
+        run: '[ -f bin/ameba ] || crystal build -o bin/ameba bin/ameba.cr'
 
       - name: Run Ameba
         run: bin/ameba

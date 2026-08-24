@@ -1,21 +1,21 @@
 #!/usr/bin/env bash
 
-# [g]it [a]mendment [d]iff
+# [g]it [a]mendment [d]iff [at] a specific HEAD reflog entry.
 #
 # Show the changes between the current commit and a previous version of it
 # saved in the reflog.
 #
 # Examples:
 #   [show changes from the immediately preceding version of HEAD]
-#   gad
+#   gad-at
 #
 #   [show changes from the version three HEAD movements ago]
-#   gad 3
+#   gad-at 3
 
 set -euo pipefail # exit on any error, don't allow undefined variables, pipes don't swallow errors
 
 if [[ $# -gt 1 || ! ${1:-1} =~ ^[1-9][0-9]*$ ]]; then
-  echo "Usage: gad [reflog-entry]" >&2
+  echo "Usage: gad-at [reflog-entry]" >&2
   exit 1
 fi
 

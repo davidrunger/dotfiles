@@ -3,17 +3,15 @@
 # This method allows a gem to be loaded, even if running within the context of bundler and the gem
 # to be loaded is not listed in the Gemfile.
 
-# rubocop:disable Style/TopLevelMethodDefinition
+# rubocop:disable-next Style/TopLevelMethodDefinition
 def load_gem(gem_name, load_path_only: false, require_name: gem_name)
-  begin
-    require gem_name
-  rescue LoadError
-    # Continue with code below to load the gem.
-  else
-    # The gem loaded successfully without our help; return.
-    return
-  end
+  require gem_name
+rescue LoadError
+  load_installed_gem(gem_name, load_path_only:, require_name:)
+end
 
+# rubocop:disable-next Style/TopLevelMethodDefinition
+def load_installed_gem(gem_name, load_path_only:, require_name:)
   rbenv_gem_path = Gem.paths.path.find { it.include?('.rbenv') }
   matching_gem_directories =
     Dir["#{rbenv_gem_path}/gems/#{gem_name}-*"].grep(%r{/#{gem_name}-\d[^/]+\z})
@@ -40,4 +38,3 @@ def load_gem(gem_name, load_path_only: false, require_name: gem_name)
     require require_name
   end
 end
-# rubocop:enable Style/TopLevelMethodDefinition

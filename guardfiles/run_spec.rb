@@ -18,17 +18,13 @@ class RspecPrefixer
     elsif File.exist?('Gemfile')
       'bundle exec '
     else
-      fail 'Could not determine how to run RSpec.'
+      fail('Could not determine how to run RSpec.')
     end
   end
 
   memoize \
   def project_uses_spring?
-    if !File.exist?('Gemfile')
-      return false
-    end
-
-    File.read('Gemfile').match?(/gem ['"]spring['"]/)
+    File.exist?('Gemfile') && File.read('Gemfile').match?(/gem ['"]spring['"]/)
   end
 end
 
@@ -64,13 +60,11 @@ guard(:shell, all_on_start: true) do
       next
     end
 
-    # rubocop:disable RSpec/Output
+    # rubocop:disable-next RSpec/Output
     begin
       match = guard_match_result.instance_variable_get(:@original_value) || '[no match]'
       puts("Match for #{match} triggered execution.")
-      # rubocop:disable Rails/TimeZone, Lint/RedundantCopDisableDirective
       start_time = Time.now
-      # rubocop:enable Rails/TimeZone, Lint/RedundantCopDisableDirective
       system('hard-clear')
       system(<<~SH.squish)
         #{rspec_prefixer.rspec_prefix}rspec
@@ -87,10 +81,7 @@ guard(:shell, all_on_start: true) do
       puts(exception.message)
       puts(exception.backtrace)
     end
-    # rubocop:enable RSpec/Output
 
-    # rubocop:disable Rails/TimeZone, Lint/RedundantCopDisableDirective
     "Done in #{(Time.now - start_time).round(2)} seconds."
-    # rubocop:enable Rails/TimeZone, Lint/RedundantCopDisableDirective
   end
 end

@@ -22,15 +22,13 @@ class Hash
       value_at_current_key =
         current_value.
           detect do |inner_key, _value|
-            # rubocop:disable Style/CaseEquality
+            # rubocop:disable-next Style/CaseEquality
             key === inner_key
-            # rubocop:enable Style/CaseEquality
           end&.dig(1)
 
-      if value_at_current_key.nil?
-        return nil
-      else
-        current_value = value_at_current_key
+      current_value = value_at_current_key
+      if current_value.nil?
+        break
       end
     end
 

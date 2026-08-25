@@ -30,8 +30,6 @@ guard(:shell, all_on_start: true) do
     rescue => error
       pp(error)
     end
-    # rubocop:disable Rails/TimeZone, Lint/RedundantCopDisableDirective
-    puts("Ran at #{Time.new.iso8601} .")
-    # rubocop:enable Rails/TimeZone, Lint/RedundantCopDisableDirective
+    puts("Ran at #{Time.now.iso8601} .")
   end
 end

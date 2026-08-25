@@ -28,12 +28,16 @@ def load_gem(gem_name, load_path_only: false, require_name: gem_name)
   end
 
   gem_lib_directory = "#{latest_gem_directory}/lib"
-  $LOAD_PATH << gem_lib_directory if !$LOAD_PATH.include?(gem_lib_directory)
+  if !$LOAD_PATH.include?(gem_lib_directory)
+    $LOAD_PATH << gem_lib_directory
+  end
   gem_name_and_version = latest_gem_directory.split('/').last
   gemspec_path = "#{rbenv_gem_path}/specifications/#{gem_name_and_version}.gemspec"
   Gem::Specification.load(gemspec_path).runtime_dependencies.map do |dependency|
     load_gem(dependency.name, load_path_only: true)
   end
-  require require_name unless load_path_only
+  unless load_path_only
+    require require_name
+  end
 end
 # rubocop:enable Style/TopLevelMethodDefinition

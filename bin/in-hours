@@ -76,7 +76,9 @@ class InHours
 
   def forward_n_times(forward_count)
     time = Time.iso8601(`date +"%Y-%m-%dT%H:%M:%S%z"`.rstrip).change(min: 30)
-    time -= 1.hour if time.future?
+    if time.future?
+      time -= 1.hour
+    end
 
     if (back_iterations = @sloptions[:back])
       back_iterations.times do

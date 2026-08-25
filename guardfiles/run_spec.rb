@@ -24,7 +24,9 @@ class RspecPrefixer
 
   memoize \
   def project_uses_spring?
-    return false if !File.exist?('Gemfile')
+    if !File.exist?('Gemfile')
+      return false
+    end
 
     File.read('Gemfile').match?(/gem ['"]spring['"]/)
   end
@@ -72,8 +74,12 @@ guard(:shell, all_on_start: true) do
       system('hard-clear')
       system(<<~SH.squish)
         #{rspec_prefixer.rspec_prefix}rspec
-          #{'-b' if ENV.fetch('RSPEC_BACKTRACE', nil) == '1'}
-          #{'--fail-fast' if ENV.fetch('FAIL_FAST', nil) == '1'}
+          #{if ENV.fetch('RSPEC_BACKTRACE', nil) == '1'
+              '-b'
+            end}
+          #{if ENV.fetch('FAIL_FAST', nil) == '1'
+              '--fail-fast'
+            end}
           #{ENV.fetch('TARGET_SPEC_FILES', nil)}
       SH
     rescue StandardError => exception

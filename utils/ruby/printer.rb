@@ -11,7 +11,9 @@ class Printer
     def printing_in_place
       printer = new
       yield(printer)
-      puts if !printer.broke_out && @printed_something_in_place
+      if !printer.broke_out && @printed_something_in_place
+        puts
+      end
     end
   end
 
@@ -24,7 +26,9 @@ class Printer
   end
 
   def break_out
-    puts if @printed_something_in_place
+    if @printed_something_in_place
+      puts
+    end
     @broke_out = true
   end
 end

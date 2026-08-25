@@ -21,7 +21,9 @@ guard(:shell, all_on_start: true) do
       system('clear')
       system(<<~SH.squish.tap { puts(it) })
         jest --verbose=false #{ENV.fetch('TARGET_SPEC_FILES')}
-          #{"-t '#{ENV.fetch('JEST_TARGET_PATTERN')}'" if ENV.fetch('JEST_TARGET_PATTERN', nil)}
+          #{if ENV.fetch('JEST_TARGET_PATTERN', nil)
+              "-t '#{ENV.fetch('JEST_TARGET_PATTERN')}'"
+            end}
       SH
     rescue => error
       pp(error)

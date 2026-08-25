@@ -91,46 +91,33 @@ class StackTraceViewer < CommandKit::Command
         "\nLine #{stack_trace_order_number}: Warning: " \
         "Cannot show context for internal Ruby method: #{line.strip}.",
       )
-      return
-    end
-
-    if (matching_exclude_string = excluded_strings.detect { line.include?(it) })
+    elsif (matching_exclude_string = excluded_strings.detect { line.include?(it) })
       puts(
         "\nLine #{stack_trace_order_number}: Info: " \
-      "Skipping line because it includes '#{matching_exclude_string}'.",
+        "Skipping line because it includes '#{matching_exclude_string}'.",
       )
-      return
+    elsif (match = line.match(/^\s*(?:#|from)?\s*(\S+):(\d+)(?::in|$)/))
+      file_path = match[1]
+      line_number = Integer(match[2])
+
+      if File.exist?(file_path)
+        start_line = [line_number - context_size, 1].max
+        end_line = line_number + context_size
+
+        puts("\nLine #{stack_trace_order_number}: #{file_path}:#{line_number}:")
+        system(
+          'bat',
+          '--style=numbers,grid',
+          '--highlight-line',
+          line_number.to_s,
+          '--line-range',
+          "#{start_line}:#{end_line}",
+          file_path,
+        )
+      else
+        puts("\nLine #{stack_trace_order_number}: Warning: File not found: #{file_path}")
+      end
     end
-
-    match = line.match(/^\s*(?:#|from)?\s*(\S+):(\d+)(?::in|$)/)
-
-    if !match
-      return
-    end
-
-    file_path = match[1]
-    line_number = Integer(match[2])
-
-    unless File.exist?(file_path)
-      puts "\nLine #{stack_trace_order_number}: Warning: File not found: #{file_path}"
-      return
-    end
-
-    # Calculate context range
-    start_line = [line_number - context_size, 1].max
-    end_line = line_number + context_size
-
-    # Use bat to display the file.
-    puts "\nLine #{stack_trace_order_number}: #{file_path}:#{line_number}:"
-    system(
-      'bat',
-      '--style=numbers,grid',
-      '--highlight-line',
-      line_number.to_s,
-      '--line-range',
-      "#{start_line}:#{end_line}",
-      file_path,
-    )
   end
 end
 

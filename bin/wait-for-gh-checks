@@ -165,9 +165,11 @@ class WaitForChecksRunner::LoopRunner
   def warn_if_unexpectedly_large_num_checks
     exact_expected_num_checks = expected_num_checks_config[:exactly]
 
-    if exact_expected_num_checks &&
+    if (
+      exact_expected_num_checks &&
         total_num_started_checks > exact_expected_num_checks &&
         !delivered_unexpected_count_notifications.include?(total_num_started_checks)
+    )
       system(
         'notify-error',
         "Unexpected number of checks in #{repo}",

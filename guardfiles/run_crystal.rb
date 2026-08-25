@@ -4,7 +4,6 @@
 
 require_relative "#{Dir.home}/code/dotfiles/utils/ruby/guard_shell_with_guard_monkeypatch.rb"
 
-# rubocop:disable Rails/TimeZone, Lint/RedundantCopDisableDirective
 guard(:shell, all_on_start: true) do
   directories_to_watch = %w[bin exe personal spec src].select { Dir.exist?(it) }
 
@@ -25,4 +24,3 @@ guard(:shell, all_on_start: true) do
     "Done in #{(Time.now - start_time).round(2)} seconds."
   end
 end
-# rubocop:enable Rails/TimeZone, Lint/RedundantCopDisableDirective

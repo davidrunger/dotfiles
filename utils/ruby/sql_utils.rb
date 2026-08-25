@@ -18,10 +18,14 @@ module SqlUtils
     sql = File.read('personal/sql.sql')
     original_sql = sql.dup
 
-    if !reformat_match?(sql)
-      return
+    if reformat_match?(sql)
+      format_sql(sql, original_sql)
     end
+  end
 
+  private
+
+  def format_sql(sql, original_sql)
     sql.sub!(/\A.*?(?=SELECT)/, '')
 
     query, variables_string = sql.split(%r{ +/\*.+\*/ *| +(?=\[\[)})

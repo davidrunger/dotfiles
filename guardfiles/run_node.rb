@@ -18,9 +18,7 @@ guard(:shell, all_on_start: true) do
     begin
       match = guard_match_result.instance_variable_get(:@match_result) || '[no match]'
       puts("Match for #{match} triggered execution.")
-      # rubocop:disable Rails/TimeZone, Lint/RedundantCopDisableDirective
       start_time = Time.now
-      # rubocop:enable Rails/TimeZone, Lint/RedundantCopDisableDirective
       system('clear')
       system(<<~SH.squish, exception: true)
         tsx app/javascript/typescript-scratchpad.ts
@@ -29,8 +27,6 @@ guard(:shell, all_on_start: true) do
       puts(AmazingPrint::Colors.red(error.ai))
     end
 
-    # rubocop:disable Rails/TimeZone, Lint/RedundantCopDisableDirective
     "Done in #{(Time.now - start_time).round(2)} seconds."
-    # rubocop:enable Rails/TimeZone, Lint/RedundantCopDisableDirective
   end
 end

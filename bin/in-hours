@@ -20,7 +20,7 @@ sloptions =
     end
   end
 
-# rubocop:disable Naming/AccessorMethodName
+# rubocop:disable-next Naming/AccessorMethodName
 class InHours
   prepend MemoWise
 
@@ -93,7 +93,7 @@ class InHours
 
   def times_of_day
     (0..23).map do |hour|
-      Time.new.change(hour:, min: 30)
+      Time.now.change(hour:, min: 30)
     end
   end
 
@@ -121,6 +121,5 @@ class InHours
     system(command, options)
   end
 end
-# rubocop:enable Naming/AccessorMethodName
 
 InHours.new(sloptions).run

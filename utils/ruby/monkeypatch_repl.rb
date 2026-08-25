@@ -40,11 +40,11 @@ module MethodPatches
 
   # "sublime" (open the current method's source location in VSCode)
   def s
-    if sl.nil?
-      return nil
-    end
+    source_location = sl
 
-    code(sl)
+    unless source_location.nil?
+      code(source_location)
+    end
   end
 end
 Method.prepend(MethodPatches)

@@ -154,19 +154,19 @@ class GithubPrAutoMerger < CommandKit::Command
       # Re-check immediately before merge in case Dependabot started rebasing
       if dependabot_rebasing?(pr)
         log("Dependabot started rebasing PR ##{pr.number} in #{@repo}. Skipping.".yellow)
-        return false
+        false
+      else
+        log("Merging PR ##{pr.number} in #{@repo}")
+
+        @client.merge_pull_request(
+          repo_hash,
+          pr.number,
+          '', # commit message body
+          merge_method: 'squash',
+        )
+
+        true
       end
-
-      log("Merging PR ##{pr.number} in #{@repo}")
-
-      @client.merge_pull_request(
-        repo_hash,
-        pr.number,
-        '', # commit message body
-        merge_method: 'squash',
-      )
-
-      true
     rescue Octokit::MethodNotAllowed => error
       puts(error.inspect.red)
 
@@ -202,25 +202,23 @@ class GithubPrAutoMerger < CommandKit::Command
         # There are no actions yet.
         if unskipped_statuses_and_conclusions.empty?
           puts("No GitHub Actions found for PR ##{@pr.number} in #{@repo}".yellow)
-          return false
+          break false
         end
 
         # Check action states.
         if unskipped_statuses_and_conclusions.all?('success')
-          return true
+          break true
         elsif unskipped_statuses_and_conclusions.include?('failure')
           puts("Failing GitHub Actions for PR ##{@pr.number} in #{@repo} - #{@pr.title}".red)
-          return false
+          break false
         end
 
         # Action(s) are in progress. Wait.
         sleep(10)
         if Time.now - @start_time > MAX_WAIT_TIME
-          break
+          break false
         end
       end
-
-      false
     end
 
     private

@@ -12,7 +12,7 @@ end
 
 runner = Runner.new
 
-# rubocop:disable Lint/RedundantCopDisableDirective, Metrics/BlockLength, Style/StringLiterals
+# rubocop:disable-next Lint/RedundantCopDisableDirective, Metrics/BlockLength, Style/StringLiterals
 guard(:shell, all_on_start: true) do
   directories_to_watch = %w[app bin lib personal spec].select { Dir.exist?(it) }
 
@@ -30,10 +30,8 @@ guard(:shell, all_on_start: true) do
     begin
       match = guard_match_result.instance_variable_get(:@match_result) || "[no match]"
       puts("Match for #{match} triggered execution.")
-      # rubocop:disable Rails/TimeZone, Lint/RedundantCopDisableDirective
       start_time = Time.now
       runner.format_sql_if_necessary
-      # rubocop:enable Rails/TimeZone, Lint/RedundantCopDisableDirective
       system("clear")
       system(<<~SH.squish)
         psql #{`basename $(pwd)`.strip}_development < personal/sql.sql
@@ -44,9 +42,6 @@ guard(:shell, all_on_start: true) do
       puts(exception.backtrace)
     end
 
-    # rubocop:disable Rails/TimeZone, Lint/RedundantCopDisableDirective
     "Done in #{(Time.now - start_time).round(2)} seconds."
-    # rubocop:enable Rails/TimeZone, Lint/RedundantCopDisableDirective
   end
 end
-# rubocop:enable Lint/RedundantCopDisableDirective, Metrics/BlockLength, Style/StringLiterals

@@ -5,11 +5,10 @@
 # Example (run from the repo that has the commit):
 #   bin/rails runner ~/code/dotfiles/tools/large_diff_viewer.rb
 
-# rubocop:disable Style/TopLevelMethodDefinition
+# rubocop:disable-next Style/TopLevelMethodDefinition
 def clear_scratch
   scratch!(nil, silent: true)
 end
-# rubocop:enable Style/TopLevelMethodDefinition
 
 last_viewed_file = Runger.config.scratch
 

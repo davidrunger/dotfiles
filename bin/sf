@@ -82,30 +82,30 @@ class SpecFileFinder < CommandLineProgram
 
   def renamed_file_contributions_string(path, renamed_file_contributions)
     if renamed_file_contributions.size <= 1
-      return ''
-    end
-
-    comma_separated_contributions =
-      renamed_file_contributions.
-        sort_by do |contributing_path, _lines_changed|
-          if contributing_path == path
-            0
-          else
-            1
-          end
-        end.
-        map do |contributing_path, lines_changed|
-          path_name =
+      ''
+    else
+      comma_separated_contributions =
+        renamed_file_contributions.
+          sort_by do |contributing_path, _lines_changed|
             if contributing_path == path
-              'self'
+              0
             else
-              contributing_path
+              1
             end
+          end.
+          map do |contributing_path, lines_changed|
+            path_name =
+              if contributing_path == path
+                'self'
+              else
+                contributing_path
+              end
 
-          "#{path_name}: #{lines_changed}"
-        end.join(', ')
+            "#{path_name}: #{lines_changed}"
+          end.join(', ')
 
-    "(#{comma_separated_contributions})".white
+      "(#{comma_separated_contributions})".white
+    end
   end
 
   memoize \

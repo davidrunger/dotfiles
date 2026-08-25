@@ -1,0 +1,23 @@
+#!/usr/bin/env zsh
+
+# Merge each non-main branch under ~/code after its pull request is merged.
+
+set -euo pipefail # exit on any error, don't allow undefined variables, pipes don't swallow errors
+
+trap 'exit 130' INT
+trap 'exit 143' TERM
+
+cd ~/code
+
+for git_dir in */.git(N); do
+  repo=${git_dir%/.git}
+  branch=$(git -C "$repo" symbolic-ref --quiet --short HEAD)
+
+  if [[ "$branch" != main ]]; then
+    printf '\n==> %s (%s)\n' "$repo" "$branch"
+    (
+      cd "$repo"
+      hwm
+    )
+  fi
+done

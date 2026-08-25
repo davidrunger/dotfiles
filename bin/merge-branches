@@ -14,7 +14,7 @@ for git_dir in */.git(N); do
   branch=$(git -C "$repo" symbolic-ref --quiet --short HEAD)
 
   if [[ "$branch" != main ]]; then
-    printf '\n==> %s (%s)\n' "$repo" "$branch"
+    printf '\n==> %s (%s)\n' "$(blue "$repo")" "$branch"
     (
       cd "$repo"
       hwm

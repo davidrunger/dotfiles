@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+
+# Update Crystal shards and open and merge a pull request when there are updates.
+
+set -euo pipefail # exit on any error, don't allow undefined variables, pipes don't swallow errors
+
+gfcob update-shards
+shards update
+
+if git diff --quiet; then
+  echo "No changes produced by shards update."
+  git checkout main
+  git branch -D update-shards
+  echo "Checked out main and deleted the update-shards branch."
+else
+  ga .
+  git commit -m 'Update shards' -m "\`shards update\`"
+  hwm
+fi

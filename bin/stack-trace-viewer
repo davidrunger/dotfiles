@@ -58,7 +58,9 @@ class StackTraceViewer < CommandKit::Command
     @file = file
 
     stack_trace_lines.reverse.each_with_index do |line, index|
-      next if line.strip.empty?
+      if line.strip.empty?
+        next
+      end
 
       print_context_for_line(line, stack_trace_lines.size - index)
     end

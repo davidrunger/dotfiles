@@ -145,12 +145,16 @@ class SpecFileFinder < CommandLineProgram
     commits.uniq!
 
     commits.each do |commit|
-      next if ignore_revs.include?(commit)
+      if ignore_revs.include?(commit)
+        next
+      end
 
       files_changed = `git diff-tree --no-commit-id --name-only -r #{commit}`.strip.split("\n")
 
       files_changed.each do |file_changed|
-        next if file_paths.include?(file_changed)
+        if file_paths.include?(file_changed)
+          next
+        end
 
         if matching_test_file?(file_changed)
           line_changes[file_changed] += line_change_count(commit, file_changed)
@@ -177,7 +181,9 @@ class SpecFileFinder < CommandLineProgram
       File.open(ignore_revs_file, 'r') do |file|
         file.each_line do |line|
           line.strip!
-          ignore_revs << line unless line.empty? || line.start_with?('#')
+          unless line.empty? || line.start_with?('#')
+            ignore_revs << line
+          end
         end
       end
     end

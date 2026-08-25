@@ -40,7 +40,9 @@ module MethodPatches
 
   # "sublime" (open the current method's source location in VSCode)
   def s
-    return nil if sl.nil?
+    if sl.nil?
+      return nil
+    end
 
     code(sl)
   end

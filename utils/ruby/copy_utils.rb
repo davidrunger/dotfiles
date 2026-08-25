@@ -1,8 +1,12 @@
 # frozen_string_literal: true
 
 require_relative 'load_gem'
-load_gem 'amazing_print' if !defined?(AmazingPrint)
-load_gem 'clipboard' if !defined?(Clipboard)
+if !defined?(AmazingPrint)
+  load_gem 'amazing_print'
+end
+if !defined?(Clipboard)
+  load_gem 'clipboard'
+end
 
 module CopyUtils
   # Copies the object upon which this method is called as a string into the clipboard.

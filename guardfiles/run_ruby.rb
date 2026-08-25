@@ -38,7 +38,9 @@ guard(:shell, all_on_start: true) do
       pp(error)
       puts
       puts(error.backtrace.first(NUM_BACKTRACE_LINES_TO_PRINT))
-      puts('[...]') if error.backtrace.size > NUM_BACKTRACE_LINES_TO_PRINT
+      if error.backtrace.size > NUM_BACKTRACE_LINES_TO_PRINT
+        puts('[...]')
+      end
       puts
     end
     finish_time = Time.now

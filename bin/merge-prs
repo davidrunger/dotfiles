@@ -215,7 +215,9 @@ class GithubPrAutoMerger < CommandKit::Command
 
         # Action(s) are in progress. Wait.
         sleep(10)
-        break if Time.now - @start_time > MAX_WAIT_TIME
+        if Time.now - @start_time > MAX_WAIT_TIME
+          break
+        end
       end
 
       false

@@ -4,8 +4,4 @@
 
 set -euo pipefail # exit on any error, don't allow undefined variables, pipes don't swallow errors
 
-if [ -v LINUX ]; then
-  ps -eo pid,cmd
-else
-  ps -eo pid,command
-fi
+ps -eo pid,cmd

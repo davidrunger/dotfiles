@@ -18,11 +18,7 @@ if [ $# -eq 0 ] && [[ "${text: -1}" == $'\n' ]] && [[ "${text%$'\n'}" != *$'\n'*
   text=$(echo "$text")
 fi
 
-if [ -v LINUX ]; then
-  echo -En "$text" | xsel --clipboard --input
-else
-  echo -En "$text" | pbcopy
-fi
+echo -En "$text" | xsel --clipboard --input
 
 echo 'Text copied to clipboard:'
 echo -En "$text"

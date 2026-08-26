@@ -13,14 +13,6 @@ class Notify < CommandLineTool
   end
 
   def call
-    if ENV["LINUX"]?
-      notify_on_linux
-    else
-      notify_on_macos
-    end
-  end
-
-  private def notify_on_linux
     run_command!("notify-send", [
       @title,
       @body,
@@ -28,11 +20,6 @@ class Notify < CommandLineTool
       icon_path,
       "--expire-time=#{@time * 1000}",
     ])
-  end
-
-  private def notify_on_macos
-    script = %(display notification "#{escape_for_applescript(@body)}" with title "#{escape_for_applescript(@title)}")
-    run_command!("osascript", ["-e", script])
   end
 
   private def icon_path : String
@@ -45,15 +32,6 @@ class Notify < CommandLineTool
       raise ArgumentError.new("Unknown notification icon: #{@icon}")
     end
   end
-
-  private def escape_for_applescript(value : String) : String
-    String.build do |escaped_value|
-      value.each_char do |character|
-        escaped_value << '\\' if character == '\\' || character == '"'
-        escaped_value << character
-      end
-    end
-  end
 end
 
 class Notify::Cli < ClimProgram
@@ -62,10 +40,10 @@ class Notify::Cli < ClimProgram
     usage "notify title body [options]"
 
     option "-t TIME", "--time TIME", type: Int32,
-      desc: "Number of seconds for which to display the message. Only works on Linux.",
+      desc: "Number of seconds for which to display the message.",
       default: 8
     option "-i ICON", "--icon ICON", type: String,
-      desc: "Notification icon. Options: information|error. Only works on Linux.",
+      desc: "Notification icon. Options: information|error.",
       default: "information"
     help short: "-h"
 

@@ -33,6 +33,21 @@ RSpec.describe(WaitForChecksRunner) do
     let(:printer) { Printer.new }
     let(:runner) { WaitForChecksRunner.new }
 
+    describe '#earliest_check_started_at' do
+      subject(:earliest_check_started_at) { loop_runner.send(:earliest_check_started_at) }
+
+      before do
+        expect(loop_runner).
+          to receive(:`).
+          with("gh pr checks $(branch) --json 'startedAt' --jq '.[] | .startedAt' 2>/dev/null").
+          and_return('')
+      end
+
+      it 'returns nil when no checks have started' do
+        expect(earliest_check_started_at).to be_nil
+      end
+    end
+
     describe '#fail_exit_reason' do
       subject(:fail_exit_reason) { loop_runner.send(:fail_exit_reason) }
 
@@ -40,7 +55,7 @@ RSpec.describe(WaitForChecksRunner) do
         before do
           expect(loop_runner).
             to receive(:`).
-            with(/\Agh pr checks/).
+            with(/\Agh pr checks .* 2>\/dev\/null\z/).
             and_return(<<~GH_RESPONSE)
               IN_PROGRESS
               IN_PROGRESS
@@ -72,7 +87,7 @@ RSpec.describe(WaitForChecksRunner) do
         before do
           expect(loop_runner).
             to receive(:`).
-            with(/\Agh pr checks/).
+            with(/\Agh pr checks .* 2>\/dev\/null\z/).
             and_return(<<~GH_RESPONSE)
               SUCCESS
               SUCCESS

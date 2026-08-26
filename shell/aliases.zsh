@@ -3,7 +3,6 @@ alias blog='cd ~/code/blog'
 alias br='bin/rubocop'
 alias bs='bin/rspec'
 alias cdn='cd "$NOTES_DIRECTORY"'
-alias chr='open -a Google\ Chrome'
 alias cop='run-rubocop'
 alias dbr='bin/rails db:rollback db:test:prepare'
 alias dl='curl -O'
@@ -12,6 +11,7 @@ alias dotsp='cd ~/code/dotfiles-personal'
 alias down='cd ~/Downloads'
 alias e='exit'
 alias fix='git diff --name-only | uniq | xargs $EDITOR'
+alias fox='firefox-devedition'
 alias fsk='redis-cli -n 1 FLUSHDB && SIDEKIQ_CONCURRENCY=1 bin/sidekiq' # `-n 1` because Sidekiq uses Redis db 1 by default
 alias gba='GIT_PAGER=cat git branch -vv'
 alias gbdf='git branch -D $(active-branches | fzf)'
@@ -56,10 +56,4 @@ alias zrc='$EDITOR ~/.zshrc'
 
 if [ -e "$HOME/code/dotfiles-personal/shell/aliases.zsh" ]; then
   . "$HOME/code/dotfiles-personal/shell/aliases.zsh"
-fi
-
-if [ -v LINUX ] ; then
-  . "$HOME/code/dotfiles/shell/aliases-linux.zsh"
-elif [ -v DARWIN ] ; then
-  . "$HOME/code/dotfiles/shell/aliases-mac.zsh"
 fi

@@ -1,4 +1,3 @@
-import platform
 import re
 import subprocess
 from pathlib import Path
@@ -14,10 +13,7 @@ def debug(text):
 
 symlink_extracting_regex = r": symbolic link to (.+)"
 
-if platform.system() == "Linux":
-    git_path = "/home/linuxbrew/.linuxbrew/bin/git"
-else:
-    git_path = "/fill/me/in/with/macos/git/path"
+git_path = "/home/linuxbrew/.linuxbrew/bin/git"
 
 
 def is_file_or_symlink_to_file(path, cwd):

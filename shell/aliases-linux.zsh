@@ -1,1 +1,0 @@
-alias fox='firefox-devedition'

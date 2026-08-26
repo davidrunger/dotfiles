@@ -27,7 +27,7 @@ readarray -t files_for_shellcheck < <(
 if [ ${#files_for_shellcheck[@]} -eq 0 ] ; then
   write-background-notification 'No files need to be checked by ShellCheck.'
 else
-  if shellcheck "${files_for_shellcheck[@]}" ; then
+  if shellcheck -x "${files_for_shellcheck[@]}" ; then
     write-background-notification 'Changed files satisfy ShellCheck.'
   else
     write-background-notification 'There were ShellCheck error(s).'

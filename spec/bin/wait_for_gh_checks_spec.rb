@@ -14,7 +14,7 @@ RSpec.describe(WaitForChecksRunner) do
     subject(:repo) { runner.repo }
 
     context 'when in the david_runger repo' do
-      before { expect(Dir).to receive(:pwd).and_return('/Users/david/code/david_runger') }
+      before { expect(Dir).to receive(:pwd).and_return('/home/david/code/david_runger') }
 
       it 'returns "david_runger"' do
         expect(repo).to eq('david_runger')

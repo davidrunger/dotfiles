@@ -1,21 +1,12 @@
-if [ "$(uname)" = 'Linux' ] ; then
-  export LINUX=true
-elif [ "$(uname)" = 'Darwin' ] ; then
-  export DARWIN=true
-fi
-
-if [ -v LINUX ] ; then
-  . "$HOME/code/dotfiles/shell/linux.zsh"
-elif [ -v DARWIN ] ; then
-  . "$HOME/code/dotfiles/shell/mac.zsh"
-fi
+# Homebrew
+eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
 
 # Look for zsh completion definitions in dotfiles/completions/ directory.
 # NOTE: This must come before loading oh-my-zsh.
 fpath=(~/code/dotfiles/completions $fpath)
 
 # zsh/oh-my-zsh
-# NOTE: must come after sourcing linux.zsh, so that git is available via Homebrew for update check.
+# NOTE: must come after sourcing Homebrew setup, so that git is available for the update check.
 setopt +o nomatch # https://unix.stackexchange.com/a/310553/276727
 export ZSH=$HOME/.oh-my-zsh
 ZSH_THEME="bolso"
@@ -62,7 +53,7 @@ if command -v yarn &> /dev/null ; then
   export PATH=$PATH:$(yarn global bin)
 fi
 
-# pnpm setup (on Linux)
+# pnpm setup
 if [ -d "$HOME/.local/share/pnpm" ]; then
   export PNPM_HOME="$HOME/.local/share/pnpm"
   case ":$PATH:" in
@@ -77,18 +68,12 @@ export PATH="$HOME/.basher/bin:$PATH"
 eval "$(basher init - zsh)"
 
 # fzf
-if [ -v LINUX ] ; then
-  source <(fzf --zsh)
-else
-  [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
-fi
+source <(fzf --zsh)
 
 # Homebrew
 export HOMEBREW_NO_AUTO_UPDATE=1
 # This avoids a warning from `brew doctor`.
-if [ -v LINUX ] ; then
-  export XDG_DATA_DIRS="/home/linuxbrew/.linuxbrew/share:$XDG_DATA_DIRS"
-fi
+export XDG_DATA_DIRS="/home/linuxbrew/.linuxbrew/share:$XDG_DATA_DIRS"
 
 # Rust
 . "$HOME/.cargo/env"
@@ -105,12 +90,6 @@ path=(
   $path
 )
 
-if [ -v LINUX ] ; then
-  path=($HOME/code/dotfiles/bin-linux $path)
-else if [ -v DARWIN ]
-  path=($HOME/code/dotfiles/bin-mac $path)
-fi
-
 export PATH
 
 export EDITOR=editor
@@ -124,9 +103,6 @@ export LESSHISTFILE=- # don't store less search history https://web.archive.org/
 
 # for SimpleCov::Formatter::Terminal
 export SIMPLECOV_TERMINAL_HYPERLINK_PATTERN="vscode://file/%f:%l"
-
-# prevent horrible Mac/Ruby/Rails bug
-export OBJC_DISABLE_INITIALIZE_FORK_SAFETY=YES
 
 # History
 export HISTSIZE=123123

@@ -156,7 +156,7 @@ class WaitForChecksRunner::LoopRunner
 
   memoize \
   def earliest_check_started_at
-    `gh pr checks $(branch) --json 'startedAt' --jq '.[] | .startedAt'`.
+    `gh pr checks $(branch) --json 'startedAt' --jq '.[] | .startedAt' 2>/dev/null`.
       split(/\s+/m).
       min&.
       then { Time.iso8601(it) }
@@ -216,7 +216,7 @@ class WaitForChecksRunner::LoopRunner
 
   memoize \
   def check_status_counts
-    `gh pr checks #{branch_name} --json 'state' --jq '.[] | .state'`.
+    `gh pr checks #{branch_name} --json 'state' --jq '.[] | .state' 2>/dev/null`.
       split(/\s+/m).
       tally.
       tap { it.default = 0 }.

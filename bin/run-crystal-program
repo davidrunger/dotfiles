@@ -15,6 +15,13 @@ crystal_compiled_binaries_directory="$HOME/bin/crystal-binaries"
 script_name=$(basename "$0")
 source_file="$HOME/code/dotfiles/crystal-programs/$script_name.cr"
 binary_file="$crystal_compiled_binaries_directory/$script_name"
+compilation_script_file=$(realpath "$0")
+
+print_file_timestamp() {
+  local file=$1
+
+  printf '  %s: %s\n' "$file" "$(stat -c '%y' "$file")" >&2
+}
 
 # Check if the source file exists.
 if [ ! -f "$source_file" ] ; then
@@ -24,9 +31,20 @@ fi
 
 # Check if the binary doesn't exist, the source file has changed, or this
 # compilation script has changed.
-if [ ! -f "$binary_file" ] || \
-    [ "$source_file" -nt "$binary_file" ] || \
-    [ "$(realpath "$0")" -nt "$binary_file" ] ; then
+compilation_reason=''
+timestamp_comparison_files=()
+
+if [ ! -f "$binary_file" ] ; then
+  compilation_reason="the compiled binary $binary_file does not exist"
+elif [ "$source_file" -nt "$binary_file" ] ; then
+  compilation_reason="the source file is newer than the compiled binary"
+  timestamp_comparison_files=("$source_file" "$binary_file")
+elif [ "$compilation_script_file" -nt "$binary_file" ] ; then
+  compilation_reason="the compilation script is newer than the compiled binary"
+  timestamp_comparison_files=("$compilation_script_file" "$binary_file")
+fi
+
+if [ -n "$compilation_reason" ] ; then
   # Create the compiled binaries directory.
   mkdir -p "$crystal_compiled_binaries_directory"
 
@@ -35,11 +53,17 @@ if [ ! -f "$binary_file" ] || \
   export CRYSTAL_PATH="$HOME/.shards/dotfiles:/usr/share/crystal/src"
 
   # Compile the binary.
-  echo "Compiling $source_file ..." >&2
+  echo "Compiling $source_file because $compilation_reason:" >&2
+  for file in "${timestamp_comparison_files[@]}" ; do
+    print_file_timestamp "$file"
+  done
+
   if ! crystal build --warnings=none "$source_file" -o "$binary_file" ; then
     echo "There was an error compiling $source_file ." >&2
     exit 1
   fi
+
+  echo "Done compiling $binary_file." >&2
 fi
 
 # Execute the compiled binary, passing along any provided arguments.

@@ -13,9 +13,14 @@ require "memoization"
 require "../utils/crystal/command_line_tool"
 require "../utils/crystal/clim_program"
 
-record ReflogEntry, sha : String, age : String, action : String do
+record ReflogEntry, sha : String, parent_shas : Array(String), age : String, action : String do
   def branch_creation? : Bool
     action.starts_with?("branch: Created from ")
+  end
+
+  # Rewritten versions of one commit retain the same parents even though their SHAs differ.
+  def revision_of?(other : ReflogEntry) : Bool
+    parent_shas == other.parent_shas
   end
 end
 
@@ -141,15 +146,15 @@ class GitAmendmentDiffWalker < CommandLineTool
       "reflog",
       "show",
       "--date=relative",
-      "--format=%H%x1f%gd%x1f%gs%x00",
+      "--format=%H%x1f%P%x1f%gd%x1f%gs%x00",
       "refs/heads/#{branch_name}",
     ])
 
     records = reflog_output.split(RECORD_SEPARATOR).map(&.strip).reject(&.empty?)
 
     records.map do |record|
-      sha, selector, action = record.split(FIELD_SEPARATOR, 3)
-      ReflogEntry.new(sha, selector.rpartition("@{")[2].rstrip('}'), action)
+      sha, parent_shas, selector, action = record.split(FIELD_SEPARATOR, 4)
+      ReflogEntry.new(sha, parent_shas.split, selector.rpartition("@{")[2].rstrip('}'), action)
     end
   end
 
@@ -159,11 +164,12 @@ class GitAmendmentDiffWalker < CommandLineTool
         older_position = index + 1
         newer_position = index
         transition = "@{#{older_position}}->@{#{newer_position}}"
+        show_message_as_new = older_entry.branch_creation? || !newer_entry.revision_of?(older_entry)
 
         input << older_entry.sha << '\t'
         input << newer_entry.sha << '\t'
         input << newer_entry.age << '\t'
-        input << older_entry.branch_creation? << '\t'
+        input << show_message_as_new << '\t'
         input << transition << '\n'
       end
     end

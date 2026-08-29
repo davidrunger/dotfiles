@@ -18,6 +18,10 @@ record ReflogEntry, sha : String, parent_shas : Array(String), age : String, act
     action.starts_with?("branch: Created from ")
   end
 
+  def rebase_completion? : Bool
+    action.starts_with?("rebase (finish): ")
+  end
+
   # Rewritten versions of one commit retain the same parents even though their SHAs differ.
   def revision_of?(other : ReflogEntry) : Bool
     parent_shas == other.parent_shas
@@ -126,6 +130,11 @@ class GitAmendmentDiffWalker < CommandLineTool
       return
     end
 
+    if fzf_input.empty?
+      puts "No non-rebase reflog transition exists for branch '#{branch_name}'."
+      return
+    end
+
     status = run_command("fzf", fzf_arguments, input: IO::Memory.new(fzf_input))
     exit(status.exit_code) if !status.success? && status.exit_code != 130
   end
@@ -161,6 +170,8 @@ class GitAmendmentDiffWalker < CommandLineTool
   memoize def fzf_input : String
     String.build do |input|
       reflog_entries.each_cons_pair.with_index do |(newer_entry, older_entry), index|
+        next if newer_entry.rebase_completion?
+
         older_position = index + 1
         newer_position = index
         transition = "@{#{older_position}}->@{#{newer_position}}"

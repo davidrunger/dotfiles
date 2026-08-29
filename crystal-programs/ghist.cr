@@ -10,7 +10,6 @@ class GitHistory < CommandLineTool
   def initialize(
     @file : String,
     @include_ignored : Bool,
-    @show_all : Bool,
     @num_commits_to_show : Int32?,
     @num_days_to_show : Int32?,
   )
@@ -38,15 +37,11 @@ class GitHistory < CommandLineTool
   end
 
   memoize def num_commits_to_show : Int32?
-    @show_all || @num_days_to_show ? nil : (@num_commits_to_show || 3)
+    @num_days_to_show ? nil : @num_commits_to_show
   end
 
   memoize def num_days_to_show : Int32?
     @num_days_to_show
-  end
-
-  memoize def num_commits_to_request_from_git : Int32
-    (num_commits_to_show || 0) + commits_to_ignore.size
   end
 
   memoize def commits_to_show : Array(String)
@@ -72,12 +67,12 @@ class GitHistory < CommandLineTool
   end
 
   memoize def git_log_limiting_arguments : Array(String)
-    if @show_all
-      [] of String
-    elsif num_days = num_days_to_show
+    if num_days = num_days_to_show
       ["--since=#{num_days} days ago"]
+    elsif num_commits = num_commits_to_show
+      ["-n", (num_commits + commits_to_ignore.size).to_s]
     else
-      ["-n", num_commits_to_request_from_git.to_s]
+      [] of String
     end
   end
 
@@ -136,7 +131,6 @@ class GitHistory::Cli < ClimProgram
     usage "ghist file [options]"
 
     option "-i", "--include-ignored", type: Bool, desc: "show changes listed in git blame ignore revs file"
-    option "-a", "--all", type: Bool, desc: "show all commits"
     option "-c COMMITS", "--commits COMMITS", type: Int32, desc: "number of commits to show"
     option "-d DAYS", "--days DAYS", type: Int32, desc: "number of days of history to show"
     help short: "-h"
@@ -150,14 +144,9 @@ class GitHistory::Cli < ClimProgram
         raise Clim::ClimInvalidOptionException.new "Expected exactly one file argument."
       end
 
-      if opts.all && (opts.commits || opts.days)
-        raise Clim::ClimInvalidOptionException.new "The --all option cannot be used with --commits or --days."
-      end
-
       GitHistory.new(
         file: file,
         include_ignored: opts.include_ignored,
-        show_all: opts.all,
         num_commits_to_show: opts.commits,
         num_days_to_show: opts.days,
       ).call

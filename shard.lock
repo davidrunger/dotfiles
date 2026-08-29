@@ -5,8 +5,8 @@ shards:
     version: 1.7.0-dev+git.commit.fcbd5703c50b47a5f280a11ab1c3416f5f3a9ea9
 
   clim:
-    git: https://github.com/at-grandpa/clim.git
-    version: 0.17.1
+    git: https://github.com/davidrunger/clim.git
+    version: 0.17.2
 
   memoization:
     git: https://github.com/davidrunger/memoization.git

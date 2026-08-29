@@ -4,9 +4,10 @@
 # the same file name -- minus the `.cr` file extension -- as a Crystal program
 # that is defined in `~/code/dotfiles/crystal-programs/`. When invoked, this
 # script will compile that Crystal program, if necessary (i.e. if it has never
-# been compiled before or if the Crystal source code has been changed subsequent
-# to the most recent compilation), and pass along any arguments to that compiled
-# program. The compiled programs will live in `~/bin/crystal-binaries/`.
+# been compiled before, if the Crystal source code or `shard.lock` has been
+# changed subsequent to the most recent compilation, or if this compilation
+# script has changed), and pass along any arguments to that compiled program.
+# The compiled programs will live in `~/bin/crystal-binaries/`.
 
 set -euo pipefail # exit on any error, don't allow undefined variables, pipes don't swallow errors
 
@@ -16,6 +17,7 @@ script_name=$(basename "$0")
 source_file="$HOME/code/dotfiles/crystal-programs/$script_name.cr"
 binary_file="$crystal_compiled_binaries_directory/$script_name"
 compilation_script_file=$(realpath "$0")
+shard_lock_file="$HOME/code/dotfiles/shard.lock"
 
 print_file_timestamp() {
   local file=$1
@@ -29,8 +31,8 @@ if [ ! -f "$source_file" ] ; then
   exit 1
 fi
 
-# Check if the binary doesn't exist, the source file has changed, or this
-# compilation script has changed.
+# Check if the binary doesn't exist, the source file has changed, the
+# compilation script has changed, or the shard lockfile has changed.
 compilation_reason=''
 timestamp_comparison_files=()
 
@@ -42,6 +44,9 @@ elif [ "$source_file" -nt "$binary_file" ] ; then
 elif [ "$compilation_script_file" -nt "$binary_file" ] ; then
   compilation_reason="the compilation script is newer than the compiled binary"
   timestamp_comparison_files=("$compilation_script_file" "$binary_file")
+elif [ "$shard_lock_file" -nt "$binary_file" ] ; then
+  compilation_reason="the shard.lock file is newer than the compiled binary"
+  timestamp_comparison_files=("$shard_lock_file" "$binary_file")
 fi
 
 if [ -n "$compilation_reason" ] ; then

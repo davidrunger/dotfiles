@@ -3,8 +3,8 @@ version: 0.0.1
 
 dependencies:
   clim:
-    github: at-grandpa/clim
-    version: 0.17.1
+    github: davidrunger/clim
+    version: 0.17.2
   memoization:
     github: davidrunger/memoization
   redis:

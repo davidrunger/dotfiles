@@ -97,6 +97,7 @@ Note: `~/code/dotfiles/GLOBAL_AGENTS.md` is the canonical source for my global C
 ## User interface conventions
 
 - Give new user-facing controls and elements deliberate styling so that they look polished and communicate their purpose visually. Prefer existing classes, CSS, components, and presentation patterns when suitable. When the project has no suitable existing pattern, consider adding a reusable one or ask the user for guidance when the appropriate design is unclear.
+- When a label identifies a single form control, prefer wrapping that control in the `<label>` element to create an implicit association instead of duplicating a control `id` and label `for` attribute. Use an explicit association when wrapping would be semantically awkward or the control and label need to remain structurally separate.
 
 ## Test workflow
 

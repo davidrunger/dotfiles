@@ -88,6 +88,11 @@ Note: `~/code/dotfiles/GLOBAL_AGENTS.md` is the canonical source for my global C
 - Use `pnpm` for JavaScript package management, unless the project is already using a different tool (e.g. as evidenced by a `yarn.lock` file).
 - Do not add a dependency in any environment, including development or test, without the user's explicit consent. Dependency additions carry supply-chain, vulnerability, and local-machine risks.
 
+## Model associations
+
+- Prefer explicit join models with `has_many :through` over `has_and_belongs_to_many`. This leaves room for validations, behavior, and future attributes on the relationship.
+- Prefer a domain-specific name for a join model and table when the relationship has a meaningful concept, such as `ItemAvailability` and `item_availabilities`, rather than mechanically combining the associated model names. Use combined names when they are the clearest description and no better domain concept exists.
+
 ## Persistence and side effects
 
 - Strongly prefer explicit application actions over ActiveRecord lifecycle callbacks (`after_create`, `after_create_commit`, and similar callbacks) for side effects of any kind. This includes enqueuing background jobs, sending mail, broadcasting, invalidating caches, updating related records, and calling external services. Model callbacks hide work from callers and run for every creation or update path, including factories, imports, migrations, and unrelated code paths.

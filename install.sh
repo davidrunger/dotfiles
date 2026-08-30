@@ -3,12 +3,14 @@
 set -euo pipefail # exit on any error, don't allow undefined variables, pipes don't swallow errors
 
 mkdir -p ~/.config/
+mkdir -p ~/.config/bat/
 mkdir -p ~/.codex/
 mkdir -p ~/.mitmproxy/
 mkdir -p ~/code/dotfiles/feature-flags/
 
 ln -sf ~/code/dotfiles/GLOBAL_AGENTS.md ~/.codex/AGENTS.md
 ln -sf ~/code/dotfiles/aprc.rb ~/.config/aprc
+ln -sf ~/code/dotfiles/bat/config ~/.config/bat/config
 ln -sf ~/code/dotfiles/cheat/ ~/.config/
 ln -sf ~/code/dotfiles/gemrc.yml ~/.gemrc
 ln -sf ~/code/dotfiles/git/gitconfig ~/.gitconfig

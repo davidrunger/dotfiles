@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# Run `bat` with some additional niceties like no paging and line number highlighting.
+# Run `bat` with line number highlighting.
 
 set -euo pipefail # exit on any error, don't allow undefined variables, pipes don't swallow errors
 
@@ -23,14 +23,12 @@ if [ -z "$real_bat" ]; then
   exit 1
 fi
 
-common_bat_args='--paging=never'
-
 # Check if the first argument matches file:line pattern.
 if [[ $# -gt 0 && "$1" =~ ^([^:]+):([0-9]+)$ ]]; then
   file="${BASH_REMATCH[1]}"
   line="${BASH_REMATCH[2]}"
   shift
-  exec "$real_bat" $common_bat_args --highlight-line="$line" "$file" "$@"
+  exec "$real_bat" --highlight-line="$line" "$file" "$@"
 else
-  exec "$real_bat" $common_bat_args "$@"
+  exec "$real_bat" "$@"
 fi

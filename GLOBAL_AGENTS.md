@@ -83,6 +83,7 @@ Note: `~/code/dotfiles/GLOBAL_AGENTS.md` is the canonical source for my global C
 
 - Keep commands that may require elevated permissions separate from sandbox-safe or read-only commands. In particular, do not combine Git state-changing operations with file-inspection commands in the same shell invocation. Run them separately so that any approval request is narrow and transparent.
 - Prefer repository-provided wrappers and binstubs over commands that bypass them.
+- Prefer invoking already-installed JavaScript dependency executables directly from `./node_modules/.bin/` over using `pnpm exec`. This avoids unnecessary package-manager startup and package-store access while still using the repository-pinned version. Use `pnpm exec` when workspace resolution or a nonstandard dependency layout makes the direct local binary path unsuitable.
 - When linting an entire repository with RuboCop, use `run-rubocop` so that only git-tracked files are linted. Use the repository's RuboCop wrapper or binstub for targeted files.
 - Use `pnpm` for JavaScript package management, unless the project is already using a different tool (e.g. as evidenced by a `yarn.lock` file).
 - Do not add a dependency in any environment, including development or test, without the user's explicit consent. Dependency additions carry supply-chain, vulnerability, and local-machine risks.

@@ -17,9 +17,9 @@ end
 
 class GitDiffStat < CommandLineTool
   MAX_BAR_WIDTH = 60
-  GREEN = "\e[32m"
-  RED = "\e[31m"
-  RESET = "\e[0m"
+  GREEN         = "\e[32m"
+  RED           = "\e[31m"
+  RESET         = "\e[0m"
 
   def initialize(@revision : String?, @color : Bool = STDOUT.tty?)
   end

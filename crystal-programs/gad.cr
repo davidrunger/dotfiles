@@ -12,24 +12,17 @@
 require "memoization"
 require "../utils/crystal/command_line_tool"
 require "../utils/crystal/clim_program"
-
-record ReflogEntry, sha : String, parent_shas : Array(String), age : String, action : String do
-  def branch_creation? : Bool
-    action.starts_with?("branch: Created from ")
-  end
-
-  def rebase_completion? : Bool
-    action.starts_with?("rebase (finish): ")
-  end
-
-  # Rewritten versions of one commit retain the same parents even though their SHAs differ.
-  def revision_of?(other : ReflogEntry) : Bool
-    parent_shas == other.parent_shas
-  end
-end
+require "../utils/crystal/git_commit_comparison"
+require "../utils/crystal/reflog_history"
 
 class GitAmendmentDiff < CommandLineTool
-  def initialize(@older_sha : String, @newer_sha : String, @change_age : String, @show_message_as_new : Bool)
+  def initialize(
+    @older_sha : String,
+    @newer_sha : String,
+    @change_age : String,
+    @show_message_as_new : Bool,
+    @compare_commit_patches : Bool,
+  )
   end
 
   def call
@@ -70,10 +63,10 @@ class GitAmendmentDiff < CommandLineTool
     newer_file = File.tempfile("gad-newer-commit-message")
 
     begin
-      older_message = @show_message_as_new ? "" : commit_message(@older_sha)
+      older_message = @show_message_as_new ? "" : commit_comparison.older_message
       older_file << older_message
       older_file.flush
-      newer_file << commit_message(@newer_sha)
+      newer_file << commit_comparison.newer_message
       newer_file.flush
 
       normalize_commit_message_paths(
@@ -102,11 +95,9 @@ class GitAmendmentDiff < CommandLineTool
       .gsub(newer_path.lstrip('/'), "newer-commit-message")
   end
 
-  private def commit_message(sha : String) : String
-    capture_command("git", ["show", "--no-patch", "--format=%B", sha])
-  end
-
   memoize def code_diff : String
+    return commit_comparison.patch_diff if @compare_commit_patches
+
     capture_command("git", [
       "--no-pager",
       "diff",
@@ -115,6 +106,10 @@ class GitAmendmentDiff < CommandLineTool
       @older_sha,
       @newer_sha,
     ])
+  end
+
+  memoize def commit_comparison : GitCommitComparison
+    GitCommitComparison.new(@older_sha, @newer_sha)
   end
 end
 
@@ -131,7 +126,7 @@ class GitAmendmentDiffWalker < CommandLineTool
     end
 
     if fzf_input.empty?
-      puts "No non-rebase reflog transition exists for branch '#{branch_name}'."
+      puts "No distinct reflog transition exists for branch '#{branch_name}'."
       return
     end
 
@@ -161,34 +156,38 @@ class GitAmendmentDiffWalker < CommandLineTool
 
     records = reflog_output.split(RECORD_SEPARATOR).map(&.strip).reject(&.empty?)
 
-    records.map do |record|
+    records.map_with_index do |record, position|
       sha, parent_shas, selector, action = record.split(FIELD_SEPARATOR, 4)
-      ReflogEntry.new(sha, parent_shas.split, selector.rpartition("@{")[2].rstrip('}'), action)
+      ReflogEntry.new(sha, parent_shas.split, selector.rpartition("@{")[2].rstrip('}'), action, position)
     end
+  end
+
+  memoize def reflog_transitions : Array(ReflogTransition)
+    ReflogHistory.new(reflog_entries).transitions.reject do |transition|
+      transition.compare_commit_patches? && identical_commits?(transition)
+    end
+  end
+
+  private def identical_commits?(transition : ReflogTransition) : Bool
+    GitCommitComparison.new(transition.older_entry.sha, transition.newer_entry.sha).identical?
   end
 
   memoize def fzf_input : String
     String.build do |input|
-      reflog_entries.each_cons_pair.with_index do |(newer_entry, older_entry), index|
-        next if newer_entry.rebase_completion?
-
-        older_position = index + 1
-        newer_position = index
-        transition = "@{#{older_position}}->@{#{newer_position}}"
-        show_message_as_new = older_entry.branch_creation? || !newer_entry.revision_of?(older_entry)
-
-        input << older_entry.sha << '\t'
-        input << newer_entry.sha << '\t'
-        input << newer_entry.age << '\t'
-        input << show_message_as_new << '\t'
-        input << transition << '\n'
+      reflog_transitions.each do |transition|
+        input << transition.older_entry.sha << '\t'
+        input << transition.newer_entry.sha << '\t'
+        input << transition.newer_entry.age << '\t'
+        input << transition.show_message_as_new? << '\t'
+        input << transition.compare_commit_patches? << '\t'
+        input << transition.label << '\n'
       end
     end
   end
 
   memoize def fzf_arguments : Array(String)
     executable = Process.executable_path || "gad"
-    preview_command = "#{Process.quote(executable)} --preview {1} {2} {3} {4}"
+    preview_command = "#{Process.quote(executable)} --preview {1} {2} {3} {4} {5}"
 
     [
       "--ansi",
@@ -204,7 +203,7 @@ class GitAmendmentDiffWalker < CommandLineTool
       "--preview=#{preview_command}",
       "--preview-label=reflog transition diff",
       "--preview-window=right,#{preview_pane_columns},nowrap",
-      "--with-nth=5",
+      "--with-nth=6",
     ]
   end
 
@@ -237,12 +236,12 @@ class GitAmendmentDiffWalker::Cli < ClimProgram
 end
 
 if ARGV.first? == "--preview"
-  if ARGV.size != 5
-    STDERR.puts "ERROR: --preview requires older and newer commit SHAs, a change age, and a new-message flag."
+  if ARGV.size != 6
+    STDERR.puts "ERROR: --preview requires older and newer commit SHAs, a change age, a new-message flag, and a commit-patch flag."
     exit(1)
   end
 
-  GitAmendmentDiff.new(ARGV[1], ARGV[2], ARGV[3], ARGV[4] == "true").call
+  GitAmendmentDiff.new(ARGV[1], ARGV[2], ARGV[3], ARGV[4] == "true", ARGV[5] == "true").call
 else
   GitAmendmentDiffWalker::Cli.start!
 end

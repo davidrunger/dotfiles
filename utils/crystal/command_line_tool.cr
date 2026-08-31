@@ -1,7 +1,12 @@
 abstract class CommandLineTool
-  protected def capture_command(command : String, arguments : Array(String)) : String
+  protected def capture_command(
+    command : String,
+    arguments : Array(String),
+    *,
+    input : Process::Stdio = Process::Redirect::Inherit,
+  ) : String
     output = IO::Memory.new
-    run_process(command, arguments, output: output)
+    run_process(command, arguments, input: input, output: output)
     output.to_s
   end
 

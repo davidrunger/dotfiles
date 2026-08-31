@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+
+# Run changed Vitest specs.
+
+set -euo pipefail # exit on any error, don't allow undefined variables, pipes don't swallow errors
+set -x # print executed commands
+
+readarray -t changed_vitest_tests < <(
+  changed-not-deleted-files | \
+    rg "app/javascript/.*\.test\.[cm]?[jt]sx?$" || \
+    true
+)
+
+if [ ${#changed_vitest_tests[@]} -ne 0 ] ; then
+  ./node_modules/.bin/vitest run "${changed_vitest_tests[@]}"
+fi

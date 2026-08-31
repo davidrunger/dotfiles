@@ -41,3 +41,6 @@ jobs:
 
       - name: Run Ameba
         run: bin/ameba
+
+      - name: Run specs
+        run: crystal spec

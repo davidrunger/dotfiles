@@ -14,10 +14,11 @@ RSpec.describe(WaitForChecksRunner) do
     subject(:repo) { runner.repo }
 
     context 'when in the david_runger repo' do
-      before { expect(Dir).to receive(:pwd).and_return('/home/david/code/david_runger') }
+      before { allow(Dir).to receive(:pwd).and_return('/home/david/code/david_runger') }
 
       it 'returns "david_runger"' do
         expect(repo).to eq('david_runger')
+        expect(Dir).to have_received(:pwd)
       end
     end
   end
@@ -37,7 +38,7 @@ RSpec.describe(WaitForChecksRunner) do
       subject(:earliest_check_started_at) { loop_runner.send(:earliest_check_started_at) }
 
       before do
-        expect(loop_runner).
+        allow(loop_runner).
           to receive(:`).
           with("gh pr checks $(branch) --json 'startedAt' --jq '.[] | .startedAt' 2>/dev/null").
           and_return('')
@@ -45,6 +46,9 @@ RSpec.describe(WaitForChecksRunner) do
 
       it 'returns nil when no checks have started' do
         expect(earliest_check_started_at).to be_nil
+        expect(loop_runner).
+          to have_received(:`).
+          with("gh pr checks $(branch) --json 'startedAt' --jq '.[] | .startedAt' 2>/dev/null")
       end
     end
 
@@ -53,7 +57,7 @@ RSpec.describe(WaitForChecksRunner) do
 
       context 'when the test output indicates that the test suite has failed' do
         before do
-          expect(loop_runner).
+          allow(loop_runner).
             to receive(:`).
             with(/\Agh pr checks .* 2>\/dev\/null\z/).
             and_return(<<~GH_RESPONSE)
@@ -65,6 +69,9 @@ RSpec.describe(WaitForChecksRunner) do
 
         it 'returns "tests failed"' do
           expect(fail_exit_reason).to eq('tests failed')
+          expect(loop_runner).
+            to have_received(:`).
+            with(/\Agh pr checks .* 2>\/dev\/null\z/)
         end
       end
 
@@ -85,7 +92,7 @@ RSpec.describe(WaitForChecksRunner) do
 
       context 'when the test output indicates that there are 2 passing checks' do
         before do
-          expect(loop_runner).
+          allow(loop_runner).
             to receive(:`).
             with(/\Agh pr checks .* 2>\/dev\/null\z/).
             and_return(<<~GH_RESPONSE)
@@ -97,6 +104,9 @@ RSpec.describe(WaitForChecksRunner) do
 
         it 'returns 2' do
           expect(num_passing_checks).to eq(2)
+          expect(loop_runner).
+            to have_received(:`).
+            with(/\Agh pr checks .* 2>\/dev\/null\z/)
         end
       end
     end

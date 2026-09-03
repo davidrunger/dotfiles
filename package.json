@@ -6,7 +6,7 @@
   "dependencies": {
     "chalk": "^6.0.0",
     "ioredis": "^6.0.0",
-    "ky": "^2.0.2"
+    "ky": "^2.1.0"
   },
   "devDependencies": {
     "@ianvs/prettier-plugin-sort-imports": "^4.7.1",

@@ -3,6 +3,6 @@
 # roll back Rails database migrations
 
 # Remove stale fixtures so specs regenerate them for the current branch's schema.
-rm spec/fixtures/*.yml
+rm -f spec/fixtures/*.yml
 
 bin/rails db:rollback db:test:prepare

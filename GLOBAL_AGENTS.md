@@ -134,6 +134,7 @@ Note: `~/code/dotfiles/GLOBAL_AGENTS.md` is the canonical source for my global C
 - When an example description includes a "when" condition, use a `context` to establish that condition through scoped setup, and keep the example description focused on the behavior it verifies. This makes the premise explicit and keeps sibling cases balanced.
 - Prefer declaring a `let` when it is overridden by a nested context, referenced directly by an expectation, or otherwise needed to express setup. Avoid extracting a one-off value into a `let` merely to make another declaration more readable when that extraction would obscure why the `let` exists or make an incidental refactor look behaviorally necessary.
 - When a spec checks that a user-facing label, control, or other value is absent or otherwise does not match, share the expected value with positive expectations through a `let` when reasonably possible. This keeps negative expectations from passing falsely when the application changes but the negative expectation is not updated.
+- Make negative expectations as broad or general as reasonably possible. An overly specific negative expectation can miss an incidental change that causes the intended condition to occur differently, creating a false negative. Narrow an expectation only when the test intentionally permits the broader condition or needs to distinguish meaningful cases.
 
 ## Ruby conventions
 

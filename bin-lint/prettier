@@ -21,6 +21,7 @@ readarray -t files_for_prettier < <(
 'ruby-version|'\
 'sh|'\
 'toml|'\
+'zsh-theme|'\
 'zsh(rc)?'\
 ')$' || \
     true

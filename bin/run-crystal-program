@@ -4,10 +4,11 @@
 # the same file name -- minus the `.cr` file extension -- as a Crystal program
 # that is defined in `~/code/dotfiles/crystal-programs/`. When invoked, this
 # script will compile that Crystal program, if necessary (i.e. if it has never
-# been compiled before, if the Crystal source code or `shard.lock` has been
-# changed subsequent to the most recent compilation, or if this compilation
-# script has changed), and pass along any arguments to that compiled program.
-# The compiled programs will live in `~/bin/crystal-binaries/`.
+# been compiled before, if the Crystal source code, any helper file under
+# `utils/crystal/`, the `shard.lock`, or this compilation script has changed
+# subsequent to the most recent compilation), and pass along any arguments to
+# that compiled program. The compiled programs will live in
+# `~/bin/crystal-binaries/`.
 
 set -euo pipefail # exit on any error, don't allow undefined variables, pipes don't swallow errors
 
@@ -18,11 +19,22 @@ source_file="$HOME/code/dotfiles/crystal-programs/$script_name.cr"
 binary_file="$crystal_compiled_binaries_directory/$script_name"
 compilation_script_file=$(realpath "$0")
 shard_lock_file="$HOME/code/dotfiles/shard.lock"
+utils_crystal_directory="$HOME/code/dotfiles/utils/crystal"
 
 print_file_timestamp() {
   local file=$1
 
   printf '  %s: %s\n' "$file" "$(stat -c '%y' "$file")" >&2
+}
+
+# Print the path of the most-recently-modified file under a directory, or
+# nothing if the directory doesn't exist or contains no files.
+newest_file_in_directory() {
+  local directory=$1
+
+  if [ -d "$directory" ] ; then
+    find "$directory" -type f -printf '%T@ %p\n' 2>/dev/null | sort -rn | head -n 1 | cut -d' ' -f2-
+  fi
 }
 
 # Check if the source file exists.
@@ -32,9 +44,12 @@ if [ ! -f "$source_file" ] ; then
 fi
 
 # Check if the binary doesn't exist, the source file has changed, the
-# compilation script has changed, or the shard lockfile has changed.
+# compilation script has changed, the shard lockfile has changed, or a
+# helper file under `utils/crystal/` has changed.
 compilation_reason=''
 timestamp_comparison_files=()
+
+newest_utils_file=$(newest_file_in_directory "$utils_crystal_directory")
 
 if [ ! -f "$binary_file" ] ; then
   compilation_reason="the compiled binary $binary_file does not exist"
@@ -47,6 +62,9 @@ elif [ "$compilation_script_file" -nt "$binary_file" ] ; then
 elif [ "$shard_lock_file" -nt "$binary_file" ] ; then
   compilation_reason="the shard.lock file is newer than the compiled binary"
   timestamp_comparison_files=("$shard_lock_file" "$binary_file")
+elif [ -n "$newest_utils_file" ] && [ "$newest_utils_file" -nt "$binary_file" ] ; then
+  compilation_reason="a Crystal util has changed since the compiled binary was built"
+  timestamp_comparison_files=("$newest_utils_file" "$binary_file")
 fi
 
 if [ -n "$compilation_reason" ] ; then

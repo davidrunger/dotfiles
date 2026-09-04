@@ -1,13 +1,28 @@
 # AVIT ZSH Theme
 
 PROMPT='
-${_current_dir} $(git_prompt_info) $(git_commits_ahead) $(git_commits_behind) %D{%r}
+${_current_dir} $(git_prompt_info) ${_bolso_git_commits_ahead} ${_bolso_git_commits_behind} %D{%r}
 %{$fg[green]%}❯%{$reset_color%} '
 
 PROMPT2='%{$fg[grey]%}❮%{$reset_color%} '
 MODE_INDICATOR="%{$fg_bold[yellow]%}❮%{$reset_color%}%{$fg[yellow]%}❮❮%{$reset_color%}"
 
 local _current_dir="%{$fg[blue]%}%3~%{$reset_color%} "
+
+# Keep the synchronous commit counts out of the final prompt redraw.
+function _bolso_update_git_commit_counts() {
+  _bolso_git_commits_ahead=$(git_commits_ahead)
+  _bolso_git_commits_behind=$(git_commits_behind)
+}
+
+# line-finish runs after Enter is accepted and before the command executes.
+function _bolso_update_time_before_command() {
+  zle .reset-prompt
+}
+
+autoload -Uz add-zle-hook-widget add-zsh-hook
+add-zle-hook-widget line-finish _bolso_update_time_before_command
+add-zsh-hook precmd _bolso_update_git_commit_counts
 
 ZSH_THEME_GIT_COMMITS_AHEAD_SUFFIX="%{$fg[green]%}↥%{$reset_color%}"
 ZSH_THEME_GIT_COMMITS_BEHIND_SUFFIX="%{$fg[red]%}↧%{$reset_color%}"

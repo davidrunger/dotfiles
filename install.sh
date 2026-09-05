@@ -2,9 +2,9 @@
 
 set -euo pipefail # exit on any error, don't allow undefined variables, pipes don't swallow errors
 
+mkdir -p ~/.codex/
 mkdir -p ~/.config/
 mkdir -p ~/.config/bat/
-mkdir -p ~/.codex/
 mkdir -p ~/.mitmproxy/
 mkdir -p ~/code/dotfiles/feature-flags/
 

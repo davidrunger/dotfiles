@@ -1,5 +1,10 @@
 #!/usr/bin/env bash
 
+# Set up this `dotfiles` code on a computer.
+#
+# Run the full setup with:
+#   FULL_INSTALL=1 ./install.sh
+
 set -euo pipefail # exit on any error, don't allow undefined variables, pipes don't swallow errors
 
 mkdir -p ~/.codex/
@@ -25,14 +30,8 @@ ln -sf ~/code/dotfiles/rspec ~/.rspec
 ln -sf ~/code/dotfiles/zsh/themes/bolso.zsh-theme ~/.oh-my-zsh/custom/themes/bolso.zsh-theme
 ln -sf ~/code/dotfiles/zshrc.zsh ~/.zshrc
 
-# Check whether it's worth making the user type in their password (i.e. if update is needed).
-mitmproxy_env_vars_source=~/code/dotfiles/mitmproxy_env.sh
-mitmproxy_env_vars_destination=/etc/X11/Xsession.d/90mitmproxy_env
-if [ ! -f "$mitmproxy_env_vars_destination" ] || \
-    ! diff -q "$mitmproxy_env_vars_source" "$mitmproxy_env_vars_destination" > /dev/null ;
-then
-  sudo ln -sf "$mitmproxy_env_vars_source" "$mitmproxy_env_vars_destination"
-fi
+touch ~/.hushlogin
+touch ~/.pry_history
 
 if [ -e "$HOME/code/dotfiles-personal/install.sh" ]; then
   cd "$HOME/code/dotfiles-personal/"
@@ -40,18 +39,22 @@ if [ -e "$HOME/code/dotfiles-personal/install.sh" ]; then
   cd - &> /dev/null
 fi
 
-git config core.hookspath bin/githooks
+if [ "${FULL_INSTALL:-0}" = "1" ]; then
+  ~/code/dotfiles/install/apt-packages.sh
+  ~/code/dotfiles/install/mitmproxy-env.sh
 
-touch ~/.hushlogin
-touch ~/.pry_history
+  # Configure Git hooks.
+  git config core.hookspath bin/githooks
 
-# install-apt-packages ~/code/dotfiles/packages.txt
+  # Install Homebrew packages.
+  brew bundle
 
-# brew bundle
+  # Install Bundler plugin(s).
+  bundle plugin install bundler-why
 
-# bundle install
-# bundle plugin install bundler-why
+  # Install global JavaScript packages.
+  pnpm add --global http-server live-server prettier typescript tsx
 
-# pnpm add --global http-server live-server prettier typescript tsx
-
-# shards install
+  # Install Crystal shards.
+  shards install
+fi

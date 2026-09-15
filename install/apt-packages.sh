@@ -1,13 +1,6 @@
 #!/usr/bin/env bash
 
-# Install a list of packages.
-#
-# Example:
-#   install-apt-packages ~/code/dotfiles/packages.txt
-
 set -euo pipefail # exit on any error, don't allow undefined variables, pipes don't swallow errors
-
-package_list=$1
 
 sudo apt update
 
@@ -23,4 +16,4 @@ while IFS= read -r package; do
     blue "Installing $package"
     sudo apt install -y "$package"
   fi
-done < "$package_list"
+done < ~/code/dotfiles/packages.txt

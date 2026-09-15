@@ -19,12 +19,41 @@ if [[ -z "$new_ruby_version" ]]; then
 fi
 
 set -x
-rbenv global "$new_ruby_version"
-RBENV_VERSION="$new_ruby_version" gem update --system
-RBENV_VERSION="$new_ruby_version" gem install bundler
+old_global_ruby_version=$(mise config get --global tools.ruby)
+mise use --global "ruby@$new_ruby_version"
+mise exec "ruby@$new_ruby_version" -- gem update --system
+mise exec "ruby@$new_ruby_version" -- gem install bundler
+set +x
+
+# `mise use --global` just wrote to $mise_config_file, wherever dotfiles
+# happens to be checked out right now. Stash that change so we can carry
+# it onto a proper bump-ruby branch, same as every other repo below.
+cd "$HOME/code/dotfiles" || exit
+blue "# dotfiles (mise global config)"
+
+mise_config_file="mise.global-config-symlink.toml"
+mise_global_ruby_branch_name="mise/bump-global-ruby"
+
+if git diff --quiet -- "$mise_config_file"; then
+  echo "No mise global config changes to commit."
+elif branch-exists "$mise_global_ruby_branch_name"; then
+  echo "Branch $mise_global_ruby_branch_name already exists."
+else
+  set -x
+
+  update-main-branch
+  git checkout -b "$mise_global_ruby_branch_name" "origin/$(main-branch)"
+  git add "$mise_config_file"
+  verify-on-ok-branch
+  git commit --message "[mise] Bump global Ruby from $old_global_ruby_version to $new_ruby_version"
+  hwm
+
+  { set +ex; } 2>/dev/null
+fi
+
+echo
 
 cd "$HOME/code" || exit
-set +x
 
 for dir in $(my-repos) ; do
   cd "$dir" || exit
@@ -42,7 +71,7 @@ for dir in $(my-repos) ; do
       update-main-branch
       git checkout -b "$branch_name" "origin/$(main-branch)"
       sd -F "$old_ruby_version" "$new_ruby_version" .ruby-version
-      bundle update --ruby --bundler
+      mise exec -- bundle update --ruby --bundler
       gacm "Bump Ruby from $old_ruby_version to $new_ruby_version"
       hpr
 

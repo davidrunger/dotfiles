@@ -1,7 +1,6 @@
 [settings]
 activate_aggressive = true
-disable_tools = ["ruby"]
-idiomatic_version_file_enable_tools = ["node"]
+idiomatic_version_file_enable_tools = ["node", "ruby"]
 
 [settings.status]
 missing_tools = "always"
@@ -9,3 +8,4 @@ missing_tools = "always"
 [tools]
 node = "22.14.0"
 python = "3.13.2"
+ruby = "4.0.6"

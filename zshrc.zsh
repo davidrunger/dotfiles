@@ -34,10 +34,8 @@ fi
 # snap setup
 export PATH=$PATH:/snap/bin
 
-# rbenv setup
-if [ -e ~/.rbenv/bin/rbenv ]; then
-  eval "$(~/.rbenv/bin/rbenv init - zsh)"
-fi
+# Ruby setup.
+# Configure PATH for Ruby native extension compilation.
 export PATH="/usr/local/bin:/usr/bin:/bin:$PATH"
 # NOTE: YJIT requires Rust to be installed.
 # NOTE: Jemalloc requires `sudo apt-get install libjemalloc-dev`.

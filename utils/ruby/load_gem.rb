@@ -12,9 +12,9 @@ end
 
 # rubocop:disable-next Style/TopLevelMethodDefinition
 def load_installed_gem(gem_name, load_path_only:, require_name:)
-  rbenv_gem_path = Gem.paths.path.find { it.include?('.rbenv') }
+  mise_gem_path = Gem.paths.path.find { it.match?(/\bmise\b/) }
   matching_gem_directories =
-    Dir["#{rbenv_gem_path}/gems/#{gem_name}-*"].grep(%r{/#{gem_name}-\d[^/]+\z})
+    Dir["#{mise_gem_path}/gems/#{gem_name}-*"].grep(%r{/#{gem_name}-\d[^/]+\z})
   latest_gem_directory =
     matching_gem_directories.max_by do |gem_directory_path|
       version_number = gem_directory_path.split('/').last.delete_prefix("#{gem_name}-")
@@ -30,7 +30,7 @@ def load_installed_gem(gem_name, load_path_only:, require_name:)
     $LOAD_PATH << gem_lib_directory
   end
   gem_name_and_version = latest_gem_directory.split('/').last
-  gemspec_path = "#{rbenv_gem_path}/specifications/#{gem_name_and_version}.gemspec"
+  gemspec_path = "#{mise_gem_path}/specifications/#{gem_name_and_version}.gemspec"
   Gem::Specification.load(gemspec_path).runtime_dependencies.map do |dependency|
     load_gem(dependency.name, load_path_only: true)
   end

@@ -40,10 +40,6 @@ if [ -e "$HOME/code/dotfiles-personal/install.sh" ]; then
 fi
 
 if [ "${FULL_INSTALL:-0}" = "1" ]; then
-  ~/code/dotfiles/install/apt-packages.sh
-  ~/code/dotfiles/install/mitmproxy-env.sh
-  ~/code/dotfiles/install/ufw.sh
-
   # Configure Git hooks.
   git config core.hookspath bin/githooks
 
@@ -58,4 +54,10 @@ if [ "${FULL_INSTALL:-0}" = "1" ]; then
 
   # Install Crystal shards.
   shards install
+
+  # NOTE: Some of these depend on earlier steps, like `brew bundle`.
+  ~/code/dotfiles/install/apt-packages.sh
+  ~/code/dotfiles/install/mitmproxy-env.sh
+  ~/code/dotfiles/install/oh-my-zsh.sh
+  ~/code/dotfiles/install/ufw.sh
 fi

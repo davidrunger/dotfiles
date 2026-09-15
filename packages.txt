@@ -1,4 +1,3 @@
-curl
 dirmngr
 exiftool
 gawk

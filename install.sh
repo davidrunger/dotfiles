@@ -42,6 +42,7 @@ fi
 if [ "${FULL_INSTALL:-0}" = "1" ]; then
   ~/code/dotfiles/install/apt-packages.sh
   ~/code/dotfiles/install/mitmproxy-env.sh
+  ~/code/dotfiles/install/ufw.sh
 
   # Configure Git hooks.
   git config core.hookspath bin/githooks

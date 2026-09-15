@@ -50,7 +50,7 @@ if [ "${FULL_INSTALL:-0}" = "1" ]; then
   brew bundle
 
   # Install Bundler plugin(s).
-  bundle plugin install bundler-why
+  (cd "$HOME" && bundle plugin install bundler-why)
 
   # Install global JavaScript packages.
   pnpm add --global http-server live-server prettier typescript tsx

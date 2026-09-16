@@ -9,5 +9,6 @@ libjemalloc-dev
 libssl-dev
 libyaml-dev
 oathtool
+snapd
 systemd-sysv
 xsel

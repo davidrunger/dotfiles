@@ -37,9 +37,8 @@ export PATH=$PATH:/snap/bin
 # Ruby setup.
 # Configure PATH for Ruby native extension compilation.
 export PATH="/usr/local/bin:/usr/bin:/bin:$PATH"
-# NOTE: YJIT requires Rust to be installed.
 # NOTE: Jemalloc requires `sudo apt-get install libjemalloc-dev`.
-export RUBY_CONFIGURE_OPTS="--enable-yjit --with-jemalloc"
+export RUBY_CONFIGURE_OPTS="--with-jemalloc"
 # https://chat.deepseek.com/share/mddi9z5u7wtwod5l4x
 RUBY_CONFIGURE_OPTS+=" --with-gmp-dir=/usr"
 
@@ -72,9 +71,6 @@ source <(fzf --zsh)
 export HOMEBREW_NO_AUTO_UPDATE=1
 # This avoids a warning from `brew doctor`.
 export XDG_DATA_DIRS="/home/linuxbrew/.linuxbrew/share:$XDG_DATA_DIRS"
-
-# Rust
-. "$HOME/.cargo/env"
 
 path=(
   $HOME/code/dotfiles-personal/bin

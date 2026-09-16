@@ -5,6 +5,7 @@ gawk
 gnupg2
 gpg
 libffi-dev
+libjemalloc-dev
 libssl-dev
 libyaml-dev
 oathtool

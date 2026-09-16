@@ -35,12 +35,8 @@ fi
 export PATH=$PATH:/snap/bin
 
 # Ruby setup.
-# Configure PATH for Ruby native extension compilation.
-export PATH="/usr/local/bin:/usr/bin:/bin:$PATH"
 # NOTE: Jemalloc requires `sudo apt-get install libjemalloc-dev`.
 export RUBY_CONFIGURE_OPTS="--with-jemalloc"
-# https://chat.deepseek.com/share/mddi9z5u7wtwod5l4x
-RUBY_CONFIGURE_OPTS+=" --with-gmp-dir=/usr"
 
 # yarn setup
 if command -v yarn &> /dev/null ; then

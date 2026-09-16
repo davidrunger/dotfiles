@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+brew 'awscli'
 brew 'bash'
 brew 'bat'
 brew 'betterleaks'

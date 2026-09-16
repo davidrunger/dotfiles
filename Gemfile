@@ -7,6 +7,7 @@ source 'https://rubygems.org', cooldown: 5
 gem 'activesupport'
 gem 'amazing_print'
 gem 'benchmark-ips'
+gem 'bundler-audit'
 gem 'clipboard'
 gem 'command_kit'
 gem 'dotenv'

@@ -5,7 +5,7 @@ set -euo pipefail # exit on any error, don't allow undefined variables, pipes do
 sudo apt update
 
 is_installed() {
-  dpkg -l "$1" &> /dev/null
+  [[ "$(dpkg-query -W -f='${db:Status-Status}' "$1" 2>/dev/null)" == installed ]]
 }
 
 # Install packages in provided package list file (if they are not already installed).

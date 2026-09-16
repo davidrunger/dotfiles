@@ -1,10 +1,10 @@
 build-essential
 dirmngr
-exiftool
 gawk
 gnupg2
 gpg
 libffi-dev
+libimage-exiftool-perl
 libjemalloc-dev
 libssl-dev
 libyaml-dev

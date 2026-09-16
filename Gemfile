@@ -27,6 +27,7 @@ gem 'rubocop-rspec'
 gem 'ruby-lsp'
 gem 'runger_style'
 gem 'slop'
+gem 'stripmem', require: false, github: 'davidrunger/stripmem'
 gem 'tapp'
 gem 'yard'
 

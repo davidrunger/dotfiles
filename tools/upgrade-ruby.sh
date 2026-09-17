@@ -13,6 +13,22 @@ new_ruby_version="$1"
 branch_name="bump-ruby"
 ignore_dirs=$(runger-config -d ~/code/dotfiles --show forks | paste -sd '|' -)
 
+# Rewrite any `uses: ruby/setup-ruby@<sha> # <tag>` pin(s) under the current
+# repo's .github/ dir to the latest release. No-op if none are found, if the
+# lookup above failed, or if they're already current.
+bump-setup-ruby-action() {
+  [[ -n "$latest_setup_ruby_sha" ]] || return 0
+  [[ -d .github ]] || return 0
+
+  local workflow_file
+  rg -l "${setup_ruby_repo}@" .github 2>/dev/null | while IFS= read -r workflow_file; do
+    sd \
+      "${setup_ruby_repo}@[0-9a-f]{40}( # v[0-9.]+)?" \
+      "${setup_ruby_repo}@${latest_setup_ruby_sha} # ${latest_setup_ruby_tag}" \
+      "$workflow_file"
+  done
+}
+
 if [[ -z "$new_ruby_version" ]]; then
   echo "Usage: $0 <new_ruby_version>"
   exit 1
@@ -53,6 +69,24 @@ fi
 
 echo
 
+# `ruby/setup-ruby` usually adds support for a new Ruby version quickly, but
+# Dependabot's cooldown means the workflow files don't pick that update up
+# right away. Look up the latest release once, up front, so every repo below
+# gets bumped to the same tag/commit.
+setup_ruby_repo="ruby/setup-ruby"
+latest_setup_ruby_tag=""
+latest_setup_ruby_sha=""
+if latest_setup_ruby_tag=$(gh api "repos/${setup_ruby_repo}/releases/latest" --jq '.tag_name' 2>/dev/null) \
+  && latest_setup_ruby_sha=$(gh api "repos/${setup_ruby_repo}/commits/${latest_setup_ruby_tag}" --jq '.sha' 2>/dev/null); then
+  echo "Latest $setup_ruby_repo: $latest_setup_ruby_tag ($latest_setup_ruby_sha)"
+else
+  echo "Warning: couldn't look up latest $setup_ruby_repo release; skipping Action pin bumps." >&2
+  latest_setup_ruby_tag=""
+  latest_setup_ruby_sha=""
+fi
+
+echo
+
 cd "$HOME/code" || exit
 
 for dir in $(my-repos) ; do
@@ -71,7 +105,12 @@ for dir in $(my-repos) ; do
       update-main-branch
       git checkout -b "$branch_name" "origin/$(main-branch)"
       sd -F "$old_ruby_version" "$new_ruby_version" .ruby-version
-      mise exec -- bundle update --ruby --bundler
+      bump-setup-ruby-action
+      if test -f Gemfile.lock ; then
+        mise exec -- bundle update --ruby --bundler
+      else
+        echo "No Gemfile.lock found; skipping bundle update."
+      fi
       gacm "Bump Ruby from $old_ruby_version to $new_ruby_version"
       hpr
 

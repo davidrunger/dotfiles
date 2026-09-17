@@ -4,7 +4,7 @@ set -euo pipefail # exit on any error, don't allow undefined variables, pipes do
 
 lint secrets
 
-background-and-notify newlines
-background-and-notify prettier
-background-and-notify rubocop
-background-and-notify shellcheck
+background-and-notify lint newlines
+background-and-notify lint prettier
+background-and-notify lint rubocop
+background-and-notify lint shellcheck

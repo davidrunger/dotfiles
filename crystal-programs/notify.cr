@@ -25,9 +25,9 @@ class Notify < CommandLineTool
   private def icon_path : String
     case @icon
     when "information"
-      "/usr/share/icons/Adwaita/96x96/ui/checkbox-checked-symbolic.symbolic.png"
+      "/usr/share/icons/Adwaita/symbolic/ui/checkbox-checked-symbolic.svg"
     when "error"
-      "/usr/share/icons/Adwaita/96x96/status/dialog-error-symbolic.symbolic.png"
+      "/usr/share/icons/Adwaita/symbolic/status/dialog-error-symbolic.svg"
     else
       raise ArgumentError.new("Unknown notification icon: #{@icon}")
     end

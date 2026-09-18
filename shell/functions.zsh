@@ -79,13 +79,3 @@ myip6() {
 
 # make directory and cd into it
 mcd() { mkdir $1 && cd $1; }
-
-# "sublime code" (open a GitHub repo in $EDITOR)
-# ex: `sc https://github.com/plashchynski/crono`
-sc() {
-  cd ~/Downloads
-  git clone $1
-  repo_name=$(echo $1 | sed -E 's/https\:\/\/github.com\/[^/]*\///')
-  $EDITOR $repo_name
-  cd -
-}

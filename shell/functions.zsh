@@ -1,13 +1,6 @@
 # bundle
 b() { bundle install }
 
-# git checkout branch (from (almost) all of them) w/ fzf
-gca() {
-  git checkout $(git for-each-ref --format="%(refname:short)" refs/heads | \
-    rg -v "^(($(main-branch)|$(branch))$)" | fzf) && \
-    gst
-}
-
 # git checkout branch based on current branch
 gcob() {
   git checkout -b $@
@@ -16,30 +9,6 @@ gcob() {
 
 # find file
 ff() { find . -type f -name $1 }
-
-# "git diff date"
-# shows the diff in code between the specified date and now
-# example usage:
-#   gddate 2022-10-01
-gddate() { git diff `git rev-list -1 --before=\"$1\" $(main-branch)`..origin/$(main-branch) }
-
-# show git diff in editor
-# ex:
-#   gsd ae2b5a9c7c61597e34820694fed4612639274dba
-gsd() {
-  git show $1 | EXT=diff tos
-}
-
-# git commit with message written in terminal
-gcomm() {
-  verify-on-ok-branch
-  if [ $? -ne 0 ]
-  then
-    return 1
-  fi
-
-  git commit -m $1
-}
 
 # git rebase interactive
 # Enter the number of commits back that you want to go.

@@ -1,22 +1,6 @@
 # bundle
 b() { bundle install }
 
-# build ctags
-build_ctags() {
-  if [[ $BUILD_CTAGS == 'true' ]]
-  then
-    echo
-    echo 'Building CTags. Thanks for your patience! :)'
-    ctags -f .gemtags -R --languages=ruby $(bundle list --paths)
-    if [ $? -eq 0 ]
-    then
-      echo "Great job! You built CTags successfully!"
-    else
-      echo "There might have been a problem building CTags."
-    fi
-  fi
-}
-
 # git checkout branch (from (almost) all of them) w/ fzf
 gca() {
   git checkout $(git for-each-ref --format="%(refname:short)" refs/heads | \

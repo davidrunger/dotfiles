@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+# Copy my IP v4 address to the clipboard.
+
+set -euo pipefail # exit on any error, don't allow undefined variables, pipes don't swallow errors
+
+curl -s ifconfig.co -4 | cpy

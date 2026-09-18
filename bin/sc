@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# "sublime code" (open a GitHub repo in $EDITOR)
+# "[s]ublime [c]ode": Download and open a specified GitHub repo in `$EDITOR`.
 #
 # Example:
 #    sc https://github.com/plashchynski/crono

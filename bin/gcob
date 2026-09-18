@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+
+# [g]it [c]heck [o]ut new [b]ranch based on the current branch
+
+set -euo pipefail # exit on any error, don't allow undefined variables, pipes don't swallow errors
+
+git checkout -b "$@"
+gsup

@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+
+# [g]it [r]ebase [i]nteractive
+#
+# Enter the number of commits back that you want to rebase.
+# Ex: `gri 3` to rebase with the most recent 3 commits.
+
+set -euo pipefail # exit on any error, don't allow undefined variables, pipes don't swallow errors
+
+git rebase -i "HEAD~$1" && git status -sb

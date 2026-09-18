@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+# [f]ind [f]ile by name
+
+set -euo pipefail # exit on any error, don't allow undefined variables, pipes don't swallow errors
+
+find . -type f -name "$1"

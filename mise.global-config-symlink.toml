@@ -9,6 +9,6 @@ missing_tools = "always"
 compile = true
 
 [tools]
-node = "22.14.0"
+node = "24.21.0"
 python = "3.13.2"
 ruby = "4.0.7"

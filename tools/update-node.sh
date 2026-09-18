@@ -9,7 +9,7 @@
 set -euo pipefail # don't allow undefined variables, pipes don't swallow errors
 
 node_version_file=".node-version"
-new_node_version="$1"
+new_node_version="${1:-}"
 branch_name="bump-node"
 ignore_dirs=$(runger-config -d ~/code/dotfiles --show forks | paste -sd '|' -)
 
@@ -73,6 +73,41 @@ bump-setup-node-action() {
 if [[ -z "$new_node_version" ]]; then
   echo "Usage: $0 <new_node_version>"
   exit 1
+fi
+
+old_global_node_version=$(mise config get --global tools.node)
+if [[ "$old_global_node_version" == "$new_node_version" ]]; then
+  echo "Global Node is already at $new_node_version; skipping global Node setup and config branch."
+else
+  set -x
+  mise use --global "node@$new_node_version"
+  set +x
+
+  # `mise use --global` just wrote to `$mise_config_file`, wherever dotfiles
+  # happens to be checked out right now. Stash that change so we can carry it
+  # onto a proper bump-node branch, same as every other repo below.
+  cd "$HOME/code/dotfiles" || exit
+  blue "# dotfiles (mise global config)"
+
+  mise_config_file="mise.global-config-symlink.toml"
+  mise_global_node_branch_name="mise/bump-global-node"
+
+  if git diff --quiet -- "$mise_config_file"; then
+    echo "No mise global config changes to commit."
+  elif branch-exists "$mise_global_node_branch_name"; then
+    echo "Branch $mise_global_node_branch_name already exists."
+  else
+    set -x
+
+    update-main-branch
+    git checkout -b "$mise_global_node_branch_name" "origin/$(main-branch)"
+    git add "$mise_config_file"
+    verify-on-ok-branch
+    git commit --message "[mise] Bump global Node from $old_global_node_version to $new_node_version"
+    hwm
+
+    { set +ex; } 2>/dev/null
+  fi
 fi
 
 echo

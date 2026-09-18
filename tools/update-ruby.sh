@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # Example:
-#   ./tools/upgrade-ruby.sh 3.4.2
+#   ./tools/update-ruby.sh 4.0.7
 
 # Tip: after running this and merging the PRs, then run
 #   ./tools/delete-merged-branches.sh to delete the branches.

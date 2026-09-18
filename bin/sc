@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+
+# "sublime code" (open a GitHub repo in $EDITOR)
+#
+# Example:
+#    sc https://github.com/plashchynski/crono
+
+set -euo pipefail # exit on any error, don't allow undefined variables, pipes don't swallow errors
+
+cd ~/Downloads
+git clone $1
+repo_name=$(echo $1 | sed -E 's/https\:\/\/github.com\/[^/]*\///')
+$EDITOR $repo_name
+cd -

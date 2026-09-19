@@ -1,0 +1,83 @@
+#!/usr/bin/env bash
+
+set -euo pipefail # exit on any error, don't allow undefined variables, pipes don't swallow errors
+
+is_file_with_text() {
+  local file="$1"
+
+  if file "$file" | grep -Pq '\b(text|SVG)\b' ; then
+    return 0
+  else
+    return 1
+  fi
+}
+
+text_files() {
+  while read -r file ; do
+    if is_file_with_text "$file" ; then
+      echo "$file"
+    fi
+  done
+}
+
+# Prints `LINE_NUMBER:CONTENT` for each line that the given file has added relative to the main
+# branch. (Line numbers are for the current version of the file.)
+added_lines() {
+  local file="$1"
+
+  git diff --no-color --no-ext-diff --unified=0 "origin/$(main-branch)" -- "$file" | \
+    LC_ALL=C awk '
+      /^@@ / {
+        match($0, /\+[0-9]+/)
+        line_number = substr($0, RSTART + 1, RLENGTH - 1) - 1
+        in_hunk = 1
+        next
+      }
+      in_hunk && /^\+/ {
+        line_number++
+        print line_number ":" substr($0, 2)
+      }
+    '
+}
+
+# Prints `FILE:LINE_NUMBER CONTENT` for each added line that contains a non-ASCII character.
+non_ascii_added_lines() {
+  local file="$1"
+
+  # Use `(?-u)` so that invalid UTF-8 (e.g. Latin-1 bytes) is also caught, and tolerate exit status
+  # 1 from `rg` (which just means "no matches").
+  added_lines "$file" | \
+    { rg '(?-u)^[0-9]+:.*[^\x00-\x7F]' || [[ $? -eq 1 ]] ; } | \
+    while IFS= read -r line ; do
+      # Replace the first colon (the one after the line number) with a space.
+      echo "$file:${line/:/ }"
+    done
+}
+
+readarray -t files_to_lint_ascii < <(
+  changed-not-deleted-files | \
+  text_files
+)
+
+if [ ${#files_to_lint_ascii[@]} -eq 0 ] ; then
+  write-background-notification 'No files need to be linted for ASCII characters.'
+else
+  non_ascii_lines=''
+
+  for file in "${files_to_lint_ascii[@]}" ; do
+    non_ascii_lines_for_file=$(non_ascii_added_lines "$file")
+
+    if [ -n "$non_ascii_lines_for_file" ] ; then
+      # Separate entries with newlines, without leaving a leading or trailing one.
+      non_ascii_lines+="${non_ascii_lines:+$'\n'}$non_ascii_lines_for_file"
+    fi
+  done
+
+  if [ -n "$non_ascii_lines" ] ; then
+    message="Some added lines contain non-ASCII characters:"$'\n\n'"$non_ascii_lines"
+    write-background-notification "$message"
+    exit 1
+  else
+    write-background-notification 'Added lines in changed files with text are all ASCII.'
+  fi
+fi

@@ -19,16 +19,22 @@ class GitHistory < CommandLineTool
     file_name_at_this_commit = file
 
     commits_to_show.each do |commit|
+      file_names = if previous_file_name = renames[commit]?
+                     [previous_file_name, file_name_at_this_commit]
+                   else
+                     [file_name_at_this_commit]
+                   end
+
       puts
       run_command("hr")
       run_command(
         "git",
-        ["show", commit, "--", file_name_at_this_commit],
+        ["show", commit, "--", *file_names],
         env: {"DELTA_PAGER" => "cat"},
       )
       run_command("hr")
 
-      file_name_at_this_commit = renames[commit]? || file_name_at_this_commit
+      file_name_at_this_commit = file_names.first
     end
   end
 
@@ -45,15 +51,50 @@ class GitHistory < CommandLineTool
   end
 
   memoize def commits_to_show : Array(String)
-    commits_from_git = capture_command("git", [
+    commits_from_git = [] of String
+    file_name_at_commit = file
+    parent_commit_without_following : String? = nil
+
+    capture_command("git", [
       "log",
       *git_log_limiting_arguments,
       most_recent_commit_with_file,
       "--format=%H",
+      "--name-status",
       "--follow",
       "--",
       file,
-    ]).split("\n", remove_empty: true)
+    ]).split("\n", remove_empty: true).each_slice(2) do |commit_and_status|
+      commit, status = commit_and_status
+      commits_from_git << commit
+
+      status_parts = status.split("\t")
+      if status.starts_with?("R")
+        file_name_at_commit = status_parts[1]
+      elsif status.starts_with?("A") || status.starts_with?("C")
+        # An add or copy cannot be part of this file's rename chain, so do not follow
+        # its source. Continue the path's history without following renames instead.
+        parent_commit_without_following = capture_command("git", [
+          "rev-list",
+          "--parents",
+          "-n",
+          "1",
+          commit,
+        ]).split[1]?
+        break
+      end
+    end
+
+    if parent_commit = parent_commit_without_following
+      commits_from_git.concat capture_command("git", [
+        "log",
+        *git_log_limiting_arguments,
+        parent_commit,
+        "--format=%H",
+        "--",
+        file_name_at_commit,
+      ]).split("\n", remove_empty: true)
+    end
 
     commits_without_ignored_commits = commits_from_git.reject do |commit|
       commits_to_ignore.includes?(commit)

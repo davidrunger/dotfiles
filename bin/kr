@@ -1,7 +1,0 @@
-#!/usr/bin/env bash
-
-# [k]ill [r]ubocop processes
-
-set -eu # exit on any error, don't allow undefined variables
-
-pid-cmd | grep rubocop | grep -v grep | awk '{print $1}' | xargs -r kill

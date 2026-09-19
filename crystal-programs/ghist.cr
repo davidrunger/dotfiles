@@ -8,7 +8,7 @@ require "../utils/crystal/clim_program"
 
 class GitHistory < CommandLineTool
   record Commit, sha : String, file_names : Array(String)
-  record HistorySegment, commits : Array(Commit), parent_commit : String?, file_name : String?
+  record HistorySegment, commits : Array(Commit), parent_commit : String?, file_name : String
 
   def initialize(
     @file : String,
@@ -52,10 +52,12 @@ class GitHistory < CommandLineTool
       history_segment = history_segment(start_commit, file_name)
       commits_from_git.concat(history_segment.commits)
 
-      break if history_segment.parent_commit.nil?
-
-      start_commit = history_segment.parent_commit.not_nil!
-      file_name = history_segment.file_name.not_nil!
+      if parent_commit = history_segment.parent_commit
+        start_commit = parent_commit
+        file_name = history_segment.file_name
+      else
+        break
+      end
     end
 
     commits_without_ignored_commits = commits_from_git.reject do |commit|

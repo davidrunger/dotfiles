@@ -7,6 +7,9 @@ require "../utils/crystal/command_line_tool"
 require "../utils/crystal/clim_program"
 
 class GitHistory < CommandLineTool
+  record Commit, sha : String, file_names : Array(String)
+  record HistorySegment, commits : Array(Commit), parent_commit : String?, file_name : String
+
   def initialize(
     @file : String,
     @include_ignored : Bool,
@@ -16,19 +19,15 @@ class GitHistory < CommandLineTool
   end
 
   def call
-    file_name_at_this_commit = file
-
     commits_to_show.each do |commit|
       puts
       run_command("hr")
       run_command(
         "git",
-        ["show", commit, "--", file_name_at_this_commit],
+        ["show", commit.sha, "--", *commit.file_names],
         env: {"DELTA_PAGER" => "cat"},
       )
       run_command("hr")
-
-      file_name_at_this_commit = renames[commit]? || file_name_at_this_commit
     end
   end
 
@@ -44,19 +43,25 @@ class GitHistory < CommandLineTool
     @num_days_to_show
   end
 
-  memoize def commits_to_show : Array(String)
-    commits_from_git = capture_command("git", [
-      "log",
-      *git_log_limiting_arguments,
-      most_recent_commit_with_file,
-      "--format=%H",
-      "--follow",
-      "--",
-      file,
-    ]).split("\n", remove_empty: true)
+  memoize def commits_to_show : Array(Commit)
+    commits_from_git = [] of Commit
+    start_commit = most_recent_commit_with_file
+    file_name = file
+
+    loop do
+      history_segment = history_segment(start_commit, file_name)
+      commits_from_git.concat(history_segment.commits)
+
+      if parent_commit = history_segment.parent_commit
+        start_commit = parent_commit
+        file_name = history_segment.file_name
+      else
+        break
+      end
+    end
 
     commits_without_ignored_commits = commits_from_git.reject do |commit|
-      commits_to_ignore.includes?(commit)
+      commits_to_ignore.includes?(commit.sha)
     end
 
     if num_commits = num_commits_to_show
@@ -64,6 +69,52 @@ class GitHistory < CommandLineTool
     else
       commits_without_ignored_commits
     end
+  end
+
+  private def history_segment(start_commit : String, file_name : String) : HistorySegment
+    commits = [] of Commit
+    file_name_at_commit = file_name
+    parent_commit : String? = nil
+
+    capture_command("git", [
+      "log",
+      *git_log_limiting_arguments,
+      start_commit,
+      "--format=%H",
+      "--name-status",
+      "--follow",
+      "--",
+      file_name,
+    ]).split("\n", remove_empty: true).each_slice(2) do |commit_and_status|
+      commit, status = commit_and_status
+      status_parts = status.split("\t")
+      file_names = if status.starts_with?("R")
+                     [status_parts[1], file_name_at_commit]
+                   else
+                     [file_name_at_commit]
+                   end
+
+      commits << Commit.new(commit, file_names)
+
+      if status.starts_with?("A") || status.starts_with?("C")
+        parent_commit = parent_commit_for(commit)
+        break
+      end
+
+      file_name_at_commit = file_names.first
+    end
+
+    HistorySegment.new(commits, parent_commit, file_name_at_commit)
+  end
+
+  private def parent_commit_for(commit : String) : String?
+    capture_command("git", [
+      "rev-list",
+      "--parents",
+      "-n",
+      "1",
+      commit,
+    ]).split[1]?
   end
 
   memoize def git_log_limiting_arguments : Array(String)
@@ -82,31 +133,6 @@ class GitHistory < CommandLineTool
     else
       capture_command("git", ["log", "--all", "-1", "--format=%H", "--", file]).rstrip
     end
-  end
-
-  memoize def renames : Hash(String, String)
-    renames = {} of String => String
-
-    rename_log = capture_command("git", [
-      "log",
-      "HEAD",
-      "--format=%H",
-      "--name-status",
-      "--follow",
-      "--diff-filter=R",
-      "--",
-      file,
-    ])
-
-    rename_log.split("\n").each_slice(3) do |lines|
-      if lines.size == 3
-        if match = lines[2].match(/\AR\d+\s+(\S+)/)
-          renames[lines[0]] = match[1]
-        end
-      end
-    end
-
-    renames
   end
 
   memoize def git_blame_ignore_revs_file : String?

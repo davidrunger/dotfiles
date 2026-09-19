@@ -27,7 +27,7 @@ if [ -n "$local_ip" ]; then
   sudo ufw allow from "$lan_subnet" to any port 3000 proto tcp
   sudo ufw allow from "$lan_subnet" to any port 3036 proto tcp
 else
-  echo "Could not determine local IP — skipping LAN-scoped rules for ports 3000/3036." >&2
+  echo "Could not determine local IP. Skipping LAN-scoped rules for ports 3000/3036." >&2
 fi
 
 sudo ufw --force enable

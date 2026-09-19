@@ -2,7 +2,7 @@
 # frozen_string_literal: true
 
 # This tool parses the VS Code theme data output from themes.vscode.one and
-# formats it in the way required by the VS Coe settings.json file.
+# formats it in the way required by the VS Code settings.json file.
 #
 # Example (copies the formatted theme JSON to the clipboard):
 #   ~/code/dotfiles/tools/parse-vs-code-theme.rb ~/Downloads/bloom-1-1-0-fork-color-theme.json

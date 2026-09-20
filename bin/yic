@@ -11,6 +11,8 @@ elif [ -f yarn.lock ] ; then
   yarn install --check-files
 elif [ -f pnpm-lock.yaml ] ; then
   pnpm install --frozen-lockfile --config.confirmModulesPurge=false
+elif [ -f package-lock.json ] ; then
+  npm install
 else
   pnpm install
 fi

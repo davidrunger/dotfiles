@@ -16,7 +16,22 @@ if [ "$which_exit_code" -eq 0 ] ; then
     if [[ $which_output =~ "^$HOME/code/" ]] ; then
       echo "Executable $which_output :"
       hr
-      bat $which_output --style=plain
+
+      # Detect language from shebang
+      local shebang language
+      shebang=$(head -n1 "$which_output")
+
+      case $shebang in
+        *bash*|*zsh*)  language=bash ;;
+        *ruby*)        language=ruby ;;
+        *)             language=     ;;  # let bat auto-detect
+      esac
+
+      if [[ -n $language ]]; then
+        bat --language="$language" --style=plain "$which_output"
+      else
+        bat --style=plain "$which_output"
+      fi
     elif [[ $which_output =~ "^$HOME/bin/crystal-symlinks/" ]] ; then
       basename=$(basename "$which_output")
       crystal_source_file="$HOME/code/dotfiles/crystal-programs/$basename.cr"

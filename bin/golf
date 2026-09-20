@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+
+# [g]it [o]ne [l]ine commit summaries with [f]ull commit SHAs
+#
+# Prints git commits, one line per commit, including the full SHA.
+
+set -euo pipefail # exit on any error, don't allow undefined variables, pipes don't swallow errors
+
+git log --pretty=format:"%C(yellow)%H%C(reset) %s %C(green)(%ar)%C(reset)" "$@"

@@ -10,7 +10,7 @@ command_name="$1"
 
 . "$HOME/.oh-my-zsh/lib/completion.zsh"
 
-if compgen -A function -abck | grep -q -P "^$command_name$" ; then
+if compgen -A function -abck | grep -P "^$command_name$" >/dev/null ; then
   red 'There is already an executable with that name:'
   wh "$command_name"
 

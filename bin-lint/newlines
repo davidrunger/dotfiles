@@ -9,7 +9,7 @@ file_ends_with_exactly_one_newline() {
 is_file_with_text() {
   local file="$1"
 
-  if file "$file" | grep -Pq '\b(text|SVG)\b' ; then
+  if file "$file" | grep -P '\b(text|SVG)\b' >/dev/null ; then
     return 0
   else
     return 1

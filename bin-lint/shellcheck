@@ -7,7 +7,7 @@ set -euo pipefail # exit on any error, don't allow undefined variables, pipes do
 shebang_files=$(
   changed-not-deleted-files | \
     while IFS= read -r file ; do
-      if [ -f "$file" ] && head -n 1 "$file" | grep -q '^#!/usr/bin/env \(bash\|sh\)' ; then
+      if [ -f "$file" ] && head -n 1 "$file" | grep '^#!/usr/bin/env \(bash\|sh\)' >/dev/null ; then
         echo "$file"
       fi
     done

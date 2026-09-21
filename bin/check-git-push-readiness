@@ -53,9 +53,11 @@ if git diff "origin/$(main-branch)..HEAD" --unified=0 | \
   exit_with_error_unless_checks_not_required
 fi
 
+# Keep `rg` consuming the full pipeline input. `--quiet` can close the pipe
+# early, causing `pipefail` to mistake an upstream SIGPIPE for no match.
 # don't push if there are still `!!!` markers in the code
 if git diff --diff-filter=dr "origin/$(main-branch)..."  | \
-    grep '^\+' | rg --quiet --fixed-strings '!!!' ; then
+    grep '^\+' | rg --fixed-strings '!!!' >/dev/null ; then
   echo "Easy there, cowboy! You still have some markers in your code."
   git diff --diff-filter=dr --name-status "origin/$(main-branch)..." | cut -f2 | xargs rg --with-filename --fixed-strings '!!!'
   exit_with_error_unless_checks_not_required
@@ -63,7 +65,7 @@ fi
 
 # don't push if there are still `!!!` markers in the code (renamed files)
 if git diff --diff-filter=R "origin/$(main-branch)"...  | \
-    grep '^\+' | rg --quiet --fixed-strings '!!!' ; then
+    grep '^\+' | rg --fixed-strings '!!!' >/dev/null ; then
   echo "Easy there, cowboy! You still have some markers in your code in renamed files."
   git diff --diff-filter=R --name-status "origin/$(main-branch)..." | cut -f3 | xargs rg --with-filename --fixed-strings '!!!'
   exit_with_error_unless_checks_not_required
@@ -81,7 +83,7 @@ for file in .env{,.*.local} ; do
 done
 
 # Don't push if there are any TEMP or Z commits.
-if git log --format="%s" "$(main-branch).." | rg --quiet '^(TEMP|Z)' ; then
+if git log --format="%s" "$(main-branch).." | rg '^(TEMP|Z)' >/dev/null ; then
   echo "Woah! You still have a temp commit."
   exit_with_error_unless_checks_not_required
 fi

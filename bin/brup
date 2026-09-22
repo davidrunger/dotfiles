@@ -30,7 +30,7 @@ strip_ansi() {
 collapse_carriage_returns() {
   # Emulate terminal overwrite behavior: when a line contains one or more
   # `\r`s (from progress bars, `git rebase`, etc.), keep only the text
-  # after the final `\r` — i.e. what was actually left showing on screen —
+  # after the final `\r` - i.e. what was actually left showing on screen -
   # instead of leaving raw `\r` bytes embedded in the log file.
   local cr=$'\r'
   sed -E "s/.*${cr}//"

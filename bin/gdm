@@ -15,10 +15,8 @@ fi
 # delete branches where there is no
 git for-each-ref --format='%(refname:short)' refs/heads |
     while read -r branch; do
-      # Don't delete the main branch. For performance, don't check branches that
-      # start with `z-` (a special prefix I use for branches that I want to keep
-      # but "in the background").
-      if [[ ! $branch =~ ^$(main-branch)$ && ! $branch =~ ^z- ]]; then
+      # Don't delete the main branch.
+      if [[ $branch != "$(main-branch)" ]]; then
         if no-diff "$branch"; then
           git branch -D "$branch" --quiet
           echo "Deleted $branch"

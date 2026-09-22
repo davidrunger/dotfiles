@@ -19,6 +19,6 @@ fi
 if [ -e /usr/bin/code ]; then
   /usr/bin/code -g "$@"
 else
-  red "Don't know where to find code executable."
+  red "Don't know where to find \`code\` executable."
   exit 1
 fi

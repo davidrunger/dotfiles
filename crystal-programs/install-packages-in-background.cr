@@ -8,6 +8,10 @@ require "file_utils"
 require "redis"
 require "memoization"
 
+if ENV["FORCE_COLOR"]? == "1"
+  Colorize.enabled = true
+end
+
 class InstallPackagesInBackground
   REDIS_HASH_KEY = "runger_dependencies"
 

@@ -4,14 +4,17 @@
 
 set -euo pipefail # exit on any error, don't allow undefined variables, pipes don't swallow errors
 
-exit_with_error_unless_checks_not_required() {
-  if [[ "${PUSH_CHECKS_REQUIRED:-true}" != "false" ]] ; then
-    exit 1
-  fi
+# Tracks whether any check below failed. We always run every check (so all
+# failures get printed), and decide at the very end whether that should
+# actually block the push.
+any_check_failed=false
+
+record_check_failure() {
+  any_check_failed=true
 }
 
 if ! verify-on-ok-branch ; then
-  exit_with_error_unless_checks_not_required
+  record_check_failure
 fi
 
 if my-repo && ! runger-config skip-githooks-check ; then
@@ -19,19 +22,19 @@ if my-repo && ! runger-config skip-githooks-check ; then
     red "\`git config core.hooksPath\` is not set to \`bin/githooks\`."
     blue "Run \`git config core.hooksPath bin/githooks\` to correct,"
     blue "or set \`skip-githooks-check: true\` in your runger-config."
-    exit_with_error_unless_checks_not_required
+    record_check_failure
   fi
 
   if ! [ -f 'bin/githooks/pre-push' ] ; then
     red "\`bin/githooks/pre-push\` does not exist (as a file)."
     blue "Run \`tsc bin/githooks/pre-push\` to correct."
-    exit_with_error_unless_checks_not_required
+    record_check_failure
   fi
 
   if [ -f .git-blame-ignore-revs ] && [ "$(git config blame.ignoreRevsFile)" != ".git-blame-ignore-revs" ] ; then
     red 'Git is not configured to respect the .git-blame-ignore-revs file.'
     blue "Run \`git config blame.ignoreRevsFile .git-blame-ignore-revs\` to fix."
-    exit_with_error_unless_checks_not_required
+    record_check_failure
   fi
 fi
 
@@ -50,7 +53,7 @@ if git diff "origin/$(main-branch)..HEAD" --unified=0 | \
     rg "$(printf %s "${debugging_code_regex_parts[@]}")" ; then
   echo
   echo "Easy there, cowboy! You seem to have left some debugging code."
-  exit_with_error_unless_checks_not_required
+  record_check_failure
 fi
 
 # Keep `rg` consuming the full pipeline input. `--quiet` can close the pipe
@@ -60,7 +63,7 @@ if git diff --diff-filter=dr "origin/$(main-branch)..."  | \
     grep '^\+' | rg --fixed-strings '!!!' >/dev/null ; then
   echo "Easy there, cowboy! You still have some markers in your code."
   git diff --diff-filter=dr --name-status "origin/$(main-branch)..." | cut -f2 | xargs rg --with-filename --fixed-strings '!!!'
-  exit_with_error_unless_checks_not_required
+  record_check_failure
 fi
 
 # don't push if there are still `!!!` markers in the code (renamed files)
@@ -68,7 +71,7 @@ if git diff --diff-filter=R "origin/$(main-branch)"...  | \
     grep '^\+' | rg --fixed-strings '!!!' >/dev/null ; then
   echo "Easy there, cowboy! You still have some markers in your code in renamed files."
   git diff --diff-filter=R --name-status "origin/$(main-branch)..." | cut -f3 | xargs rg --with-filename --fixed-strings '!!!'
-  exit_with_error_unless_checks_not_required
+  record_check_failure
 fi
 
 # don't push if there are still `!!!` markers in .env or .env.*.local files
@@ -77,7 +80,7 @@ for file in .env{,.*.local} ; do
     if rg --quiet --fixed-strings '!!!' "$file" ; then
       rg --with-filename --fixed-strings '!!!' "$file"
       echo "Easy there, cowboy! You still have some markers in $file ."
-      exit_with_error_unless_checks_not_required
+      record_check_failure
     fi
   fi
 done
@@ -85,14 +88,19 @@ done
 # Don't push if there are any TEMP or Z commits.
 if git log --format="%s" "$(main-branch).." | rg '^(TEMP|Z)' >/dev/null ; then
   echo "Woah! You still have a temp commit."
-  exit_with_error_unless_checks_not_required
+  record_check_failure
 fi
 
 # Don't push if the diff still has modifications of a playground file.
 if gf | rg -i playground ; then
   echo "Hold on! Do you mean to push a playground modification?"
-  exit_with_error_unless_checks_not_required
+  record_check_failure
 fi
 
-# if all of the above checks passed, we're good to push! :)
-exit 0
+# All checks have now run and printed whatever they had to say. Only now do
+# we decide whether a failure should actually block the push.
+if [[ "$any_check_failed" == "true" ]] && [[ "${PUSH_CHECKS_REQUIRED:-true}" != "false" ]] ; then
+  exit 1
+else
+  exit 0
+fi

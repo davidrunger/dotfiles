@@ -27,6 +27,15 @@ strip_ansi() {
   sed -E "s/${esc}\[[0-9;]*[a-zA-Z]//g"
 }
 
+collapse_carriage_returns() {
+  # Emulate terminal overwrite behavior: when a line contains one or more
+  # `\r`s (from progress bars, `git rebase`, etc.), keep only the text
+  # after the final `\r` - i.e. what was actually left showing on screen -
+  # instead of leaving raw `\r` bytes embedded in the log file.
+  local cr=$'\r'
+  sed -E "s/.*${cr}//"
+}
+
 update_homebrew() {
   brew update && brew upgrade
 }
@@ -64,4 +73,4 @@ perform_updates() {
   (cd ~/code/dotfiles && main)
 }
 
-perform_updates |& tee >(strip_ansi > "$output_log_file")
+perform_updates |& tee >(strip_ansi | collapse_carriage_returns > "$output_log_file")

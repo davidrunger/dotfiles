@@ -15,6 +15,18 @@ mf "$output_log_file"
 
 export ZSH=$HOME/.oh-my-zsh
 
+# Try to colorize output for the terminal.
+export FORCE_COLOR=1
+export GIT_CONFIG_COUNT=1
+export GIT_CONFIG_KEY_0=color.ui
+export GIT_CONFIG_VALUE_0=always
+export HOMEBREW_COLOR=1
+
+strip_ansi() {
+  local esc=$'\x1b'
+  sed -E "s/${esc}\[[0-9;]*[a-zA-Z]//g"
+}
+
 update_homebrew() {
   brew update && brew upgrade
 }
@@ -52,4 +64,4 @@ perform_updates() {
   (cd ~/code/dotfiles && main)
 }
 
-perform_updates |& tee "$output_log_file"
+perform_updates |& tee >(strip_ansi > "$output_log_file")

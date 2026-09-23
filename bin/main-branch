@@ -4,7 +4,6 @@
 
 set -euo pipefail # exit on any error, don't allow undefined variables, pipes don't swallow errors
 
-# trim whitespace with `xargs` https://stackoverflow.com/a/12973694/4009384
 git symbolic-ref --short refs/remotes/origin/HEAD 2>/dev/null | sed 's@^origin/@@' \
-  || git branch --list main master trunk | head -1 | xargs \
+  || git branch --list main master trunk | head -1 | awk '{print $NF}' \
   || echo 'no main branch found' >&2

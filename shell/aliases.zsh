@@ -11,7 +11,8 @@ alias down='cd ~/Downloads'
 alias e='exit'
 alias fix='git diff --name-only | uniq | xargs $EDITOR'
 alias fox='firefox-devedition'
-alias fsk='redis-cli -n 1 FLUSHDB && SIDEKIQ_CONCURRENCY=1 bin/sidekiq' # `-n 1` because Sidekiq uses Redis db 1 by default
+alias fs='redis-cli -n 1 FLUSHDB' # `-n 1` because I have Sidekiq use Redis db 1 by default
+alias fsk='fs && sk'
 alias gbdf='git branch -D $(active-branches | fzf)'
 alias gcme='git commit --allow-empty --message'
 alias gcomt='GIT_EDITOR=true gcom'
@@ -41,6 +42,7 @@ alias rr='bin/rails routes'
 alias rs="bin/rails server"
 alias s.='$EDITOR .'
 alias s='$EDITOR'
+alias sk='RAILS_MAX_THREADS=1 bin/sidekiq'
 alias ss='bin/spring stop'
 alias wm='wait-merge'
 alias work='cd ~/code'

@@ -32,6 +32,7 @@ alias gpwm='gpf && wm'
 alias gra='git rebase --abort'
 alias grc='GIT_EDITOR=true git rebase --continue'
 alias grs='git rebase --show-current-patch'
+alias gse='pst | xargs -I{} git rev-parse --verify "{}^{commit}" | cpy' # [g]it [s]how [e]xpand partial SHA in clipboard to full SHA
 alias gsf='git show $(active-branches | fzf)'
 alias irb='$HOME/code/dotfiles/bin/irb'
 alias ls='eza --binary'

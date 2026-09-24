@@ -1,0 +1,29 @@
+#!/usr/bin/env bash
+set -euo pipefail # exit on any error, don't allow undefined variables, pipes don't swallow errors
+
+cd ~/code/ || exit 1
+
+for dir in $(my-repos) ; do
+  if [ -d "${dir}/.git" ]; then
+    (
+      cd "$dir" || exit
+      blue "$dir"
+
+      # Fetch repository settings via REST API and check against the desired state
+      result=$(gh api repos/:owner/:repo --jq '
+        if .allow_merge_commit == false and
+          .allow_squash_merge == true and
+          .allow_rebase_merge == false and
+          .delete_branch_on_merge == true and
+          .squash_merge_commit_title == "PR_TITLE" and
+          .squash_merge_commit_message == "PR_BODY"
+        then "MATCH" else "MISMATCH" end' 2>/dev/null)
+
+      if [ "$result" = "MATCH" ]; then
+        echo "✅ MATCH: $dir"
+      elif [ "$result" = "MISMATCH" ]; then
+        echo "❌ MISMATCH: $dir"
+      fi
+    )
+  fi
+done

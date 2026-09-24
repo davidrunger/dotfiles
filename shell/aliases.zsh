@@ -45,6 +45,7 @@ alias ss='bin/spring stop'
 alias wm='wait-merge'
 alias work='cd ~/code'
 alias zrc='$EDITOR ~/.zshrc'
+alias zs='source ~/.zshrc'
 
 if [ -e "$HOME/code/dotfiles-personal/shell/aliases.zsh" ]; then
   . "$HOME/code/dotfiles-personal/shell/aliases.zsh"

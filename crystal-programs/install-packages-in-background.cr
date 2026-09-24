@@ -65,7 +65,7 @@ class InstallPackagesInBackground
     end
 
     if file_changed?("pnpm-lock.yaml")
-      javascript_command_parts << "pnpm install --frozen-lockfile --config.confirmModulesPurge=false"
+      javascript_command_parts << "pnpm-install-with-current-version --frozen-lockfile --config.confirmModulesPurge=false"
     end
 
     javascript_command_parts.join(" && ")

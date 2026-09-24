@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# Extract the version from the lockfile (works for the common single-document or two-document form).
+locked_pnpm=$(yq -r '
+  .. | select(has("packageManagerDependencies"))
+     | .packageManagerDependencies.pnpm.version
+' pnpm-lock.yaml 2>/dev/null | head -1)
+
+if [[ -n $locked_pnpm ]]; then
+  echo "Using locked pnpm version: $locked_pnpm ."
+  pnpm with "$locked_pnpm" install "$@"
+else
+  echo "No packageManagerDependencies.pnpm.version found; falling back to normal install."
+  pnpm install "$@"
+fi

@@ -9,7 +9,7 @@
 
 set -eu # exit on any error, don't allow undefined variables
 
-output_log_file=$HOME/code/dotfiles/personal/brew-updates/$(date -u +"%Y-%m-%dT%H:%M:%SZ").txt
+output_log_file=$HOME/code/dotfiles/personal/brup-logs/$(date -u +"%Y-%m-%dT%H:%M:%SZ").txt
 
 mf "$output_log_file"
 

@@ -23,12 +23,21 @@ if [ -z "$real_bat" ]; then
   exit 1
 fi
 
-# Check if the first argument matches file:line pattern.
-if [[ $# -gt 0 && "$1" =~ ^([^:]+):([0-9]+)$ ]]; then
-  file="${BASH_REMATCH[1]}"
-  line="${BASH_REMATCH[2]}"
-  shift
-  exec "$real_bat" --highlight-line="$line" "$file" "$@"
+# Check if an argument matches file:line pattern.
+args=()
+highlight_line=
+
+for arg in "$@"; do
+  if [[ -z "$highlight_line" && "$arg" =~ ^([^:]+):([0-9]+)$ ]]; then
+    args+=("${BASH_REMATCH[1]}")
+    highlight_line="${BASH_REMATCH[2]}"
+  else
+    args+=("$arg")
+  fi
+done
+
+if [[ -n "$highlight_line" ]]; then
+  exec "$real_bat" --highlight-line="$highlight_line" "${args[@]}"
 else
-  exec "$real_bat" "$@"
+  exec "$real_bat" "${args[@]}"
 fi

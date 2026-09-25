@@ -58,7 +58,7 @@ update_oh_my_zsh() {
 
 perform_updates() {
   blue '=== pnpm ==='
-  pnpm self-update
+  pnpm self-update --pm-on-fail=ignore
   echo
 
   blue '=== Homebrew ==='

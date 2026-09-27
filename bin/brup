@@ -58,7 +58,7 @@ update_oh_my_zsh() {
 
 perform_updates() {
   blue '=== pnpm ==='
-  pnpm self-update --pm-on-fail=ignore
+  pnpm self-update --pm-on-fail=ignore --config.minimumReleaseAge=7200
   echo
 
   blue '=== Homebrew ==='

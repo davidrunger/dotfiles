@@ -71,6 +71,10 @@ perform_updates() {
 
   blue '=== dotfiles ==='
   (cd ~/code/dotfiles && main)
+  echo
+
+  blue '=== dotfiles-personal ==='
+  (cd ~/code/dotfiles-personal && main)
 }
 
 perform_updates |& tee >(strip_ansi | collapse_carriage_returns > "$output_log_file")

@@ -13,10 +13,11 @@ if ENV["FORCE_COLOR"]? == "1"
 end
 
 class InstallPackagesInBackground
-  REDIS_HASH_KEY = "runger_dependencies"
+  REDIS_HASH_KEY = "runger_dependencies_last_installed"
 
   def initialize
-    @hashes_to_register = [] of String
+    # Maps project file key (project + file name) => content hash that we are about to install for
+    @hashes_to_register = {} of String => String
   end
 
   def run
@@ -38,8 +39,8 @@ class InstallPackagesInBackground
   end
 
   private def register_hashes
-    @hashes_to_register.each do |hash_to_register|
-      register_hash(hash_to_register)
+    @hashes_to_register.each do |project_file_key, content_hash|
+      register_hash(project_file_key, content_hash)
     end
   end
 
@@ -71,23 +72,29 @@ class InstallPackagesInBackground
     javascript_command_parts.join(" && ")
   end
 
+  # A file counts as "changed" unless its current content hash is the same as the hash we most
+  # recently installed dependencies for (in this project).
   memoize def file_changed?(file_name : String) : Bool
-    File.exists?(file_name) && !seen_hash?(file_name)
-  end
+    return false unless File.exists?(file_name)
 
-  memoize def seen_hash?(file_or_directory : String) : Bool
-    hash_string = hash_string(file_or_directory)
-    is_seen = !redis.hget(REDIS_HASH_KEY, hash_string).nil?
+    current_hash = hash_string(file_name)
+    key = project_file_key(file_name)
+    last_installed_hash = redis.hget(REDIS_HASH_KEY, key)
+    changed = last_installed_hash != current_hash
 
-    if !is_seen
-      @hashes_to_register << hash_string
+    if changed
+      @hashes_to_register[key] = current_hash
     end
 
-    is_seen
+    changed
   end
 
-  private def register_hash(hash_string)
-    redis.hset(REDIS_HASH_KEY, hash_string, "1")
+  private def project_file_key(file_name : String) : String
+    "#{Dir.current}:#{file_name}"
+  end
+
+  private def register_hash(project_file_key : String, content_hash : String)
+    redis.hset(REDIS_HASH_KEY, project_file_key, content_hash)
   end
 
   private def hash_string(file_or_directory)

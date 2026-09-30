@@ -60,12 +60,12 @@ class InstallPackagesInBackground
   memoize def javascript_dependencies_update_command : String
     javascript_command_parts = [] of String
 
-    if file_changed?("yarn.lock")
-      javascript_command_parts << "yarn install --check-files"
-    end
-
-    if file_changed?("pnpm-lock.yaml")
-      javascript_command_parts << "pnpm-install-with-current-version --frozen-lockfile --config.confirmModulesPurge=false"
+    if (
+         file_changed?("yarn.lock") ||
+         file_changed?("pnpm-lock.yaml") ||
+         file_changed?("package-lock.json")
+       )
+      javascript_command_parts << "yic"
     end
 
     javascript_command_parts.join(" && ")

@@ -56,9 +56,22 @@ update_oh_my_zsh() {
   "$ZSH/tools/changelog.sh" "$sha_after" "$sha_before"
 }
 
+update_pnpm() {
+  # Run in a temporary directory so there is guaranteed to be no
+  # package.json / packageManager pin that would make self-update
+  # only update a project pin instead of the global binary.
+  local tmpdir
+  tmpdir=$(mktemp -d)
+  (
+    cd "$tmpdir"
+    pnpm self-update
+  )
+  rm -rf "$tmpdir"
+}
+
 perform_updates() {
   blue '=== pnpm ==='
-  pnpm self-update --pm-on-fail=ignore --config.minimumReleaseAge=7200
+  update_pnpm
   echo
 
   blue '=== Homebrew ==='

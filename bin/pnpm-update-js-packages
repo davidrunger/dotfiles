@@ -23,4 +23,12 @@ pnpm install --no-frozen-lockfile
 pnpm dedupe
 
 gacm 'Update JavaScript packages'
-hwm
+
+yic
+
+if uncommitted-changes-exist ; then
+  red 'There are uncommitted changes. Not opening PR.'
+  exit 1
+else
+  hwm
+fi

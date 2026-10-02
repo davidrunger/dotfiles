@@ -1,5 +1,6 @@
 build-essential
 dirmngr
+gammastep
 gawk
 gnupg2
 gpg

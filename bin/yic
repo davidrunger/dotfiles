@@ -7,12 +7,12 @@ set -euo pipefail # exit on any error, don't allow undefined variables, pipes do
 
 if runger-config --silent javascript-install-command ; then
   bash <<< "$(runger-config javascript-install-command)"
-elif [ -f yarn.lock ] ; then
-  yarn install --check-files
 elif [ -f pnpm-lock.yaml ] ; then
   pnpm-install-with-current-version --frozen-lockfile --config.confirmModulesPurge=false
 elif [ -f package-lock.json ] ; then
   npm install
+elif [ -f yarn.lock ] ; then
+  yarn install --check-files
 else
   pnpm-install-with-current-version
 fi

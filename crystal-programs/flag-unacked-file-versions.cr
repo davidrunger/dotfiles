@@ -1,6 +1,66 @@
 #!/usr/bin/env crystal
 
-# Check for and flag diffs in specified paths (files and/or directories).
+# Flags files and directories that have changed since you last looked at them, and
+# asks you to acknowledge ("ack") the new version.
+#
+# This is meant for paths that other people (or bots) might change on the main
+# branch, possibly without your knowledge, and whose changes you may need to take
+# into account. For example:
+#
+# - A collaborator edits a deploy script or CI workflow, and you need to know
+#   about it so you can update related config elsewhere.
+# - Dependabot bumps a dependency (or a Dockerfile base image), and you need to
+#   check that the change is reflected in other places, like a pinned version in
+#   `.tool-versions` or documentation.
+#
+# ## How it works
+#
+# 1. Reads the `monitored-paths` key from the runger config (see below). If the key
+#    is absent, the program does nothing.
+# 2. Checks out the repo's main branch (via the `main-branch` command), so that
+#    comparisons are always made against main. The original branch is restored
+#    afterward, even if an error occurs.
+# 3. For each monitored path, computes a SHA256 of the current content (for a
+#    directory, this is derived from all git-tracked files within it) and compares
+#    it with the content SHA recorded at your last ack.
+# 4. For each path that differs from the last ack (or has never been acked), the
+#    program:
+#    - prints the full content (via `bat`) if the path has never been acked, or
+#      prints a `git diff` (via `delta`) since the git commit at which you last
+#      acked it;
+#    - prints the monitoring reason configured for the path; and
+#    - asks `Do you acknowledge this content? [y]n`. Pressing `y` or Enter records
+#      the ack; pressing `n` or Ctrl-C skips it, so you'll be asked again next time.
+#
+# Acks are stored in Redis (database 2) in the `runger_path_monitors` hash, keyed by
+# path, with values of the form `<content sha>:<git sha>`.
+#
+# ## Configuration
+#
+# Paths are configured under the `monitored-paths` key in `.runger-config.yml`
+# and/or `.runger-config.private.yml` (read from the current working directory).
+# The key maps each path (relative to the repo root; a file or a directory) to a
+# human-readable reason for monitoring it. The reason is shown whenever the path is
+# flagged, so it's a good place to say what you should do or check when it changes:
+#
+# ```yaml
+# monitored-paths:
+#   Dockerfile: Dependabot may bump the base image; keep .tool-versions in sync.
+#   .github/workflows/: Collaborators may change CI; make sure deploys still work.
+#   config/deploy.yml: Changes here can affect production; update the runbook.
+# ```
+#
+# Note that the two config files are merged at the top level, so if both define
+# `monitored-paths`, the entry in the private file replaces the one in the public
+# file entirely (the paths are not combined).
+#
+# ## Requirements
+#
+# - A running Redis server
+# - `git`, `bat`, and `delta` on the PATH
+# - The `main-branch` and `branch` executables on the PATH (these print the main
+#   branch name and current branch name, respectively)
+# - Being run from the root of the git repository containing the monitored paths
 
 require "redis"
 require "digest/sha256"

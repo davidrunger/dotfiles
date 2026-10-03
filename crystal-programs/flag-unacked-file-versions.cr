@@ -40,8 +40,10 @@
 # Paths are configured under the `monitored-paths` key in `.runger-config.yml`
 # and/or `.runger-config.private.yml` (read from the current working directory).
 # The key maps each path (relative to the repo root; a file or a directory) to a
-# human-readable reason for monitoring it. The reason is shown whenever the path is
-# flagged, so it's a good place to say what you should do or check when it changes:
+# monitoring reason, which is required. The reason is shown whenever the path is
+# flagged, so it's a good place to say what you should do or check when it changes.
+# If any path has a missing or blank reason, the program prints an error listing
+# those paths to STDERR and exits with status 1 before doing anything else.
 #
 # ```yaml
 # monitored-paths:
@@ -170,15 +172,15 @@ class FlagUnackedFileVersions
       return
     end
 
+    validate_monitoring_reasons!
+
     on_main_branch do
       paths_without_up_to_date_ack.each do |path|
-        monitoring_reason = monitored_paths_hash[path]
-
-        if monitoring_reason
-          AckUpdater.new(path, flagger: self, monitoring_reason: monitoring_reason.to_s).perform
-        else
-          puts("No monitoring reason was given for #{path}.")
-        end
+        AckUpdater.new(
+          path,
+          flagger: self,
+          monitoring_reason: monitoring_reason(path).not_nil!,
+        ).perform
       end
     end
   end
@@ -205,6 +207,31 @@ class FlagUnackedFileVersions
     yield
   ensure
     system("git checkout '#{original_branch}' >/dev/null 2>&1") || raise "Error occurred!"
+  end
+
+  private def validate_monitoring_reasons!
+    paths_without_reasons = monitored_paths.select { |path| monitoring_reason(path).nil? }
+
+    if !paths_without_reasons.empty?
+      STDERR.puts(<<-MESSAGE)
+        Error: every path under '#{MONITORED_PATHS_KEY}' must have a monitoring reason,
+        but none was given for:
+
+        #{paths_without_reasons.map { |path| "  - #{path}" }.join("\n")}
+
+        Add a reason for each path in .runger-config.yml or .runger-config.private.yml, e.g.:
+
+          #{MONITORED_PATHS_KEY}:
+            #{paths_without_reasons.first}: Why changes to this path need your attention.
+        MESSAGE
+
+      exit(1)
+    end
+  end
+
+  private def monitoring_reason(path : String) : String?
+    reason = monitored_paths_hash[path].as_s?
+    reason unless reason.nil? || reason.blank?
   end
 
   memoize def paths_without_up_to_date_ack : Array(String)

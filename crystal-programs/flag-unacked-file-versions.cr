@@ -40,8 +40,10 @@
 # Paths are configured under the `monitored-paths` key in `.runger-config.yml`
 # and/or `.runger-config.private.yml` (read from the current working directory).
 # The key maps each path (relative to the repo root; a file or a directory) to a
-# human-readable reason for monitoring it. The reason is shown whenever the path is
-# flagged, so it's a good place to say what you should do or check when it changes:
+# monitoring reason, which is required. The reason is shown whenever the path is
+# flagged, so it's a good place to say what you should do or check when it changes.
+# If any path has a missing or blank reason, the program prints an error listing
+# those paths to STDERR and exits with status 1 before doing anything else.
 #
 # ```yaml
 # monitored-paths:
@@ -170,15 +172,17 @@ class FlagUnackedFileVersions
       return
     end
 
+    # Validate before switching branches. `exit` inside `on_main_branch` would skip
+    # its `ensure` block and leave us stranded on the main branch.
+    monitoring_reasons = validated_monitoring_reasons
+
     on_main_branch do
       paths_without_up_to_date_ack.each do |path|
-        monitoring_reason = monitored_paths_hash[path]
-
-        if monitoring_reason
-          AckUpdater.new(path, flagger: self, monitoring_reason: monitoring_reason.to_s).perform
-        else
-          puts("No monitoring reason was given for #{path}.")
-        end
+        AckUpdater.new(
+          path,
+          flagger: self,
+          monitoring_reason: monitoring_reasons[path],
+        ).perform
       end
     end
   end
@@ -200,11 +204,47 @@ class FlagUnackedFileVersions
 
   private def on_main_branch(&)
     original_branch = `branch`.strip
-    system("git checkout \"$(main-branch)\" >/dev/null 2>&1") || raise "Error occurred!"
+    system("git checkout \"$(main-branch)\" >/dev/null 2>&1") ||
+      raise "Error checking out main branch!"
 
     yield
   ensure
-    system("git checkout '#{original_branch}' >/dev/null 2>&1") || raise "Error occurred!"
+    system("git checkout '#{original_branch}' >/dev/null 2>&1") ||
+      raise "Error checking out '#{original_branch}' branch!"
+  end
+
+  # Returns a hash of monitored path => monitoring reason. If any path lacks a
+  # reason (missing, blank, or not a string), prints an error and exits with status 1.
+  private memoize def validated_monitoring_reasons : Hash(String, String)
+    monitoring_reasons = {} of String => String
+    paths_without_reasons = [] of String
+
+    monitored_paths_hash.each do |path, value|
+      reason = value.as_s?
+
+      if reason.nil? || reason.blank?
+        paths_without_reasons << path
+      else
+        monitoring_reasons[path] = reason
+      end
+    end
+
+    if paths_without_reasons.empty?
+      monitoring_reasons
+    else
+      STDERR.puts(<<-MESSAGE)
+        Error: every path under '#{MONITORED_PATHS_KEY}' must have a monitoring reason, but none was given for:
+
+        #{paths_without_reasons.map { |path| "  - #{path}" }.join("\n")}
+
+        Add a reason for each path in .runger-config.yml or .runger-config.private.yml, e.g.:
+
+          #{MONITORED_PATHS_KEY}:
+            #{paths_without_reasons.first}: Why changes to this path need your attention.
+        MESSAGE
+
+      exit(1)
+    end
   end
 
   memoize def paths_without_up_to_date_ack : Array(String)

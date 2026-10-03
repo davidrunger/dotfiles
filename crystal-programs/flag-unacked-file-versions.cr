@@ -172,14 +172,16 @@ class FlagUnackedFileVersions
       return
     end
 
-    validate_monitoring_reasons!
+    # Validate before switching branches. `exit` inside `on_main_branch` would skip
+    # its `ensure` block and leave us stranded on the main branch.
+    monitoring_reasons = validated_monitoring_reasons
 
     on_main_branch do
       paths_without_up_to_date_ack.each do |path|
         AckUpdater.new(
           path,
           flagger: self,
-          monitoring_reason: monitoring_reason(path).not_nil!,
+          monitoring_reason: monitoring_reasons[path],
         ).perform
       end
     end
@@ -202,20 +204,36 @@ class FlagUnackedFileVersions
 
   private def on_main_branch(&)
     original_branch = `branch`.strip
-    system("git checkout \"$(main-branch)\" >/dev/null 2>&1") || raise "Error occurred!"
+    system("git checkout \"$(main-branch)\" >/dev/null 2>&1") ||
+      raise "Error checking out main branch!"
 
     yield
   ensure
-    system("git checkout '#{original_branch}' >/dev/null 2>&1") || raise "Error occurred!"
+    system("git checkout '#{original_branch}' >/dev/null 2>&1") ||
+      raise "Error checking out '#{original_branch}' branch!"
   end
 
-  private def validate_monitoring_reasons!
-    paths_without_reasons = monitored_paths.select { |path| monitoring_reason(path).nil? }
+  # Returns a hash of monitored path => monitoring reason. If any path lacks a
+  # reason (missing, blank, or not a string), prints an error and exits with status 1.
+  private memoize def validated_monitoring_reasons : Hash(String, String)
+    monitoring_reasons = {} of String => String
+    paths_without_reasons = [] of String
 
-    if !paths_without_reasons.empty?
+    monitored_paths_hash.each do |path, value|
+      reason = value.as_s?
+
+      if reason.nil? || reason.blank?
+        paths_without_reasons << path
+      else
+        monitoring_reasons[path] = reason
+      end
+    end
+
+    if paths_without_reasons.empty?
+      monitoring_reasons
+    else
       STDERR.puts(<<-MESSAGE)
-        Error: every path under '#{MONITORED_PATHS_KEY}' must have a monitoring reason,
-        but none was given for:
+        Error: every path under '#{MONITORED_PATHS_KEY}' must have a monitoring reason, but none was given for:
 
         #{paths_without_reasons.map { |path| "  - #{path}" }.join("\n")}
 
@@ -227,11 +245,6 @@ class FlagUnackedFileVersions
 
       exit(1)
     end
-  end
-
-  private def monitoring_reason(path : String) : String?
-    reason = monitored_paths_hash[path].as_s?
-    reason unless reason.nil? || reason.blank?
   end
 
   memoize def paths_without_up_to_date_ack : Array(String)

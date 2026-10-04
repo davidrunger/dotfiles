@@ -59,9 +59,14 @@ update_oh_my_zsh() {
 update_pnpm() {
   # Run in a temporary directory so there is guaranteed to be no
   # package.json / packageManager pin that would make self-update
-  # only update a project pin instead of the global binary.
-  local tmpdir
-  tmpdir=$(mktemp -d)
+  # only update a project pin instead of the global binary. Create it
+  # under the cache dir rather than /tmp so it is on the same filesystem
+  # as the pnpm store; otherwise pnpm can't hard link from the store and
+  # falls back to creating a second store in /tmp.
+  local cache_dir tmpdir
+  cache_dir=${XDG_CACHE_HOME:-$HOME/.cache}
+  mkdir -p "$cache_dir"
+  tmpdir=$(mktemp -d -p "$cache_dir")
   (
     cd "$tmpdir"
     pnpm self-update

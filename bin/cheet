@@ -3,7 +3,7 @@
 # Create an executable. (Misspelled so as not to conflict with github.com/cheat/cheat.)
 #
 # Usage:
-#   $ cheat sayhey 'echo "hi there!"'
+#   $ cheet sayhey 'echo "hi there!"'
 #   $ sayhey #=> prints "hi there!"
 
 command_name="$1"

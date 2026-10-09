@@ -1,6 +1,7 @@
 [settings]
 activate_aggressive = true
 idiomatic_version_file_enable_tools = ["node", "ruby"]
+not_found_auto_install = false
 
 [settings.status]
 missing_tools = "always"
@@ -10,5 +11,5 @@ compile = true
 
 [tools]
 node = "24.21.0"
-python = "3.14.7"
+python = "3.15.0"
 ruby = "4.0.7"

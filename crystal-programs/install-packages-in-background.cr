@@ -123,16 +123,18 @@ class InstallPackagesInBackground
     installer_directory = "./personal/installer_executables/"
     FileUtils.mkdir_p(installer_directory)
     executable_path = File.join(installer_directory, "#{filename}.sh")
+    log_path = File.join(installer_directory, "#{filename}.log")
 
     zsh_command =
       <<-ZSH
         {
           (
+            eval "$(mise env -s zsh)"
             #{command} && \\
               notify 'Command succeeded in #{current_directory}' '#{command}' || \\
               notify-error 'Command failed in #{current_directory}' '#{command}'
           ) & disown
-        } &>/dev/null
+        } &>#{log_path}
         ZSH
 
     File.write(executable_path, <<-SCRIPT)

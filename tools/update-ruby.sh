@@ -30,6 +30,46 @@ bump-setup-ruby-action() {
   done < <(rg -l "${setup_ruby_repo}@" .github 2>/dev/null || true)
 }
 
+# For any Dockerfile under $1 (a dir containing a .ruby-version) that pins
+#   ruby:$RUBY_VERSION<variant>@sha256:<digest>
+# look up the current digest for ruby:<version in .ruby-version><variant> and
+# rewrite the pin. No-op if there's no such pin, or if the lookup fails.
+bump-ruby-docker-digest() {
+  local package_dir="$1"
+  local ruby_version
+  ruby_version=$(head -n1 "$package_dir/$ruby_version_file")
+
+  local dockerfile variant old_digest new_digest
+  while IFS= read -r dockerfile; do
+    [[ -n "$dockerfile" ]] || continue
+
+    # Prints "<variant> <old digest>", e.g. "-slim-bookworm sha256:4c05..."
+    while read -r variant old_digest; do
+      [[ -n "$old_digest" ]] || continue
+
+      if ! new_digest=$(
+        docker buildx imagetools inspect \
+          --format '{{.Manifest.Digest}}' \
+          "ruby:${ruby_version}${variant}"
+      ) || [[ -z "$new_digest" ]]; then
+        echo "Warning: couldn't look up digest for ruby:${ruby_version}${variant}; skipping $dockerfile." >&2
+        continue
+      fi
+
+      if [[ "$new_digest" == "$old_digest" ]]; then
+        echo "$dockerfile: digest already current."
+      else
+        sd -F "$old_digest" "$new_digest" "$dockerfile"
+      fi
+    done < <(
+      rg --no-filename --no-line-number --only-matching \
+        --replace '$1 $2' \
+        'ruby:\$\{?RUBY_VERSION\}?([A-Za-z0-9._-]*)@(sha256:[0-9a-f]{64})' \
+        "$dockerfile"
+    )
+  done < <(rg -l 'ruby:\$\{?RUBY_VERSION' --glob '*Dockerfile*' "$package_dir" 2>/dev/null || true)
+}
+
 if [[ -z "$new_ruby_version" ]]; then
   echo "Usage: $0 <new_ruby_version>"
   exit 1
@@ -156,6 +196,8 @@ while IFS= read -r repo_dir; do
           else
             echo "No $package_dir/Gemfile.lock found; skipping bundle update."
           fi
+
+          bump-ruby-docker-digest "$package_dir"
         fi
       done
       bump-setup-ruby-action

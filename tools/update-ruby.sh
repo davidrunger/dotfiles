@@ -31,28 +31,30 @@ bump-setup-ruby-action() {
 }
 
 # For any Dockerfile under $1 (a dir containing a .ruby-version) that pins
-#   ruby:$RUBY_VERSION<variant>@sha256:<digest>
-# look up the current digest for ruby:<version in .ruby-version><variant> and
-# rewrite the pin. No-op if there's no such pin, or if the lookup fails.
+#   <repository>:$RUBY_VERSION<variant>@sha256:<digest>
+# for ruby or rubylang/ruby, look up the current digest for that repository
+# and the version in .ruby-version, then rewrite the pin. No-op if there's no
+# such pin, or if the lookup fails.
 bump-ruby-docker-digest() {
   local package_dir="$1"
   local ruby_version
   ruby_version=$(head -n1 "$package_dir/$ruby_version_file")
 
-  local dockerfile variant old_digest new_digest
+  local dockerfile image_repository variant old_digest new_digest ruby_image
   while IFS= read -r dockerfile; do
     [[ -n "$dockerfile" ]] || continue
 
-    # Prints "<variant> <old digest>", e.g. "-slim-bookworm sha256:4c05..."
-    while read -r variant old_digest; do
+    # Prints "<repository> <variant> <old digest>".
+    while read -r image_repository variant old_digest; do
       [[ -n "$old_digest" ]] || continue
 
+      ruby_image="${image_repository}:${ruby_version}${variant}"
       if ! new_digest=$(
         docker buildx imagetools inspect \
           --format '{{.Manifest.Digest}}' \
-          "ruby:${ruby_version}${variant}"
+          "$ruby_image"
       ) || [[ -z "$new_digest" ]]; then
-        echo "Warning: couldn't look up digest for ruby:${ruby_version}${variant}; skipping $dockerfile." >&2
+        echo "Warning: couldn't look up digest for $ruby_image; skipping $dockerfile." >&2
         continue
       fi
 
@@ -63,11 +65,14 @@ bump-ruby-docker-digest() {
       fi
     done < <(
       rg --no-filename --no-line-number --only-matching \
-        --replace '$1 $2' \
-        'ruby:\$\{?RUBY_VERSION\}?([A-Za-z0-9._-]*)@(sha256:[0-9a-f]{64})' \
+        --replace '$1 $2 $3' \
+        '(rubylang/ruby|ruby):\$\{?RUBY_VERSION\}?([A-Za-z0-9._-]*)@(sha256:[0-9a-f]{64})' \
         "$dockerfile"
     )
-  done < <(rg -l 'ruby:\$\{?RUBY_VERSION' --glob '*Dockerfile*' "$package_dir" 2>/dev/null || true)
+  done < <(
+    rg -l '(rubylang/ruby|ruby):\$\{?RUBY_VERSION' \
+      --glob '*Dockerfile*' "$package_dir" 2>/dev/null || true
+  )
 }
 
 if [[ -z "$new_ruby_version" ]]; then

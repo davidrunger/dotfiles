@@ -133,7 +133,8 @@ class GithubPrAutoMerger < CommandKit::Command
     end
 
     def log_pr_merge_error(pr, error)
-      error_message = "Failed to merge PR ##{pr.number} in #{@repo}: #{error.message}"
+      error_message =
+        "Failed to merge PR ##{pr.number} in #{@repo}: #{error.class}: #{error.message}"
       puts(error_message.red)
     end
 
@@ -168,7 +169,7 @@ class GithubPrAutoMerger < CommandKit::Command
         true
       end
     rescue Octokit::MethodNotAllowed => error
-      puts(error.inspect.red)
+      puts("#{error.class}: #{error.message}".red)
 
       false
     end

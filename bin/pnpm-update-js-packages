@@ -3,6 +3,7 @@
 # Update JavaScript packages and open and merge a pull request.
 
 set -euo pipefail # exit on any error, don't allow undefined variables, pipes don't swallow errors
+set -x # print executed commands
 
 gfcob update-javascript-packages
 

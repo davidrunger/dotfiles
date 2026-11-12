@@ -18,7 +18,7 @@ fi
 rm -f pnpm-lock.yaml node_modules/.pnpm/lock.yaml
 
 pnpm install
-pnpm update --latest
+pnpm update --latest '!node'
 pnpm install --no-frozen-lockfile
 pnpm dedupe
 

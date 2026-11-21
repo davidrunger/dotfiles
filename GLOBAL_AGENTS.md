@@ -24,6 +24,12 @@ Note: `GLOBAL_AGENTS.md` in `~/code/dotfiles` is the canonical global instructio
 - Commit completed work on its task branch unless asked not to. Before the first push, keep the branch's work in one commit and amend as needed so GitHub can use that commit's title and body as the pull request title and description; multiple initial commits prevent that. After the first push, follow-up commits may be separate.
 - Never amend `main` or rewrite a pushed commit. Before amending, check reachability from remote refs, especially `origin/<current-branch>`; a branch tracking `origin/main` may still have a pushed same-named branch, so ahead/behind counts alone are insufficient. If pushed, make a follow-up commit. Update the message when amended code changes require it.
 
+## Working in another repository
+
+- Any request to change another repository means make the change in that repository by default; do not wait for a separate request to perform it.
+- If it is outside writable roots, request access with a short, conventional approval command, such as task-branch setup. Then use that repository's normal branch, direct-edit, diff-review, and commit workflow. Never put source edits in the approval command or route around access with patch files, scripts, or copies.
+- If direct editing is still blocked after approval, state the exact restriction and stop; do not keep trying workarounds or ask the user to apply a patch.
+
 ## Changelogs
 
 - If a repository has a changelog, add an entry for each non-trivial user-facing change on the implementation branch, following that repository's filename and format.

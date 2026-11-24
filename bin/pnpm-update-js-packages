@@ -7,7 +7,13 @@ set -x # print executed commands
 
 gfcob update-javascript-packages
 
-yq -i 'del(.minimumReleaseAgeExclude)' pnpm-workspace.yaml
+# Enable pruning for this run only (unless the repo already declares the setting).
+injected_prune_setting=false
+if [[ "$(yq 'has("minimumReleaseAgeExcludePrune")' pnpm-workspace.yaml)" == false ]]; then
+  yq -i '.minimumReleaseAgeExcludePrune = true' pnpm-workspace.yaml
+  injected_prune_setting=true
+fi
+
 audit_exit_status=0
 pnpm audit --fix=update --config.minimumReleaseAgeStrict=false || audit_exit_status=$?
 
@@ -21,6 +27,11 @@ pnpm install
 pnpm update --latest '!node'
 pnpm install --no-frozen-lockfile
 pnpm dedupe
+
+# Strip minimumReleaseAgeExcludePrune config back out if we temporarily added it above.
+if [[ "$injected_prune_setting" == true ]]; then
+  yq -i 'del(.minimumReleaseAgeExcludePrune)' pnpm-workspace.yaml
+fi
 
 # Check for any bump to a prerelease version.
 if git diff -U0 -- package.json pnpm-workspace.yaml \
